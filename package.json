@@ -96,6 +96,7 @@
     "testRegex": "/scripts/jest/dont-run-jest-directly\\.js$"
   },
   "scripts": {
+    "git-push": "git push origin v16.12.0-taichiyi",
     "build": "node ./scripts/rollup/build.js",
     "linc": "node ./scripts/tasks/linc.js",
     "lint": "node ./scripts/tasks/eslint.js",

@@ -17,14 +17,17 @@ export let getCurrentTime;
 export let forceFrameRate;
 
 if (
-  // If Scheduler runs in a non-DOM environment, it falls back to a naive
-  // implementation using setTimeout.
+  // If Scheduler runs in a non-DOM environment, it falls back to a naive implementation using setTimeout.
+  // 如果Scheduler在非DOM环境中运行，它将使用setTimeout退回到简单的实现。
   typeof window === 'undefined' ||
   // Check if MessageChannel is supported, too.
+  // 检查是否也支持MessageChannel。
   typeof MessageChannel !== 'function'
 ) {
-  // If this accidentally gets imported in a non-browser environment, e.g. JavaScriptCore,
-  // fallback to a naive implementation.
+  //taichiyi 浏览器环境 或 不支持 MessageChannel
+
+  // If this accidentally gets imported in a non-browser environment, e.g. JavaScriptCore, fallback to a naive implementation.
+  // //如果此内容在非浏览器环境中意外导入，例如 JavaScriptCore，回退到本地的实现。
   let _callback = null;
   let _timeoutID = null;
   const _flushCallback = function() {

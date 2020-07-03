@@ -391,6 +391,7 @@ function updateDOMProperties(
   }
 }
 
+//taichiyi 创建 DOM 元素
 export function createElement(
   type: string,
   props: Object,

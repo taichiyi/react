@@ -43,8 +43,11 @@ const UNIT_SIZE = 10;
 const MAGIC_NUMBER_OFFSET = Batched - 1;
 
 // 1 unit of expiration time represents 10ms.
+// 1单位的有效时间代表10毫秒。
+//taichiyi 毫秒时间转为过期时间
 export function msToExpirationTime(ms: number): ExpirationTime {
   // Always add an offset so that we don't clash with the magic number for NoWork.
+  // 始终添加偏移量，以免与NoWork的魔幻数字发生冲突。
   return MAGIC_NUMBER_OFFSET - ((ms / UNIT_SIZE) | 0);
 }
 
@@ -128,6 +131,7 @@ export function computeContinuousHydrationExpiration(
   return ContinuousHydration++;
 }
 
+//taichiyi 根据过期时间推测优先级
 export function inferPriorityFromExpirationTime(
   currentTime: ExpirationTime,
   expirationTime: ExpirationTime,

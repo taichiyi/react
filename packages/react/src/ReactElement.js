@@ -89,10 +89,14 @@ function defineRefPropWarningGetter(props, displayName) {
 }
 
 /**
- * Factory method to create a new React element. This no longer adheres to
- * the class pattern, so do not use new to call it. Also, instanceof check
- * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
- * if something is a React Element.
+ * Factory method to create a new React element.
+ * This no longer adheres to the class pattern, so do not use new to call it.
+ * Also, instanceof check will not work.
+ * Instead test $$typeof field against Symbol.for('react.element') to check if something is a React Element.
+ * 工厂方法来创建新的React元素。
+ * 这不再遵循类模式，因此不要使用new来调用它。
+ * 另外，instanceof check也不起作用。
+ * 相反，根据 Symbol.for('react.element') 来检查某个元素是否是React元素。
  *
  * @param {*} type
  * @param {*} props
@@ -111,15 +115,18 @@ function defineRefPropWarningGetter(props, displayName) {
 const ReactElement = function(type, key, ref, self, source, owner, props) {
   const element = {
     // This tag allows us to uniquely identify this as a React Element
+    // 此标签允许我们唯一地将此标识为 React 元素
     $$typeof: REACT_ELEMENT_TYPE,
 
     // Built-in properties that belong on the element
+    // 属于元素的内置属性
     type: type,
     key: key,
     ref: ref,
     props: props,
 
     // Record the component responsible for creating this element.
+    // 记录负责创建此元素的组件。
     _owner: owner,
   };
 

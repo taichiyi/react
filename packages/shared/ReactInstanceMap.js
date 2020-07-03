@@ -25,6 +25,7 @@ export function remove(key) {
 }
 
 export function get(key) {
+  //taichiyi 或者你也可以通过组件实例得到单个 fiber 节点。
   return key._reactInternalFiber;
 }
 

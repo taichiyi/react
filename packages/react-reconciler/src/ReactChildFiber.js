@@ -255,6 +255,8 @@ function warnOnFunctionType() {
 // to be able to optimize each path individually by branching early. This needs
 // a compiler or we can do it manually. Helpers that don't need this branching
 // live outside of this function.
+
+//taichiyi 去看看 ChildReconciler 函数，了解一下 React 对于构建起来的 Fiber 节点，所做的全部操作及其对应的函数实现。
 function ChildReconciler(shouldTrackSideEffects) {
   function deleteChild(returnFiber: Fiber, childToDelete: Fiber): void {
     if (!shouldTrackSideEffects) {
@@ -281,13 +283,15 @@ function ChildReconciler(shouldTrackSideEffects) {
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
   ): null {
+    debugger; // deleteRemainingChildren
     if (!shouldTrackSideEffects) {
       // Noop.
+      // 空操作
       return null;
     }
 
-    // TODO: For the shouldClone case, this could be micro-optimized a bit by
-    // assuming that after the first child we've already added everything.
+    // TODO: For the shouldClone case, this could be micro-optimized a bit by assuming that after the first child we've already added everything.
+    // 待办事项：对于 shouldClone 情况，可以假设第一个孩子之后，我们已经添加了所有内容，因此可以对它进行微优化。
     let childToDelete = currentFirstChild;
     while (childToDelete !== null) {
       deleteChild(returnFiber, childToDelete);
@@ -359,8 +363,8 @@ function ChildReconciler(shouldTrackSideEffects) {
   }
 
   function placeSingleChild(newFiber: Fiber): Fiber {
-    // This is simpler for the single child case. We only need to do a
-    // placement for inserting new children.
+    // This is simpler for the single child case. We only need to do a placement for inserting new children.
+    // 对于单子情况，这更简单。我们只需要放置一个位置即可插入新的孩子。
     if (shouldTrackSideEffects && newFiber.alternate === null) {
       newFiber.effectTag = Placement;
     }
@@ -1240,9 +1244,10 @@ function ChildReconciler(shouldTrackSideEffects) {
     return created;
   }
 
-  // This API will tag the children with the side-effect of the reconciliation
-  // itself. They will be added to the side-effect list as we pass through the
-  // children and the parent.
+  // This API will tag the children with the side-effect of the reconciliation itself.
+  // They will be added to the side-effect list as we pass through the children and the parent.
+  // 此 api 将使用 reconciliation 本身的副作用来标记孩子。
+  // 当我们通过子代和父代时，它们将被添加到副作用列表中。
   function reconcileChildFibers(
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
@@ -1250,13 +1255,21 @@ function ChildReconciler(shouldTrackSideEffects) {
     expirationTime: ExpirationTime,
   ): Fiber | null {
     // This function is not recursive.
-    // If the top level item is an array, we treat it as a set of children,
-    // not as a fragment. Nested arrays on the other hand will be treated as
-    // fragment nodes. Recursion happens at the normal flow.
+    // If the top level item is an array, we treat it as a set of children, not as a fragment.
+    // Nested arrays on the other hand will be treated as fragment nodes.
+    // Recursion happens at the normal flow.
+    // 此函数不是递归的。
+    // 如果顶层项目是数组，则将其视为一组子项，而不是片段。
+    // 另一方面，嵌套数组将被视为片段节点。
+    // 递归在正常流处发生。
+
 
     // Handle top level unkeyed fragments as if they were arrays.
     // This leads to an ambiguity between <>{[...]}</> and <>...</>.
     // We treat the ambiguous cases above the same.
+    // 像对待数组一样处理顶级无密钥片段。
+    // 这导致<> {[...]} </>和<> ... </>之间的歧义。
+    // 我们将模棱两可的案例放在上面。
     const isUnkeyedTopLevelFragment =
       typeof newChild === 'object' &&
       newChild !== null &&
@@ -1267,6 +1280,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Handle object types
+    // 处理对象类型
     const isObject = typeof newChild === 'object' && newChild !== null;
 
     if (isObject) {

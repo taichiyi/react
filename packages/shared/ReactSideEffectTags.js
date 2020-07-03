@@ -7,9 +7,11 @@
  * @flow
  */
 
+//taichiyi 副作用类型
 export type SideEffectTag = number;
 
 // Don't change these two values. They're used by React Dev Tools.
+// 不要更改这两个值。它们被React Dev Tools使用。
 export const NoEffect = /*              */ 0b0000000000000;
 export const PerformedWork = /*         */ 0b0000000000001;
 

@@ -94,6 +94,7 @@ function createRootImpl(
   options: void | RootOptions,
 ) {
   // Tag is either LegacyRoot or Concurrent Root
+  // 标记是 LegacyRoot 或 Concurrent Root
   const hydrate = options != null && options.hydrate === true;
   const hydrationCallbacks =
     (options != null && options.hydrationOptions) || null;

@@ -29,27 +29,28 @@ let invokeGuardedCallbackImpl = function<A, B, C, D, E, F, Context>(
 };
 
 if (__DEV__) {
-  // In DEV mode, we swap out invokeGuardedCallback for a special version
-  // that plays more nicely with the browser's DevTools. The idea is to preserve
-  // "Pause on exceptions" behavior. Because React wraps all user-provided
-  // functions in invokeGuardedCallback, and the production version of
-  // invokeGuardedCallback uses a try-catch, all user exceptions are treated
-  // like caught exceptions, and the DevTools won't pause unless the developer
-  // takes the extra step of enabling pause on caught exceptions. This is
-  // unintuitive, though, because even though React has caught the error, from
-  // the developer's perspective, the error is uncaught.
+  // In DEV mode, we swap out invokeGuardedCallback for a special version that plays more nicely with the browser's DevTools.
+  // 在DEV模式下，我们将invokeGuardedCallback换成一个特殊版本，可以与浏览器的DevTools更好地配合使用。
+  // The idea is to preserve "Pause on exceptions" behavior.
+  // 这个想法是保留“异常暂停”的行为。
+  // Because React wraps all user-provided functions in invokeGuardedCallback, and the production version of invokeGuardedCallback uses a try-catch, all user exceptions are treated like caught exceptions, and the DevTools won't pause unless the developer takes the extra step of enabling pause on caught exceptions.
+  // 因为React将所有用户提供的函数包装在invokeGuardedCallback中，并且生产版本的invokeGuardedCallback使用try-catch，所以所有用户异常都像捕获的异常一样对待，除非开发人员采取额外的步骤来启用暂停，否则DevTools不会暂停 捕获异常。
+  // This is unintuitive, though, because even though React has caught the error, from the developer's perspective, the error is uncaught.
+  // 但是，这是不直观的，因为即使React捕获了错误，从开发人员的角度来看，该错误也未被发现。
   //
-  // To preserve the expected "Pause on exceptions" behavior, we don't use a
-  // try-catch in DEV. Instead, we synchronously dispatch a fake event to a fake
-  // DOM node, and call the user-provided callback from inside an event handler
-  // for that fake event. If the callback throws, the error is "captured" using
-  // a global event handler. But because the error happens in a different
-  // event loop context, it does not interrupt the normal program flow.
-  // Effectively, this gives us try-catch behavior without actually using
-  // try-catch. Neat!
+  // To preserve the expected "Pause on exceptions" behavior, we don't use a try-catch in DEV.
+  // 为了保留预期的“异常暂停”行为，我们在DEV中不使用try-catch。
+  // Instead, we synchronously dispatch a fake event to a fake DOM node, and call the user-provided callback from inside an event handler for that fake event.
+  // 相反，我们将虚假事件同步发送到虚假DOM节点，并从该虚假事件的事件处理程序内部调用用户提供的回调。
+  // If the callback throws, the error is "captured" using a global event handler.
+  // 如果回调抛出，则使用全局事件处理程序“捕获”错误。
+  // But because the error happens in a different event loop context, it does not interrupt the normal program flow.
+  // 但是因为错误发生在不同的事件循环上下文中，所以它不会中断正常的程序流。
+  // Effectively, this gives us try-catch behavior without actually using try-catch. Neat!
+  // 实际上，这为我们提供了try-catch行为，而无需实际使用try-catch。整齐！
 
-  // Check that the browser supports the APIs we need to implement our special
-  // DEV version of invokeGuardedCallback
+  // Check that the browser supports the APIs we need to implement our special DEV version of invokeGuardedCallback
+  // 检查浏览器是否支持实现特殊的DEV版本的invokeGuardedCallback所需的API
   if (
     typeof window !== 'undefined' &&
     typeof window.dispatchEvent === 'function' &&

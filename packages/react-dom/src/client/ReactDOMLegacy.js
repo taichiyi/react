@@ -118,6 +118,7 @@ function legacyCreateRootFromDOMContainer(
   const shouldHydrate =
     forceHydrate || shouldHydrateDueToLegacyHeuristic(container);
   // First clear any existing content.
+  // 首先清除任何现有内容。
   if (!shouldHydrate) {
     let warned = false;
     let rootSibling;
@@ -162,6 +163,7 @@ function legacyCreateRootFromDOMContainer(
   );
 }
 
+//taichiyi (过时的)将子树渲染到容器中
 function legacyRenderSubtreeIntoContainer(
   parentComponent: ?React$Component<any, any>,
   children: ReactNodeList,
@@ -193,6 +195,7 @@ function legacyRenderSubtreeIntoContainer(
       };
     }
     // Initial mount should not be batched.
+    // 初始装载不应批处理。
     unbatchedUpdates(() => {
       updateContainer(children, fiberRoot, parentComponent, callback);
     });
@@ -274,6 +277,7 @@ export function hydrate(
   );
 }
 
+// ReactDOM.render
 export function render(
   element: React$Element<any>,
   container: DOMContainer,

@@ -7,6 +7,7 @@
  * @flow
  */
 
+//taichiyi 标记不同的组件类型
 export type WorkTag =
   | 0
   | 1

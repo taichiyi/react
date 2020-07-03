@@ -101,6 +101,7 @@ export type FiberRoot = {
   ...SuspenseCallbackOnlyFiberRootProperties,
 };
 
+//taichiyi React 会为每一个容器创建一个 fiber root 对象。
 function FiberRootNode(containerInfo, tag, hydrate) {
   this.tag = tag;
   this.current = null;
@@ -138,15 +139,18 @@ export function createFiberRoot(
   hydrate: boolean,
   hydrationCallbacks: null | SuspenseHydrationCallbacks,
 ): FiberRoot {
+  //taichiyi fiber root 是 React 保存  fiber tree 引用的地方。也就是 fiber root 节点上的属性  current 。
   const root: FiberRoot = (new FiberRootNode(containerInfo, tag, hydrate): any);
   if (enableSuspenseCallback) {
     root.hydrationCallbacks = hydrationCallbacks;
   }
 
-  // Cyclic construction. This cheats the type system right now because
-  // stateNode is any.
+  // Cyclic construction. This cheats the type system right now because stateNode is any.
+  // 循环结构。这就欺骗了类型系统，因为 stateNode 是any。
   const uninitializedFiber = createHostRootFiber(tag);
+  //taichiyi fiber tree 起点是一个被称之为 HostRoot  的特殊类型的 fiber node。它在内部被创建，扮演着所有节点的祖先节点的角色。HostRoot 的属性 stateNode 反过来又指向 FiberRoot 。
   root.current = uninitializedFiber;
+  //taichiyi stateNode 用于保存类组件的实例，宿主组件的 DOM 实例等。通常我们也可以说这个属性是用来保存与该 fiber 相对应的的本地状态 。
   uninitializedFiber.stateNode = root;
 
   return root;

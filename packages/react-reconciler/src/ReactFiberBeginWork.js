@@ -214,10 +214,13 @@ export function reconcileChildren(
   renderExpirationTime: ExpirationTime,
 ) {
   if (current === null) {
-    // If this is a fresh new component that hasn't been rendered yet, we
-    // won't update its child set by applying minimal side-effects. Instead,
-    // we will add them all to the child before it gets rendered. That means
-    // we can optimize this reconciliation pass by not tracking side-effects.
+    // If this is a fresh new component that hasn't been rendered yet, we won't update its child set by applying minimal side-effects.
+    // Instead, we will add them all to the child before it gets rendered.
+    // That means we can optimize this reconciliation pass by not tracking side-effects.
+    // 如果这是一个尚未渲染的新组件，我们不会通过应用最小的副作用来更新其子集。
+    // 相反，我们将在子对象被呈现之前将它们全部添加到子对象中。
+    // 这意味着我们可以通过不跟踪副作用来优化这个调节过程。
+
     workInProgress.child = mountChildFibers(
       workInProgress,
       null,
@@ -225,12 +228,15 @@ export function reconcileChildren(
       renderExpirationTime,
     );
   } else {
-    // If the current child is the same as the work in progress, it means that
-    // we haven't yet started any work on these children. Therefore, we use
-    // the clone algorithm to create a copy of all the current children.
+    // If the current child is the same as the work in progress,
+    // it means that we haven't yet started any work on these children.
+    // Therefore, we use the clone algorithm to create a copy of all the current children.
+    // 如果当前孩子与正在进行的工作相同，
+    // 则意味着我们尚未对这些孩子进行任何工作。
+    // 因此，我们使用克隆算法来创建所有当前子代的副本。
 
-    // If we had any progressed work already, that is invalid at this point so
-    // let's throw it out.
+    // If we had any progressed work already, that is invalid at this point so let's throw it out.
+    // 如果我们已经有任何进展的工作，那么在这一点上这是无效的，因此我们将其丢弃。
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
@@ -790,6 +796,7 @@ function updateClassComponent(
   return nextUnitOfWork;
 }
 
+//taichiyi beginWork 方法总是会返回一个指向下一个将要被处理的孩子节点的指针，或者 null。如果存在下一个孩子节点，那么它将在循环中被赋值给  nextUnitOfWork 变量。
 function finishClassComponent(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -920,12 +927,14 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
     renderExpirationTime,
   );
   const nextState = workInProgress.memoizedState;
-  // Caution: React DevTools currently depends on this property
-  // being called "element".
-  const nextChildren = nextState.element;
+  // Caution: React DevTools currently depends on this property  being called "element".
+  // 注意：React DevTools 当前依赖于此属性，称为“ element”。
+  /*✨*/const nextChildren = nextState.element;
   if (nextChildren === prevChildren) {
-    // If the state is the same as before, that's a bailout because we had
-    // no work that expires at this time.
+    // If the state is the same as before,
+    // that's a bailout because we had no work that expires at this time.
+    // 如果状态与以前相同，
+    // 则是紧急救助，因为我们目前没有任何工作到期。
     resetHydrationState();
     return bailoutOnAlreadyFinishedWork(
       current,
@@ -936,9 +945,11 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
   const root: FiberRoot = workInProgress.stateNode;
   if (root.hydrate && enterHydrationState(workInProgress)) {
     // If we don't have any current children this might be the first pass.
-    // We always try to hydrate. If this isn't a hydration pass there won't
-    // be any children to hydrate which is effectively the same thing as
-    // not hydrating.
+    // We always try to hydrate.
+    // If this isn't a hydration pass there won't be any children to hydrate which is effectively the same thing as not hydrating.
+    // 如果我们没有任何当前的孩子，则这可能是第一次通过。
+    // 我们总是试图 hydrate 。
+    // 如果这不是 hydration 通行证，就不会有任何孩子要 hydrate ，这实际上与不 hydrating 是一回事。
 
     let child = mountChildFibers(
       workInProgress,
@@ -960,8 +971,8 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
       node = node.sibling;
     }
   } else {
-    // Otherwise reset hydration state in case we aborted and resumed another
-    // root.
+    // Otherwise reset hydration state in case we aborted and resumed another root.
+    // 否则重置 hydration 状态，以防我们中止并恢复另一个根。
     reconcileChildren(
       current,
       workInProgress,
@@ -2805,6 +2816,7 @@ function remountFiber(
   }
 }
 
+//taichiyi beginWork 方法总是会返回一个指向下一个将要被处理的孩子节点的指针，如果返回 null 说明 当前 fiber 没有子代。
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -2838,6 +2850,7 @@ function beginWork(
       oldProps !== newProps ||
       hasLegacyContextChanged() ||
       // Force a re-render if the implementation changed due to hot reload:
+      // 如果实现因“热重新加载”而更改，则强制重新渲染
       (__DEV__ ? workInProgress.type !== current.type : false)
     ) {
       // If props or context changed, mark the fiber as having performed work.
@@ -2845,9 +2858,12 @@ function beginWork(
       didReceiveUpdate = true;
     } else if (updateExpirationTime < renderExpirationTime) {
       didReceiveUpdate = false;
-      // This fiber does not have any pending work. Bailout without entering
-      // the begin phase. There's still some bookkeeping we that needs to be done
-      // in this optimized path, mostly pushing stuff onto the stack.
+      // This fiber does not have any pending work.
+      // Bailout without entering the begin phase.
+      // There's still some bookkeeping we that needs to be done in this optimized path, mostly pushing stuff onto the stack.
+      // 该 fiber 没有任何待处理的 work 。
+      // 无需进入开始阶段即可进行 Bailout 。
+      // 在这种优化路径下，我们仍然需要做一些 bookkeeping ，主要是将内容推入栈。
       switch (workInProgress.tag) {
         case HostRoot:
           pushHostRootContext(workInProgress);
@@ -2864,6 +2880,7 @@ function beginWork(
               markSpawnedWork(Never);
             }
             // Schedule this fiber to re-render at offscreen priority. Then bailout.
+            // 安排此 fiber 以幕后优先级重新渲染。然后 bailout 。
             workInProgress.expirationTime = workInProgress.childExpirationTime = Never;
             return null;
           }
@@ -3013,10 +3030,12 @@ function beginWork(
         renderExpirationTime,
       );
     } else {
-      // An update was scheduled on this fiber, but there are no new props
-      // nor legacy context. Set this to false. If an update queue or context
-      // consumer produces a changed value, it will set this to true. Otherwise,
-      // the component will assume the children have not changed and bail out.
+      // An update was scheduled on this fiber, but there are no new props nor legacy context. Set this to false.
+      // If an update queue or context consumer produces a changed value, it will set this to true.
+      // Otherwise, the component will assume the children have not changed and bail out.
+      // 已计划在此 fiber 上进行更新，但没有新的 props，也没有旧的上下文。将其设置为 false。
+      // 如果更新队列或上下文使用者产生更改的值，它会将其设置为 true。
+      // 否则，该组件将假设子代没有改变，并退出。
       didReceiveUpdate = false;
     }
   } else {
@@ -3024,6 +3043,7 @@ function beginWork(
   }
 
   // Before entering the begin phase, clear the expiration time.
+  // 在进入开始阶段之前，请清除过期时间。
   workInProgress.expirationTime = NoWork;
 
   switch (workInProgress.tag) {

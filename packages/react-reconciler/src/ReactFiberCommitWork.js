@@ -239,6 +239,7 @@ function safelyCallDestroy(current, destroy) {
   }
 }
 
+//taichiyi 这部分代码迭代了整个副作用列表，并检查循环到的节点是否有 Snapshot 副作用
 function commitBeforeMutationLifeCycles(
   current: Fiber | null,
   finishedWork: Fiber,
@@ -423,6 +424,7 @@ function commitLifeCycles(
     }
     case ClassComponent: {
       const instance = finishedWork.stateNode;
+      //taichiyi 副作用类型为`Update`
       if (finishedWork.effectTag & Update) {
         if (current === null) {
           startPhaseTimer(finishedWork, 'componentDidMount');
@@ -1028,6 +1030,7 @@ function getHostSibling(fiber: Fiber): ?Instance {
   }
 }
 
+//taichiyi 非常有趣，在 commitDeletion  函数中 React 调用 componentWillUnmount  是方法作为删除处理的一部分。
 function commitPlacement(finishedWork: Fiber): void {
   if (!supportsMutation) {
     return;

@@ -8,36 +8,43 @@
  */
 
 // UpdateQueue is a linked list of prioritized updates.
+// UpdateQueue 是优先更新的链表。
 //
-// Like fibers, update queues come in pairs: a current queue, which represents
-// the visible state of the screen, and a work-in-progress queue, which can be
-// mutated and processed asynchronously before it is committed — a form of
-// double buffering. If a work-in-progress render is discarded before finishing,
-// we create a new work-in-progress by cloning the current queue.
+// Like fibers, update queues come in pairs:
+// 像 fibers 一样，更新队列是成对出现的：
+// a current queue, which represents the visible state of the screen,
+// 一个是 current 队列，它表示屏幕的可见状态；
+// and a work-in-progress queue, which can be mutated and processed asynchronously before it is committed — a form of double buffering.
+// 一个 work-in-progress 队列，可以在提交前进行异步更改和处理，这是双重缓冲的一种形式。
+// If a work-in-progress render is discarded before finishing, we create a new work-in-progress by cloning the current queue.
+// 如果一个 work-in-progress 渲染在完成前被丢弃，我们通过克隆 current 队列来创建一个新的 work-in-progress 。
 //
-// Both queues share a persistent, singly-linked list structure. To schedule an
-// update, we append it to the end of both queues. Each queue maintains a
-// pointer to first update in the persistent list that hasn't been processed.
-// The work-in-progress pointer always has a position equal to or greater than
-// the current queue, since we always work on that one. The current queue's
-// pointer is only updated during the commit phase, when we swap in the
-// work-in-progress.
+// Both queues share a persistent, singly-linked list structure.
+// 两个队列共享一个持久的单链接列表结构。
+// To schedule an update, we append it to the end of both queues.
+// 为了安排更新，我们将其附加到两个队列的末尾。
+// Each queue maintains a pointer to first update in the persistent list that hasn't been processed.
+// 每个队列都维护一个指针，指向持久列表中尚未处理的第一个更新。
+// The work-in-progress pointer always has a position equal to or greater than the current queue, since we always work on that one.
+// “work in progress”指针的位置始终等于或大于 current 队列，因为我们总是在该队列上工作。
+// The current queue's pointer is only updated during the commit phase, when we swap in the work-in-progress.
+// current 队列的指针只在提交阶段更新，即我们在“work-in-progress”中进行交换。
 //
 // For example:
 //
 //   Current pointer:           A - B - C - D - E - F
 //   Work-in-progress pointer:              D - E - F
 //                                          ^
-//                                          The work-in-progress queue has
-//                                          processed more updates than current.
+//                                          The work-in-progress queue has processed more updates than current.
+//                                          work-in-progress 队列已处理的更新多于  更新。
 //
-// The reason we append to both queues is because otherwise we might drop
-// updates without ever processing them. For example, if we only add updates to
-// the work-in-progress queue, some updates could be lost whenever a work-in
-// -progress render restarts by cloning from current. Similarly, if we only add
-// updates to the current queue, the updates will be lost whenever an already
-// in-progress queue commits and swaps with the current queue. However, by
-// adding to both queues, we guarantee that the update will be part of the next
+// The reason we append to both queues is because otherwise we might drop updates without ever processing them.
+// 我们附加到这两个队列的原因是，否则我们可能会丢弃更新，而从不处理它们。
+// For example, if we only add updates to the work-in-progress queue, some updates could be lost whenever a work-in-progress render restarts by cloning from current.
+// 例如，如果我们只将更新添加到 work-in-progress 队列中，则每当通过克隆 Current 重新启动 work-in-progress 渲染时，可能会丢失某些更新。
+// Similarly, if we only add updates to the current queue, the updates will be lost whenever an already in-progress queue commits and swaps with the current queue.
+// 类似的，如果我们仅将更新添加到当前队列中，则每当已提交的“正在进行中”队列提交并与当前队列交换时，更新将丢失。
+// However, by adding to both queues, we guarantee that the update will be part of the next
 // work-in-progress. (And because the work-in-progress queue becomes the
 // current queue once it commits, there's no danger of applying the same
 // update twice.)
@@ -140,10 +147,11 @@ export type UpdateQueue<State> = {
   lastCapturedEffect: Update<State> | null,
 };
 
-export const UpdateState = 0;
-export const ReplaceState = 1;
-export const ForceUpdate = 2;
-export const CaptureUpdate = 3;
+// React 的 State 更新分为四种情况，他们分别对应 Update 的 tag 属性的四个值：
+export const UpdateState = 0; // 更新 State
+export const ReplaceState = 1; // 替换 State
+export const ForceUpdate = 2; // 强制 State
+export const CaptureUpdate = 3; // 捕获 State
 
 // Global state that is reset at the beginning of calling `processUpdateQueue`.
 // It should only be read right after calling `processUpdateQueue`, via
@@ -161,6 +169,7 @@ if (__DEV__) {
   };
 }
 
+// 创建-state更新队列
 export function createUpdateQueue<State>(baseState: State): UpdateQueue<State> {
   const queue: UpdateQueue<State> = {
     baseState,
@@ -198,6 +207,11 @@ function cloneUpdateQueue<State>(
   return queue;
 }
 
+//taichiyi fiber reconciler 将 fiber 的state更新抽象为 Update 单向链表：
+//taichiyi createUpdate 函数用于创建 Update。getStateFromUpdate 函数用于通过 Update 获取新的 fiber state，其处理方式基于 tag 类型。
+//taichiyi 如 tag 为 UpdateState 时，getStateFromUpdate 将取用更新前的 state 值，并混入 payload 返回值或 payload 本身，作为新的 state 值返回。
+//taichiyi “payload 返回值”指的是 payload 本身是一个函数，它会以组件实例作为上下文，并以 prevState、nextProps 作为参数。
+//taichiyi Update 和 UpdateQueue 的关系，参见 https://oss.taichiyi.com/markdown/1592385506824.png
 export function createUpdate(
   expirationTime: ExpirationTime,
   suspenseConfig: null | SuspenseConfig,
@@ -206,10 +220,14 @@ export function createUpdate(
     expirationTime,
     suspenseConfig,
 
+    //taichiyi 更新类型
     tag: UpdateState,
+    //taichiyi state变更函数或新state本身
     payload: null,
+    //taichiyi 回调，作用于 fiber.effectTag，并将 callback 作为 side-effects 回调
     callback: null,
 
+    //taichiyi 指向下一个 Update
     next: null,
     nextEffect: null,
   };
@@ -219,6 +237,7 @@ export function createUpdate(
   return update;
 }
 
+// 把“更新”添加到 state 队列
 function appendUpdateToQueue<State>(
   queue: UpdateQueue<State>,
   update: Update<State>,
@@ -233,6 +252,8 @@ function appendUpdateToQueue<State>(
   }
 }
 
+// enqueueUpdate 函数将 update 添加到 pendingQueue 队列中，典型如类组件在 setState 方法调用期间将 update 添加到 pendingQueue 中。
+// 将 update 对象加入到当前 Fiber 的更新队列当中
 export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
   // Update queues are created lazily.
   const alternate = fiber.alternate;
@@ -345,8 +366,8 @@ function ensureWorkInProgressQueueIsAClone<State>(
 ): UpdateQueue<State> {
   const current = workInProgress.alternate;
   if (current !== null) {
-    // If the work-in-progress queue is equal to the current queue,
-    // we need to clone it first.
+    // If the work-in-progress queue is equal to the current queue, we need to clone it first.
+    // 如果“正在工作”队列等于当前队列，则需要先克隆它。
     if (queue === current.updateQueue) {
       queue = workInProgress.updateQueue = cloneUpdateQueue(queue);
     }
@@ -390,6 +411,7 @@ function getStateFromUpdate<State>(
         (workInProgress.effectTag & ~ShouldCapture) | DidCapture;
     }
     // Intentional fallthrough
+    // 故意掉队
     case UpdateState: {
       const payload = update.payload;
       let partialState;
@@ -410,6 +432,7 @@ function getStateFromUpdate<State>(
         }
       } else {
         // Partial state object
+        // 部分 state 对象
         partialState = payload;
       }
       if (partialState === null || partialState === undefined) {
@@ -443,42 +466,48 @@ export function processUpdateQueue<State>(
   }
 
   // These values may change as we process the queue.
+  // 当我们处理队列时，这些值可能会更改。
   let newBaseState = queue.baseState;
   let newFirstUpdate = null;
   let newExpirationTime = NoWork;
 
   // Iterate through the list of updates to compute the result.
+  // 通过更新列表进行迭代以计算结果。
   let update = queue.firstUpdate;
   let resultState = newBaseState;
   while (update !== null) {
     const updateExpirationTime = update.expirationTime;
     if (updateExpirationTime < renderExpirationTime) {
       // This update does not have sufficient priority. Skip it.
+      // 此更新没有足够的优先级。跳过它。
       if (newFirstUpdate === null) {
-        // This is the first skipped update. It will be the first update in
-        // the new list.
+        // This is the first skipped update. It will be the first update in the new list.
+        // 这是第一个跳过的更新。这将是新列表中的第一次更新。
         newFirstUpdate = update;
-        // Since this is the first update that was skipped, the current result
-        // is the new base state.
+        // Since this is the first update that was skipped, the current result is the new base state.
+        // 由于这是跳过的第一个更新，因此当前结果是新的基本 state。
         newBaseState = resultState;
       }
-      // Since this update will remain in the list, update the remaining
-      // expiration time.
+      // Since this update will remain in the list, update the remaining expiration time.
+      // 由于此更新将保留在列表中，因此请更新剩余的过期时间。
       if (newExpirationTime < updateExpirationTime) {
         newExpirationTime = updateExpirationTime;
       }
     } else {
       // This update does have sufficient priority.
+      // 此更新确实具有足够的优先级。
 
       // Mark the event time of this update as relevant to this render pass.
-      // TODO: This should ideally use the true event time of this update rather than
-      // its priority which is a derived and not reverseable value.
-      // TODO: We should skip this update if it was already committed but currently
-      // we have no way of detecting the difference between a committed and suspended
-      // update here.
+      // 将此更新的事件时间标记为与此渲染过程相关。
+
+      // TODO: This should ideally use the true event time of this update rather than its priority which is a derived and not reverseable value.
+      // 待办事项：理想情况下，应使用此更新的真实事件时间，而不要使用优先级，后者是派生且不可逆的值。
+      // TODO: We should skip this update if it was already committed but currently we have no way of detecting the difference between a committed and suspended update here.
+      // 待办事项：如果已经提交了此更新，则应跳过此更新，但是当前我们无法在此处检测已提交和挂起的更新之间的差异。
       markRenderEventTimeAndConfig(updateExpirationTime, update.suspenseConfig);
 
       // Process it and compute a new result.
+      // 处理它并计算新结果。
       resultState = getStateFromUpdate(
         workInProgress,
         queue,
@@ -491,6 +520,7 @@ export function processUpdateQueue<State>(
       if (callback !== null) {
         workInProgress.effectTag |= Callback;
         // Set this to null, in case it was mutated during an aborted render.
+        // 将其设置为null，以防它在中止的渲染过程中发生了变化。
         update.nextEffect = null;
         if (queue.lastEffect === null) {
           queue.firstEffect = queue.lastEffect = update;
@@ -505,30 +535,32 @@ export function processUpdateQueue<State>(
   }
 
   // Separately, iterate though the list of captured updates.
+  // 单独地，迭代捕获的更新列表。
   let newFirstCapturedUpdate = null;
   update = queue.firstCapturedUpdate;
   while (update !== null) {
     const updateExpirationTime = update.expirationTime;
     if (updateExpirationTime < renderExpirationTime) {
       // This update does not have sufficient priority. Skip it.
+      // 此更新没有足够的优先级。跳过它。
       if (newFirstCapturedUpdate === null) {
-        // This is the first skipped captured update. It will be the first
-        // update in the new list.
+        // This is the first skipped captured update. It will be the first update in the new list.
+        // 这是第一个跳过的捕获更新。这将是新列表中的第一次更新。
         newFirstCapturedUpdate = update;
-        // If this is the first update that was skipped, the current result is
-        // the new base state.
+        // If this is the first update that was skipped, the current result is the new base state.
+        // 如果这是跳过的第一个更新，因此当前结果是新的基本 state 。
         if (newFirstUpdate === null) {
           newBaseState = resultState;
         }
       }
-      // Since this update will remain in the list, update the remaining
-      // expiration time.
+      // Since this update will remain in the list, update the remaining expiration time.
+      // 由于此更新将保留在列表中，因此请更新剩余的过期时间。
       if (newExpirationTime < updateExpirationTime) {
         newExpirationTime = updateExpirationTime;
       }
     } else {
-      // This update does have sufficient priority. Process it and compute
-      // a new result.
+      // This update does have sufficient priority. Process it and compute a new result.
+      // 此更新确实具有足够的优先级。处理它并计算新结果。
       resultState = getStateFromUpdate(
         workInProgress,
         queue,
@@ -541,6 +573,7 @@ export function processUpdateQueue<State>(
       if (callback !== null) {
         workInProgress.effectTag |= Callback;
         // Set this to null, in case it was mutated during an aborted render.
+        // 将其设置为null，以防它在中止的渲染过程中发生了变化。
         update.nextEffect = null;
         if (queue.lastCapturedEffect === null) {
           queue.firstCapturedEffect = queue.lastCapturedEffect = update;
@@ -562,8 +595,10 @@ export function processUpdateQueue<State>(
     workInProgress.effectTag |= Callback;
   }
   if (newFirstUpdate === null && newFirstCapturedUpdate === null) {
-    // We processed every update, without skipping. That means the new base
-    // state is the same as the result state.
+    // We processed every update, without skipping.
+    // That means the new base state is the same as the result state.
+    // 我们处理了所有更新，没有跳过。
+    // 这意味着新的基本 state 与结果 state 相同。
     newBaseState = resultState;
   }
 
@@ -572,12 +607,15 @@ export function processUpdateQueue<State>(
   queue.firstCapturedUpdate = newFirstCapturedUpdate;
 
   // Set the remaining expiration time to be whatever is remaining in the queue.
-  // This should be fine because the only two other things that contribute to
-  // expiration time are props and context. We're already in the middle of the
-  // begin phase by the time we start processing the queue, so we've already
-  // dealt with the props. Context in components that specify
-  // shouldComponentUpdate is tricky; but we'll have to account for
-  // that regardless.
+  // 将剩余的过期时间设置为队列中剩余的时间。
+  // This should be fine because the only two other things that contribute to expiration time are props and context.
+  // 这应该没问题，因为影响到期时间的另外两件事是 props 和 context 。
+  // We're already in the middle of the begin phase by the time we start processing the queue,
+  // 当我们开始处理队列时，我们已经处于开始阶段的中间
+  // so we've already dealt with the props. Context in components that specify shouldComponentUpdate is tricky;
+  // 所以我们已经处理了 props 。指定shouldComponentUpdate的组件中的上下文很棘手。
+  // but we'll have to account for that regardless.
+  // 但无论如何，我们都必须考虑这一点。
   markUnprocessedUpdateTime(newExpirationTime);
   workInProgress.expirationTime = newExpirationTime;
   workInProgress.memoizedState = resultState;
@@ -615,13 +653,16 @@ export function commitUpdateQueue<State>(
   // lower priority updates left over, we need to keep the captured updates
   // in the queue so that they are rebased and not dropped once we process the
   // queue again at the lower priority.
+  // 如果完成的渲染包含捕获的更新，并且还剩下优先级较低的更新，那么我们需要将捕获的更新保留在队列中，以便一旦我们以较低优先级再次处理队列时，捕获的更新将被重新设置并且不会被丢弃。
   if (finishedQueue.firstCapturedUpdate !== null) {
     // Join the captured update list to the end of the normal list.
+    // 将捕获的更新列表加入到普通列表的末尾。
     if (finishedQueue.lastUpdate !== null) {
       finishedQueue.lastUpdate.next = finishedQueue.firstCapturedUpdate;
       finishedQueue.lastUpdate = finishedQueue.lastCapturedUpdate;
     }
     // Clear the list of captured updates.
+    // 清除捕获的更新列表。
     finishedQueue.firstCapturedUpdate = finishedQueue.lastCapturedUpdate = null;
   }
 

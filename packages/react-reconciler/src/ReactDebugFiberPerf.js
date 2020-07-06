@@ -128,9 +128,8 @@ const beginFiberMark = (
   const label = getFiberLabel(componentName, isMounted, phase);
 
   if (isCommitting && labelsInCurrentCommit.has(label)) {
-    // During the commit phase, we don't show duplicate labels because
-    // there is a fixed overhead for every measurement, and we don't
-    // want to stretch the commit phase beyond necessary.
+    // During the commit phase, we don't show duplicate labels because there is a fixed overhead for every measurement, and we don't want to stretch the commit phase beyond necessary.
+    // 在提交阶段，我们不会显示重复的标签，因为每次测量都有固定的开销，并且我们不想将提交阶段延长到不必要的程度。
     return false;
   }
   labelsInCurrentCommit.add(label);
@@ -269,6 +268,7 @@ export function startWorkTimer(fiber: Fiber): void {
       return;
     }
     // If we pause, this is the fiber to unwind from.
+    // 如果我们暂停，这就是要放松的 fiber。
     currentFiber = fiber;
     if (!beginFiberMark(fiber, null)) {
       return;

@@ -215,10 +215,10 @@ export function reconcileChildren(
 ) {
   if (current === null) {
     // If this is a fresh new component that hasn't been rendered yet, we won't update its child set by applying minimal side-effects.
-    // Instead, we will add them all to the child before it gets rendered.
-    // That means we can optimize this reconciliation pass by not tracking side-effects.
     // 如果这是一个尚未渲染的新组件，我们不会通过应用最小的副作用来更新其子集。
+    // Instead, we will add them all to the child before it gets rendered.
     // 相反，我们将在子对象被呈现之前将它们全部添加到子对象中。
+    // That means we can optimize this reconciliation pass by not tracking side-effects.
     // 这意味着我们可以通过不跟踪副作用来优化这个调节过程。
 
     workInProgress.child = mountChildFibers(
@@ -718,8 +718,11 @@ function updateClassComponent(
   }
 
   // Push context providers early to prevent context stack mismatches.
+  // 尽早推送上下文提供程序以防止上下文栈不匹配。
   // During mounting we don't know the child context yet as the instance doesn't exist.
+  // 在挂载期间，我们还不知道子上下文，因为该实例不存在。
   // We will invalidate the child context in finishClassComponent() right after rendering.
+  // 渲染后，我们将在finishClassComponent（）中使子上下文无效。
   let hasContext;
   if (isLegacyContextProvider(Component)) {
     hasContext = true;
@@ -733,16 +736,20 @@ function updateClassComponent(
   let shouldUpdate;
   if (instance === null) {
     if (current !== null) {
-      // An class component without an instance only mounts if it suspended
-      // inside a non- concurrent tree, in an inconsistent state. We want to
-      // tree it like a new mount, even though an empty version of it already
-      // committed. Disconnect the alternate pointers.
+      // An class component without an instance only mounts if it suspended inside a non-concurrent tree, in an inconsistent state.
+      // 没有实例的类组件只有在处于不一致状态的非并发树内挂起时才会挂载。
+      // We want to tree it like a new mount, even though an empty version of it already committed.
+      // 即使它的空版本已经提交，我们也希望像新的挂载一样将其树化。
+      // Disconnect the alternate pointers.
+      // 断开备用指针的连接。
       current.alternate = null;
       workInProgress.alternate = null;
       // Since this is conceptually a new fiber, schedule a Placement effect
+      // 由于从概念上讲这是一种新 fiber ，因此请安排放置效果
       workInProgress.effectTag |= Placement;
     }
     // In the initial pass we might need to construct the instance.
+    // 在初始阶段，我们可能需要构造实例。
     constructClassInstance(
       workInProgress,
       Component,
@@ -758,6 +765,7 @@ function updateClassComponent(
     shouldUpdate = true;
   } else if (current === null) {
     // In a resume, we'll already have an instance we can reuse.
+    // 在摘要中，我们已经有一个可以重用的实例。
     shouldUpdate = resumeMountClassInstance(
       workInProgress,
       Component,
@@ -796,7 +804,6 @@ function updateClassComponent(
   return nextUnitOfWork;
 }
 
-//taichiyi beginWork 方法总是会返回一个指向下一个将要被处理的孩子节点的指针，或者 null。如果存在下一个孩子节点，那么它将在循环中被赋值给  nextUnitOfWork 变量。
 function finishClassComponent(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -806,12 +813,14 @@ function finishClassComponent(
   renderExpirationTime: ExpirationTime,
 ) {
   // Refs should update even if shouldComponentUpdate returns false
+  // 即使shouldComponentUpdate返回false，Refs也应更新
   markRef(current, workInProgress);
 
   const didCaptureError = (workInProgress.effectTag & DidCapture) !== NoEffect;
 
   if (!shouldUpdate && !didCaptureError) {
     // Context providers should defer to sCU for rendering
+    // 上下文提供者应遵照sCU进行渲染
     if (hasContext) {
       invalidateContextProvider(workInProgress, Component, false);
     }
@@ -859,12 +868,15 @@ function finishClassComponent(
   }
 
   // React DevTools reads this flag.
+  // React DevTools读取此标志。
   workInProgress.effectTag |= PerformedWork;
   if (current !== null && didCaptureError) {
-    // If we're recovering from an error, reconcile without reusing any of
-    // the existing children. Conceptually, the normal children and the children
-    // that are shown on error are two different sets, so we shouldn't reuse
-    // normal children even if their identities match.
+    // If we're recovering from an error, reconcile without reusing any of the existing children.
+    // 如果我们正在从错误中恢复，请在不重新使用任何现有子级的情况下进行协调。
+    // Conceptually, the normal children and the children that are shown on error are two different sets,
+    // 从概念上讲，正常子代和显示错误的子代是两个不同的集合，
+    // so we shouldn't reuse normal children even if their identities match.
+    // 因此，即使他们的身份匹配，我们也不应该重用正常子代。
     forceUnmountCurrentAndReconcile(
       current,
       workInProgress,

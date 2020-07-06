@@ -264,10 +264,11 @@ function ChildReconciler(shouldTrackSideEffects) {
       return;
     }
     // Deletions are added in reversed order so we add it to the front.
-    // At this point, the return fiber's effect list is empty except for
-    // deletions, so we can just append the deletion to the list. The remaining
-    // effects aren't added until the complete phase. Once we implement
-    // resuming, this may not be true.
+    // 删除是以相反的顺序添加的，因此我们将其添加到前面。
+    // At this point, the return fiber's effect list is empty except for deletions, so we can just append the deletion to the list.
+    // 当前指针，除了删除之外，返回 fiber 的效果列表为空，因此我们可以将删除附加到列表中。
+    // The remaining effects aren't added until the complete phase. Once we implement resuming, this may not be true.
+    // 剩下的效果直到完成阶段才会添加。一旦我们实现了恢复，这可能不是真的。
     const last = returnFiber.lastEffect;
     if (last !== null) {
       last.nextEffect = childToDelete;
@@ -326,8 +327,10 @@ function ChildReconciler(shouldTrackSideEffects) {
     pendingProps: mixed,
     expirationTime: ExpirationTime,
   ): Fiber {
-    // We currently set sibling to null and index to 0 here because it is easy
-    // to forget to do before returning it. E.g. for the single child case.
+    // We currently set sibling to null and index to 0 here because it is easy to forget to do before returning it.
+    // 我们目前在这里将sibling设置为null并将index设置为0，因为在返回它之前很容易忘记这样做。
+    // E.g. for the single child case.
+    // 例如。对于独生子女的情况。
     const clone = createWorkInProgress(fiber, pendingProps, expirationTime);
     clone.index = 0;
     clone.sibling = null;
@@ -763,24 +766,27 @@ function ChildReconciler(shouldTrackSideEffects) {
     newChildren: Array<*>,
     expirationTime: ExpirationTime,
   ): Fiber | null {
-    // This algorithm can't optimize by searching from both ends since we
-    // don't have backpointers on fibers. I'm trying to see how far we can get
-    // with that model. If it ends up not being worth the tradeoffs, we can
-    // add it later.
+    // This algorithm can't optimize by searching from both ends since we don't have backpointers on fibers.
+    // 由于我们在 fibers 上没有反向指针，因此无法通过从两端进行搜索来优化该算法。
+    // I'm trying to see how far we can get with that model.
+    // 我想看看我们能用这个模型走多远。
+    // If it ends up not being worth the tradeoffs, we can add it later.
+    // 如果它最终不值得权衡，我们可以稍后再添加。
 
-    // Even with a two ended optimization, we'd want to optimize for the case
-    // where there are few changes and brute force the comparison instead of
-    // going for the Map. It'd like to explore hitting that path first in
-    // forward-only mode and only go for the Map once we notice that we need
-    // lots of look ahead. This doesn't handle reversal as well as two ended
-    // search but that's unusual. Besides, for the two ended optimization to
-    // work on Iterables, we'd need to copy the whole set.
+    // Even with a two ended optimization, we'd want to optimize for the case where there are few changes and brute force the comparison instead of going for the Map.
+    // 即使进行了两端优化，我们也希望针对变化不大的情况进行优化，并强行进行比较，而不是使用Map。
+    // It'd like to explore hitting that path first in forward-only mode and only go for the Map once we notice that we need lots of look ahead.
+    // 它想探索的是仅在前进模式下首先到达那条路径，并且只有在我们注意到我们需要大量的前瞻性之后才选择Map。
+    // This doesn't handle reversal as well as two ended search but that's unusual.
+    // 这不能像两个末端搜索一样处理逆转，但这很不寻常。
+    // Besides, for the two ended optimization to work on Iterables, we'd need to copy the whole set.
+    // 此外，为了使两端优化能够在 Iterables 上运行，我们需要复制整个集合。
 
-    // In this first iteration, we'll just live with hitting the bad case
-    // (adding everything to a Map) in for every insert/move.
+    // In this first iteration, we'll just live with hitting the bad case (adding everything to a Map) in for every insert/move.
+    // 在第一个迭代中，我们将为每个插入/移动命中最坏的情况（将所有内容添加到Map）。
 
-    // If you change this code, also update reconcileChildrenIterator() which
-    // uses the same algorithm.
+    // If you change this code, also update reconcileChildrenIterator() which uses the same algorithm.
+    // 如果您更改此代码，还需要更新使用相同算法的 reconcileChildrenIterator()。
 
     if (__DEV__) {
       // First, validate keys.
@@ -812,10 +818,12 @@ function ChildReconciler(shouldTrackSideEffects) {
         expirationTime,
       );
       if (newFiber === null) {
-        // TODO: This breaks on empty slots like null children. That's
-        // unfortunate because it triggers the slow path all the time. We need
-        // a better way to communicate whether this was a miss or null,
-        // boolean, undefined, etc.
+        // TODO: This breaks on empty slots like null children.
+        // TODO：这会在空 slot （例如空子代）上中断。
+        // That's unfortunate because it triggers the slow path all the time.
+        // 这很不幸，因为它总是触发慢路径。
+        // We need a better way to communicate whether this was a miss or null, boolean, undefined, etc.
+        // 我们需要一种更好的方式来传达这是 miss 还是 null ，boolean，undefined等。
         if (oldFiber === null) {
           oldFiber = nextOldFiber;
         }
@@ -823,20 +831,23 @@ function ChildReconciler(shouldTrackSideEffects) {
       }
       if (shouldTrackSideEffects) {
         if (oldFiber && newFiber.alternate === null) {
-          // We matched the slot, but we didn't reuse the existing fiber, so we
-          // need to delete the existing child.
+          // We matched the slot, but we didn't reuse the existing fiber, so we need to delete the existing child.
+          // 我们匹配了 slot ，但是没有重用现有的 fiber，因此我们需要删除现有的子级。
           deleteChild(returnFiber, oldFiber);
         }
       }
       lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
       if (previousNewFiber === null) {
         // TODO: Move out of the loop. This only happens for the first run.
+        // TODO：退出循环。这仅在第一次运行时发生。
         resultingFirstChild = newFiber;
       } else {
         // TODO: Defer siblings if we're not at the right index for this slot.
-        // I.e. if we had null values before, then we want to defer this
-        // for each null value. However, we also don't want to call updateSlot
-        // with the previous one.
+        // TODO:如果此插槽的索引不正确，请推迟同级。
+        // I.e. if we had null values before, then we want to defer this for each null value.
+        // 也就是说。如果以前有空值，那么我们要为每个空值推迟此值。
+        // However, we also don't want to call updateSlot with the previous one.
+        // 但是，我们也不想使用前一个调用 updateSlot。
         previousNewFiber.sibling = newFiber;
       }
       previousNewFiber = newFiber;
@@ -845,13 +856,14 @@ function ChildReconciler(shouldTrackSideEffects) {
 
     if (newIdx === newChildren.length) {
       // We've reached the end of the new children. We can delete the rest.
+      // 我们到了新孩子们的尽头。我们可以删除其余的。
       deleteRemainingChildren(returnFiber, oldFiber);
       return resultingFirstChild;
     }
 
     if (oldFiber === null) {
-      // If we don't have any more existing children we can choose a fast path
-      // since the rest will all be insertions.
+      // If we don't have any more existing children we can choose a fast path since the rest will all be insertions.
+      // 如果我们没有任何现有的子项，我们可以选择一条快速路径，因为其余的都将是插入。
       for (; newIdx < newChildren.length; newIdx++) {
         const newFiber = createChild(
           returnFiber,
@@ -864,6 +876,7 @@ function ChildReconciler(shouldTrackSideEffects) {
         lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
         if (previousNewFiber === null) {
           // TODO: Move out of the loop. This only happens for the first run.
+          // TODO：退出循环。这仅在第一次运行时发生。
           resultingFirstChild = newFiber;
         } else {
           previousNewFiber.sibling = newFiber;
@@ -874,9 +887,12 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Add all children to a key map for quick lookups.
+    // 将所有子项添加到键映射以进行快速查找。
     const existingChildren = mapRemainingChildren(returnFiber, oldFiber);
 
     // Keep scanning and use the map to restore deleted items as moves.
+    // 继续扫描并使用地图将删除的项目还原为移动。
+    // 继续扫描，并使用地图在移动时恢复已删除的项目。
     for (; newIdx < newChildren.length; newIdx++) {
       const newFiber = updateFromMap(
         existingChildren,
@@ -888,10 +904,10 @@ function ChildReconciler(shouldTrackSideEffects) {
       if (newFiber !== null) {
         if (shouldTrackSideEffects) {
           if (newFiber.alternate !== null) {
-            // The new fiber is a work in progress, but if there exists a
-            // current, that means that we reused the fiber. We need to delete
-            // it from the child list so that we don't add it to the deletion
-            // list.
+            // The new fiber is a work in progress, but if there exists a current, that means that we reused the fiber.
+            // 新的 fiber 是一个正在进行的 work ，但如果存在 current ，那就意味着我们重复使用了该 fiber 。
+            // We need to delete it from the child list so that we don't add it to the deletion list.
+            // 我们需要从子列表中删除它，以便不将其添加到删除列表中。
             existingChildren.delete(
               newFiber.key === null ? newIdx : newFiber.key,
             );
@@ -908,8 +924,10 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     if (shouldTrackSideEffects) {
-      // Any existing children that weren't consumed above were deleted. We need
-      // to add them to the deletion list.
+      // Any existing children that weren't consumed above were deleted.
+      // 以上未使用的任何现有子项都已删除。
+      // We need to add them to the deletion list.
+      // 我们需要将它们添加到删除列表中。
       existingChildren.forEach(child => deleteChild(returnFiber, child));
     }
 
@@ -1142,8 +1160,8 @@ function ChildReconciler(shouldTrackSideEffects) {
     const key = element.key;
     let child = currentFirstChild;
     while (child !== null) {
-      // TODO: If key === null and child.key === null, then this only applies to
-      // the first item in the list.
+      // TODO: If key === null and child.key === null, then this only applies to the first item in the list.
+      // 待办事项：如果key === null和child.key === null，那么这仅适用于列表中的第一项。
       if (child.key === key) {
         if (
           child.tag === Fragment

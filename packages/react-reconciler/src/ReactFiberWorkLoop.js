@@ -1536,6 +1536,7 @@ function workLoopSync() {
   // Already timed out, so perform work without checking if we need to yield.
   // 已经超时，所以执行工作时不检查是否需要 yield 。
   while (workInProgress !== null) {
+    debugger; // workLoopSync
     workInProgress = performUnitOfWork(workInProgress);
   }
 }

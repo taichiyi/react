@@ -284,7 +284,6 @@ function ChildReconciler(shouldTrackSideEffects) {
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
   ): null {
-    debugger; // deleteRemainingChildren
     if (!shouldTrackSideEffects) {
       // Noop.
       // 空操作
@@ -356,6 +355,7 @@ function ChildReconciler(shouldTrackSideEffects) {
         return lastPlacedIndex;
       } else {
         // This item can stay in place.
+        // 这个 item 可以留在原地。
         return oldIndex;
       }
     } else {
@@ -407,6 +407,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       current !== null &&
       (current.elementType === element.type ||
         // Keep this check inline so it only runs on the false path:
+        // 保持此检查内联，使其仅在错误的路径上运行：
         (__DEV__ ? isCompatibleFamilyForHotReloading(current, element) : false))
     ) {
       // Move based on index
@@ -490,9 +491,10 @@ function ChildReconciler(shouldTrackSideEffects) {
     expirationTime: ExpirationTime,
   ): Fiber | null {
     if (typeof newChild === 'string' || typeof newChild === 'number') {
-      // Text nodes don't have keys. If the previous node is implicitly keyed
-      // we can continue to replace it without aborting even if it is not a text
-      // node.
+      // Text nodes don't have keys.
+      // 文本节点没有 keys。
+      // If the previous node is implicitly keyed we can continue to replace it without aborting even if it is not a text node.
+      // 即使上一个节点没有被隐式终止，也无法替换它。
       const created = createFiberFromText(
         '' + newChild,
         returnFiber.mode,
@@ -555,13 +557,15 @@ function ChildReconciler(shouldTrackSideEffects) {
     expirationTime: ExpirationTime,
   ): Fiber | null {
     // Update the fiber if the keys match, otherwise return null.
+    // 如果键匹配，则更新 fiber，否则返回null。
 
     const key = oldFiber !== null ? oldFiber.key : null;
 
     if (typeof newChild === 'string' || typeof newChild === 'number') {
-      // Text nodes don't have keys. If the previous node is implicitly keyed
-      // we can continue to replace it without aborting even if it is not a text
-      // node.
+      // Text nodes don't have keys.
+      // 文本节点没有键。
+      // If the previous node is implicitly keyed we can continue to replace it without aborting even if it is not a text node.
+      // 如果上一个节点是隐式键控，即使它不是文本节点，我们也可以继续替换它而不会中止。
       if (key !== null) {
         return null;
       }

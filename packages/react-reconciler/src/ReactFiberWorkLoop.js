@@ -1536,7 +1536,6 @@ function workLoopSync() {
   // Already timed out, so perform work without checking if we need to yield.
   // 已经超时，所以执行工作时不检查是否需要 yield 。
   while (workInProgress !== null) {
-    debugger; // workLoopSync
     workInProgress = performUnitOfWork(workInProgress);
   }
 }
@@ -1584,7 +1583,8 @@ function performUnitOfWork(unitOfWork: Fiber): Fiber | null {
   return next;
 }
 
-//taichiyi 如果存在下一个孩子节点，那么它将在循环中被赋值给 nextUnitOfWork 变量。然而要是返回了 null，这时 React 知道已经到达了分支的末端，所以一旦当前的节点处理完成，接下来就需要处理它的兄弟节点，或者返回到父节点。这些都在 completeUnitOfWork 函数中执行。
+//taichiyi 如果存在下一个孩子节点，那么它将在循环中被赋值给 nextUnitOfWork 变量。
+//taichiyi 然而要是返回了 null，这时 React 知道已经到达了分支的末端，所以一旦当前的节点处理完成，接下来就需要处理它的兄弟节点，或者返回到父节点。这些都在 completeUnitOfWork 函数中执行。
 //taichiyi 该函数的主体是一个大的 while循环。当 workInProgress 没有孩子节点的时候 React 就会进入这个函数。
 function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
   // Attempt to complete the current unit of work, then move to the next sibling.
@@ -1593,13 +1593,15 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
   // 如果没有更多的同级，则返回到父 fiber 。
   workInProgress = unitOfWork;
   do {
-    // The current, flushed, state of this fiber is the alternate. Ideally
-    // nothing should rely on this, but relying on it here means that we don't
-    // need an additional field on the work in progress.
+    // The current, flushed, state of this fiber is the alternate.
+    // 该光纤的“当前”状态（刷新状态）为“ alternate”。
+    // Ideally nothing should rely on this, but relying on it here means that we don't need an additional field on the work in progress.
+    // 理想情况下，不应该依赖于此，但在这里依赖它意味着我们不需要在 work in progress 上增加字段。
     const current = workInProgress.alternate;
     const returnFiber = workInProgress.return;
 
     // Check if the work completed or if something threw.
+    // 检查工作是否完成或是否有东西扔了。
     if ((workInProgress.effectTag & Incomplete) === NoEffect) {
       setCurrentDebugFiberInDEV(workInProgress);
       let next;
@@ -1612,6 +1614,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
         startProfilerTimer(workInProgress);
         next = completeWork(current, workInProgress, renderExpirationTime);
         // Update render duration assuming we didn't error.
+        // 更新渲染持续时间，假设我们没有错误。
         stopProfilerTimerIfRunningAndRecordDelta(workInProgress, false);
       }
       stopWorkTimer(workInProgress);
@@ -1620,6 +1623,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
 
       if (next !== null) {
         // Completing this fiber spawned new work. Work on that next.
+        // 完成这个 fiber 产生了新的工作。 接下来继续工作。
         return next;
       }
 
@@ -1826,12 +1830,12 @@ function commitRoot(root) {
 
 function commitRootImpl(root, renderPriorityLevel) {
   do {
-    // `flushPassiveEffects` will call `flushSyncUpdateQueue` at the end, which
-    // means `flushPassiveEffects` will sometimes result in additional
-    // passive effects. So we need to keep flushing in a loop until there are
-    // no more pending effects.
-    // TODO: Might be better if `flushPassiveEffects` did not automatically
-    // flush synchronous work at the end, to avoid factoring hazards like this.
+    // `flushPassiveEffects` will call `flushSyncUpdateQueue` at the end, which means `flushPassiveEffects` will sometimes result in additional passive effects.
+    // `flushPassiveEffects`将在最后调用`flushSyncUpdateQueue`，这意味着`flushPassiveEffects`有时会导致其他被动效果。
+    // So we need to keep flushing in a loop until there are no more pending effects.
+    // 所以我们需要在一个循环中不断刷新，直到没有更多的 pending effects。
+    // TODO: Might be better if `flushPassiveEffects` did not automatically flush synchronous work at the end, to avoid factoring hazards like this.
+    // TODO: 如果“flushPassiveEffects”在结束时不自动刷新同步工作，可能会更好，以避免像这样的风险。
     flushPassiveEffects();
   } while (rootWithPendingPassiveEffects !== null);
   flushRenderPhaseStrictModeWarningsInDEV();
@@ -1856,7 +1860,9 @@ function commitRootImpl(root, renderPriorityLevel) {
   );
 
   // commitRoot never returns a continuation; it always finishes synchronously.
+  // commitRoot从不返回 continuation。 它总是同步完成。
   // So we can clear these now to allow a new callback to be scheduled.
+  // 所以我们现在可以清除这些，以便安排一个新的回调。
   root.callbackNode = null;
   root.callbackExpirationTime = NoWork;
   root.callbackPriority = NoPriority;
@@ -1864,8 +1870,10 @@ function commitRootImpl(root, renderPriorityLevel) {
 
   startCommitTimer();
 
-  // Update the first and last pending times on this root. The new first
-  // pending time is whatever is left on the root fiber.
+  // Update the first and last pending times on this root.
+  // 更新此根上的第一个和最后一个挂起时间。
+  // The new first pending time is whatever is left on the root fiber.
+  // 新的第一个 pending time 是根光纤上剩下的任何部分。
   const remainingExpirationTimeBeforeCommit = getRemainingExpirationTime(
     finishedWork,
   );
@@ -1877,22 +1885,27 @@ function commitRootImpl(root, renderPriorityLevel) {
 
   if (root === workInProgressRoot) {
     // We can reset these now that they are finished.
+    // 现在就可以重置它们了。
     workInProgressRoot = null;
     workInProgress = null;
     renderExpirationTime = NoWork;
   } else {
-    // This indicates that the last root we worked on is not the same one that
-    // we're committing now. This most commonly happens when a suspended root
-    // times out.
+    // This indicates that the last root we worked on is not the same one that we're committing now.
+    // 这表明我们处理的最后一个根与我们现在提交的根不同。
+    // This most commonly happens when a suspended root times out.
+    // 这通常发生在挂起的根超时时。
   }
 
   // Get the list of effects.
+  // 获取效果列表。
   let firstEffect;
   if (finishedWork.effectTag > PerformedWork) {
-    // A fiber's effect list consists only of its children, not itself. So if
-    // the root has an effect, we need to add it to the end of the list. The
-    // resulting list is the set that would belong to the root's parent, if it
-    // had one; that is, all the effects in the tree including the root.
+    // A fiber's effect list consists only of its children, not itself.
+    // fiber 的效果列表只包含其子对象，而不包含其自身。
+    // So if the root has an effect, we need to add it to the end of the list.
+    // 因此，如果根目录有 effect，我们需要将其添加到列表的末尾。
+    // The resulting list is the set that would belong to the root's parent, if it had one; that is, all the effects in the tree including the root.
+    // 结果列表是根的父集（如果有的话）所属的集合。也就是说，树中的所有效果（包括根）。
     if (finishedWork.lastEffect !== null) {
       finishedWork.lastEffect.nextEffect = finishedWork;
       firstEffect = finishedWork.firstEffect;
@@ -1944,12 +1957,15 @@ function commitRootImpl(root, renderPriorityLevel) {
     stopCommitSnapshotEffectsTimer();
 
     if (enableProfilerTimer) {
-      // Mark the current commit time to be shared by all Profilers in this
-      // batch. This enables them to be grouped later.
+      // Mark the current commit time to be shared by all Profilers in this batch.
+      // 标记当前提交时间，以供该批次中的所有Profiler共享。
+      // This enables them to be grouped later.
+      // 这使它们可以在以后分组。
       recordCommitTime();
     }
 
     // The next phase is the mutation phase, where we mutate the host tree.
+    // 下一个阶段是 mutation 阶段，在此阶段，我们对 host 树进行 mutation 。
     startCommitHostEffectsTimer();
     nextEffect = firstEffect;
     do {
@@ -1980,15 +1996,18 @@ function commitRootImpl(root, renderPriorityLevel) {
     stopCommitHostEffectsTimer();
     resetAfterCommit(root.containerInfo);
 
-    // The work-in-progress tree is now the current tree. This must come after
-    // the mutation phase, so that the previous tree is still current during
-    // componentWillUnmount, but before the layout phase, so that the finished
-    // work is current during componentDidMount/Update.
+    // The work-in-progress tree is now the current tree.
+    // work-in-progress 树现在是当前树。
+    // This must come after the mutation phase, so that the previous tree is still current during componentWillUnmount,
+    // 这必须发生在 mutation 阶段之后，以便上一个树在 componentWillUnmount 期间仍然是当前树，
+    // but before the layout phase, so that the finished work is current during componentDidMount/Update.
+    // 但是在布局阶段之前，以便在 componentDidMount / Update 期间完成的工作是 current 。
     root.current = finishedWork;
 
-    // The next phase is the layout phase, where we call effects that read
-    // the host tree after it's been mutated. The idiomatic use case for this is
-    // layout, but class component lifecycles also fire here for legacy reasons.
+    // The next phase is the layout phase, where we call effects that read the host tree after it's been mutated.
+    // 下一个阶段是 layout 阶段，在这个阶段中，我们调用在宿主树发生变化后读取它的效果。
+    // The idiomatic use case for this is layout, but class component lifecycles also fire here for legacy reasons.
+    // 这方面的惯用用例是 layout ，但是由于遗留原因，类组件生命周期也在这里触发。
     startCommitLifeCyclesTimer();
     nextEffect = firstEffect;
     do {
@@ -2020,8 +2039,8 @@ function commitRootImpl(root, renderPriorityLevel) {
 
     nextEffect = null;
 
-    // Tell Scheduler to yield at the end of the frame, so the browser has an
-    // opportunity to paint.
+    // Tell Scheduler to yield at the end of the frame, so the browser has an opportunity to paint.
+    // 告诉Scheduler在帧末尾 yield ，以便浏览器有机会绘画。
     requestPaint();
 
     if (enableSchedulerTracing) {
@@ -2031,9 +2050,10 @@ function commitRootImpl(root, renderPriorityLevel) {
   } else {
     // No effects.
     root.current = finishedWork;
-    // Measure these anyway so the flamegraph explicitly shows that there were
-    // no effects.
+    // Measure these anyway so the flamegraph explicitly shows that there were no effects.
+    // 无论如何都要进行测量，以便火焰图清楚地表明没有影响。
     // TODO: Maybe there's a better way to report this.
+    // TODO：也许有更好的方法来报告此情况。
     startCommitSnapshotEffectsTimer();
     stopCommitSnapshotEffectsTimer();
     if (enableProfilerTimer) {
@@ -2050,16 +2070,21 @@ function commitRootImpl(root, renderPriorityLevel) {
   const rootDidHavePassiveEffects = rootDoesHavePassiveEffects;
 
   if (rootDoesHavePassiveEffects) {
-    // This commit has passive effects. Stash a reference to them. But don't
-    // schedule a callback until after flushing layout work.
+    // This commit has passive effects.
+    // 该提交具有被动效果。
+    // Stash a reference to them.
+    // 存放对它们的引用。
+    // But don't schedule a callback until after flushing layout work.
+    // 但是在刷新 layout work 之前不要安排回调。
     rootDoesHavePassiveEffects = false;
     rootWithPendingPassiveEffects = root;
     pendingPassiveEffectsExpirationTime = expirationTime;
     pendingPassiveEffectsRenderPriority = renderPriorityLevel;
   } else {
-    // We are done with the effect chain at this point so let's clear the
-    // nextEffect pointers to assist with GC. If we have passive effects, we'll
-    // clear this in flushPassiveEffects.
+    // We are done with the effect chain at this point so let's clear the nextEffect pointers to assist with GC.
+    // 至此，我们已经完成了效果链，因此让我们清除 nextEffect 指针以协助进行GC。
+    // If we have passive effects, we'll clear this in flushPassiveEffects.
+    // 如果我们有被动效果，我们将在 flushPassiveEffects 中清除它。
     nextEffect = firstEffect;
     while (nextEffect !== null) {
       const nextNextEffect = nextEffect.nextEffect;
@@ -2069,6 +2094,7 @@ function commitRootImpl(root, renderPriorityLevel) {
   }
 
   // Check if there's remaining work on this root
+  // 检查此根上是否还有剩余工作
   const remainingExpirationTime = root.firstPendingTime;
   if (remainingExpirationTime !== NoWork) {
     if (enableSchedulerTracing) {
@@ -2086,24 +2112,30 @@ function commitRootImpl(root, renderPriorityLevel) {
       schedulePendingInteractions(root, remainingExpirationTime);
     }
   } else {
-    // If there's no remaining work, we can clear the set of already failed
-    // error boundaries.
+    // If there's no remaining work, we can clear the set of already failed error boundaries.
+    // 如果没有剩余的工作，我们可以清除已经失败的错误边界集。
     legacyErrorBoundariesThatAlreadyFailed = null;
   }
 
   if (enableSchedulerTracing) {
     if (!rootDidHavePassiveEffects) {
       // If there are no passive effects, then we can complete the pending interactions.
+      // 如果没有 passive effects ，那么我们可以完成待处理的交互。
       // Otherwise, we'll wait until after the passive effects are flushed.
+      // 否则，我们将等到 passive effects 被清除之后。
       // Wait to do this until after remaining work has been scheduled,
+      // 等到剩下的工作 scheduled 后再做，
       // so that we don't prematurely signal complete for interactions when there's e.g. hidden work.
+      // 所以当有隐藏的工作时，我们不会过早地发出信号，让交互完成。
       finishPendingInteractions(root, expirationTime);
     }
   }
 
   if (remainingExpirationTime === Sync) {
-    // Count the number of times the root synchronously re-renders without
-    // finishing. If there are too many, it indicates an infinite update loop.
+    // Count the number of times the root synchronously re-renders without finishing.
+    // 计算根在未完成的情况下同步重新渲染的次数。
+    // If there are too many, it indicates an infinite update loop.
+    // 如果太多，则表示无限更新循环。
     if (root === rootWithNestedUpdates) {
       nestedUpdateCount++;
     } else {
@@ -2116,8 +2148,8 @@ function commitRootImpl(root, renderPriorityLevel) {
 
   onCommitRoot(finishedWork.stateNode, expirationTime);
 
-  // Always call this before exiting `commitRoot`, to ensure that any
-  // additional work on this root is scheduled.
+  // Always call this before exiting `commitRoot`, to ensure that any additional work on this root is scheduled.
+  // 总是在退出`commitRoot`之前调用它，以确保在此根目录上的任何其他工作都已 scheduled 。
   ensureRootIsScheduled(root);
 
   if (hasUncaughtError) {
@@ -2128,14 +2160,17 @@ function commitRootImpl(root, renderPriorityLevel) {
   }
 
   if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
-    // This is a legacy edge case. We just committed the initial mount of
-    // a ReactDOM.render-ed root inside of batchedUpdates. The commit fired
-    // synchronously, but layout updates should be deferred until the end
-    // of the batch.
+    // This is a legacy edge case.
+    // 这是一个过时的边缘情况。
+    // We just committed the initial mount of a ReactDOM.render-ed root inside of batchedUpdates.
+    // 我们刚刚在 batchedUpdates 中提交了一个 ReactDOM.render-ed 根的初始安装。
+    // The commit fired synchronously, but layout updates should be deferred until the end of the batch.
+    // 提交是同步触发的，但是 layout 更新应推迟到批处理结束。
     return null;
   }
 
   // If layout work was scheduled, flush it now.
+  // 如果 layout work 已 调度，请立即刷新。
   flushSyncCallbackQueue();
   return null;
 }
@@ -2153,8 +2188,8 @@ function commitBeforeMutationEffects() {
       resetCurrentDebugFiberInDEV();
     }
     if ((effectTag & Passive) !== NoEffect) {
-      // If there are passive effects, schedule a callback to flush at
-      // the earliest opportunity.
+      // If there are passive effects, schedule a callback to flush at the earliest opportunity.
+      // 如果存在 passive effects ，请安排回调以尽早刷新。
       if (!rootDoesHavePassiveEffects) {
         rootDoesHavePassiveEffects = true;
         scheduleCallback(NormalPriority, () => {

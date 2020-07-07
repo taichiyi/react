@@ -181,7 +181,8 @@ export type Fiber = {|
   ref: null | (((handle: mixed) => void) & {_stringRef: ?string}) | RefObject,
 
   // Input is the data coming into process this fiber. Arguments. Props.
-  pendingProps: any, // This type will be more specific once we overload the tag.
+  // 输入是进入光纤处理的数据。Arguments。Props。
+  pendingProps: any, // This type will be more specific once we overload the tag. 一旦我们重载标记，这种类型将更加具体。
   memoizedProps: any, // The props used to create the output.
 
   // A queue of state updates and callbacks.

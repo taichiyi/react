@@ -207,6 +207,7 @@ if (__DEV__) {
   didWarnAboutDefaultPropsOnFunctionComponent = {};
 }
 
+//taichiyi 如果 current 为 null ，则很可能是初次渲染
 export function reconcileChildren(
   current: Fiber | null,
   workInProgress: Fiber,

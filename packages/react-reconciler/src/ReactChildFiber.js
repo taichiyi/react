@@ -648,8 +648,8 @@ function ChildReconciler(shouldTrackSideEffects) {
     expirationTime: ExpirationTime,
   ): Fiber | null {
     if (typeof newChild === 'string' || typeof newChild === 'number') {
-      // Text nodes don't have keys, so we neither have to check the old nor
-      // new node for the key. If both are text nodes, they match.
+      // Text nodes don't have keys, so we neither have to check the old nor new node for the key.
+      // If both are text nodes, they match.
       const matchedFiber = existingChildren.get(newIdx) || null;
       return updateTextNode(
         returnFiber,

@@ -660,12 +660,12 @@ function completeWork(
         fiberRoot.pendingContext = null;
       }
       if (current === null || current.child === null) {
-        // If we hydrated, pop so that we can delete any remaining children
-        // that weren't hydrated.
+        // If we hydrated, pop so that we can delete any remaining children that weren't hydrated.
+        // 如果我们是 hydrated ，请弹出，以便我们删除所有未 hydrated 的剩余孩子。
         let wasHydrated = popHydrationState(workInProgress);
         if (wasHydrated) {
-          // If we hydrated, then we'll need to schedule an update for
-          // the commit side-effects on the root.
+          // If we hydrated, then we'll need to schedule an update for the commit side-effects on the root.
+          // 如果我们 hydrated ，那么我们就需要在根目录上 schedule 一个提交副作用的更新。
           markUpdate(workInProgress);
         }
       }
@@ -708,14 +708,14 @@ function completeWork(
         }
 
         const currentHostContext = getHostContext();
-        // TODO: Move createInstance to beginWork and keep it on a context
-        // "stack" as the parent. Then append children as we go in beginWork
-        // or completeWork depending on we want to add then top->down or
-        // bottom->up. Top->down is faster in IE11.
+        // TODO: Move createInstance to beginWork and keep it on a context "stack" as the parent.
+        // TODO: 将 createInstance 移动到 beginWork ，并将其作为父级保留在上下文“堆栈”中。
+        // Then append children as we go in beginWork or completeWork depending on we want to add then top->down or bottom->up. Top->down is faster in IE11.
+        // 然后在 beginWork 或 completeWork 中附加子元素，这取决于我们想要添加的内容，然后是top->down或bottom->up。在IE11中Top->down更快。
         let wasHydrated = popHydrationState(workInProgress);
         if (wasHydrated) {
-          // TODO: Move this and createInstance step into the beginPhase
-          // to consolidate.
+          // TODO: Move this and createInstance step into the beginPhase to consolidate.
+          // TODO:将此和 createInstance 步骤移到 beginPhase 以进行合并。
           if (
             prepareToHydrateHostInstance(
               workInProgress,
@@ -723,8 +723,8 @@ function completeWork(
               currentHostContext,
             )
           ) {
-            // If changes to the hydrated node needs to be applied at the
-            // commit-phase we mark this as such.
+            // If changes to the hydrated node needs to be applied at the commit-phase we mark this as such.
+            // 如果需要在提交阶段对 hydrated 节点进行更改，则将其标记为这样。
             markUpdate(workInProgress);
           }
           if (enableFlareAPI) {
@@ -749,6 +749,7 @@ function completeWork(
           appendAllChildren(instance, workInProgress, false, false);
 
           // This needs to be set before we mount Flare event listeners
+          // 在安装Flare事件侦听器之前，需要设置此设置
           workInProgress.stateNode = instance;
 
           if (enableFlareAPI) {
@@ -763,8 +764,11 @@ function completeWork(
           }
 
           // Certain renderers require commit-time effects for initial mount.
+          // 某些渲染器需要 commit-time effects 才能进行初始安装。
           // (eg DOM renderer supports auto-focus for certain elements).
+          // （例如，DOM渲染器支持某些元素的自动聚焦）。
           // Make sure such renderers get scheduled for later work.
+          // 确保这样的渲染器被安排在以后的工作中。
           if (
             finalizeInitialChildren(
               instance,
@@ -780,6 +784,7 @@ function completeWork(
 
         if (workInProgress.ref !== null) {
           // If there is a ref on a host node we need to schedule a callback
+          // 如果 host node 上存在ref，则需要“安排”回调
           markRef(workInProgress);
         }
       }
@@ -789,8 +794,8 @@ function completeWork(
       let newText = newProps;
       if (current && workInProgress.stateNode != null) {
         const oldText = current.memoizedProps;
-        // If we have an alternate, that means this is an update and we need
-        // to schedule a side-effect to do the updates.
+        // If we have an alternate, that means this is an update and we need to schedule a side-effect to do the updates.
+        // 如果我们有一个 alternate ，这意味着这是一个更新，我们需要 schedule 一个副作用来进行更新。
         updateHostText(current, workInProgress, oldText, newText);
       } else {
         if (typeof newText !== 'string') {
@@ -800,6 +805,7 @@ function completeWork(
               'caused by a bug in React. Please file an issue.',
           );
           // This can happen when we abort work.
+          // 当我们中止工作时，可能会发生这种情况。
         }
         const rootContainerInstance = getRootHostContainer();
         const currentHostContext = getHostContext();
@@ -982,8 +988,10 @@ function completeWork(
     case MemoComponent:
       break;
     case IncompleteClassComponent: {
-      // Same as class component case. I put it down here so that the tags are
-      // sequential to ensure this switch is compiled to a jump table.
+      // 与类组件的情况相同。
+      // Same as class component case.
+      // I put it down here so that the tags are sequential to ensure this switch is compiled to a jump table.
+      // 我将其放在此处，以便标记是连续的，以确保将此开关编译到跳转表中。
       const Component = workInProgress.type;
       if (isLegacyContextProvider(Component)) {
         popLegacyContext(workInProgress);

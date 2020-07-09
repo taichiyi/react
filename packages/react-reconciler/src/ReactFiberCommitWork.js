@@ -1291,8 +1291,8 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
       case ForwardRef:
       case MemoComponent:
       case SimpleMemoComponent: {
-        // Note: We currently never use MountMutation, but useLayout uses
-        // UnmountMutation.
+        // Note: We currently never use MountMutation, but useLayout uses UnmountMutation.
+        // 注意：我们目前从未使用过 MountMutation ，但是 useLayout 使用 UnmountMutation 。
         commitHookEffectList(UnmountMutation, MountMutation, finishedWork);
         return;
       }
@@ -1313,6 +1313,7 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
           const root: FiberRoot = finishedWork.stateNode;
           if (root.hydrate) {
             // We've just hydrated. No need to hydrate again.
+            // 我们刚刚 hydrated 。 无需再次 hydrate 。
             root.hydrate = false;
             commitHydratedContainer(root.containerInfo);
           }

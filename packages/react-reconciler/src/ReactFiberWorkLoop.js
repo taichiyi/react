@@ -1583,7 +1583,6 @@ function performUnitOfWork(unitOfWork: Fiber): Fiber | null {
   return next;
 }
 
-//taichiyi 如果存在下一个孩子节点，那么它将在循环中被赋值给 nextUnitOfWork 变量。
 //taichiyi 然而要是返回了 null，这时 React 知道已经到达了分支的末端，所以一旦当前的节点处理完成，接下来就需要处理它的兄弟节点，或者返回到父节点。这些都在 completeUnitOfWork 函数中执行。
 //taichiyi 该函数的主体是一个大的 while循环。当 workInProgress 没有孩子节点的时候 React 就会进入这个函数。
 function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
@@ -1630,11 +1629,13 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
       if (
         returnFiber !== null &&
         // Do not append effects to parents if a sibling failed to complete
+        // 如果兄弟姐妹未能完成，请不要将效果附加到父对象
         (returnFiber.effectTag & Incomplete) === NoEffect
       ) {
-        // Append all the effects of the subtree and this fiber onto the effect
-        // list of the parent. The completion order of the children affects the
-        // side-effect order.
+        // Append all the effects of the subtree and this fiber onto the effect list of the parent.
+        // 将子树和此 fiber 的所有效果附加到父级的效果列表中。
+        // The completion order of the children affects the side-effect order.
+        // 孩子的完成顺序会影响副作用的顺序。
         if (returnFiber.firstEffect === null) {
           returnFiber.firstEffect = workInProgress.firstEffect;
         }
@@ -1645,17 +1646,18 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
           returnFiber.lastEffect = workInProgress.lastEffect;
         }
 
-        // If this fiber had side-effects, we append it AFTER the children's
-        // side-effects. We can perform certain side-effects earlier if needed,
-        // by doing multiple passes over the effect list. We don't want to
-        // schedule our own side-effect on our own list because if end up
-        // reusing children we'll schedule this effect onto itself since we're
-        // at the end.
+        // If this fiber had side-effects, we append it AFTER the children's side-effects.
+        // 如果这种 fiber 有副作用，我们会在孩子的副作用后附加它。
+        // We can perform certain side-effects earlier if needed, by doing multiple passes over the effect list.
+        // 如果需要，我们可以通过对 effect list 进行多次传递来更早地执行某些副作用。
+        // We don't want to schedule our own side-effect on our own list because if end up reusing children we'll schedule this effect onto itself since we're at the end.
+        // 我们不想在自己的列表上安排自己的副作用，因为如果最终重用了 children ，我们将在自己的末尾安排这种效果。
         const effectTag = workInProgress.effectTag;
 
-        // Skip both NoWork and PerformedWork tags when creating the effect
-        // list. PerformedWork effect is read by React DevTools but shouldn't be
-        // committed.
+        // Skip both NoWork and PerformedWork tags when creating the effect list.
+        // 创建 effect list 时，请同时跳过NoWork和PerformedWork标签。
+        // PerformedWork effect is read by React DevTools but shouldn't be committed.
+        // PerformedWork效果由React DevTools读取，但不应提交。
         if (effectTag > PerformedWork) {
           if (returnFiber.lastEffect !== null) {
             returnFiber.lastEffect.nextEffect = workInProgress;
@@ -1666,21 +1668,27 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
         }
       }
     } else {
-      // This fiber did not complete because something threw. Pop values off
-      // the stack without entering the complete phase. If this is a boundary,
-      // capture values if possible.
+      // This fiber did not complete because something threw.
+      // 这个 fiber 没有完成，因为有东西抛出。
+      // Pop values off the stack without entering the complete phase.
+      // 在不进入完整阶段的情况下从堆栈中弹出值。
+      // If this is a boundary, capture values if possible.
+      // 如果这是一个边界，则尽可能捕获值。
       const next = unwindWork(workInProgress, renderExpirationTime);
 
       // Because this fiber did not complete, don't reset its expiration time.
+      // 由于 fiber 未完成，请不要重置其过期时间。
 
       if (
         enableProfilerTimer &&
         (workInProgress.mode & ProfileMode) !== NoMode
       ) {
         // Record the render duration for the fiber that errored.
+        // 记录出现错误的 fiber 的渲染时间。
         stopProfilerTimerIfRunningAndRecordDelta(workInProgress, false);
 
         // Include the time spent working on failed children before continuing.
+        // 包括在继续工作之前为失败的孩子工作的时间。
         let actualDuration = workInProgress.actualDuration;
         let child = workInProgress.child;
         while (child !== null) {
@@ -1691,12 +1699,12 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
       }
 
       if (next !== null) {
-        // If completing this work spawned new work, do that next. We'll come
-        // back here again.
-        // Since we're restarting, remove anything that is not a host effect
-        // from the effect tag.
-        // TODO: The name stopFailedWorkTimer is misleading because Suspense
-        // also captures and restarts.
+        // If completing this work spawned new work, do that next. We'll come back here again.
+        // 如果完成这项工作后又产生了新工作，请继续执行下一步。 我们会再次回到这里。
+        // Since we're restarting, remove anything that is not a host effect from the effect tag.
+        // 由于我们正在重新启动，请从 effect tag 中删除任何不是 host effect 的内容。
+        // TODO: The name stopFailedWorkTimer is misleading because Suspense also captures and restarts.
+        // TODO: stopFailedWorkTimer 的名称有误导性，因为Suspense也会捕获和重新启动。
         stopFailedWorkTimer(workInProgress);
         next.effectTag &= HostEffectMask;
         return next;
@@ -1705,6 +1713,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
 
       if (returnFiber !== null) {
         // Mark the parent fiber as incomplete and clear its effect list.
+        // 将父 fiber 标记为不完整，并清除其效果列表。
         returnFiber.firstEffect = returnFiber.lastEffect = null;
         returnFiber.effectTag |= Incomplete;
       }
@@ -1713,13 +1722,16 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
     const siblingFiber = workInProgress.sibling;
     if (siblingFiber !== null) {
       // If there is more work to do in this returnFiber, do that next.
+      // 如果这根 returnFiber 还有更多的工作要做，那就下一步。
       return siblingFiber;
     }
     // Otherwise, return to the parent
+    // 否则，返回父母
     workInProgress = returnFiber;
   } while (workInProgress !== null);
 
   // We've reached the root.
+  // 我们已经到达了根。
   if (workInProgressRootExitStatus === RootIncomplete) {
     workInProgressRootExitStatus = RootCompleted;
   }
@@ -1923,15 +1935,20 @@ function commitRootImpl(root, renderPriorityLevel) {
     const prevInteractions = pushInteractions(root);
 
     // Reset this to null before calling lifecycles
+    // 在调用生命周期之前将其重置为null
     ReactCurrentOwner.current = null;
 
-    // The commit phase is broken into several sub-phases. We do a separate pass
-    // of the effect list for each phase: all mutation effects come before all
-    // layout effects, and so on.
+    // The commit phase is broken into several sub-phases.
+    // 提交阶段分为几个子阶段。
+    // We do a separate pass of the effect list for each phase: all mutation effects come before all layout effects, and so on.
+    // 我们为每个阶段单独进行效果列表传递：所有 mutation 效果都在所有布局效果之前，依此类推。
 
-    // The first phase a "before mutation" phase. We use this phase to read the
-    // state of the host tree right before we mutate it. This is where
-    // getSnapshotBeforeUpdate is called.
+    // The first phase a "before mutation" phase.
+    // 第一阶段是“before mutation”阶段。
+    // We use this phase to read the state of the host tree right before we mutate it.
+    // 我们使用此阶段在对它进行 mutate 之前立即读取宿主树的状态。
+    // This is where getSnapshotBeforeUpdate is called.
+    // 这是调用 getSnapshotBeforeUpdate 的地方。
     startCommitSnapshotEffectsTimer();
     prepareForCommit(root.containerInfo);
     nextEffect = firstEffect;

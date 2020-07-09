@@ -2738,11 +2738,13 @@ function bailoutOnAlreadyFinishedWork(
 
   if (current !== null) {
     // Reuse previous dependencies
+    // 重用以前的依赖项
     workInProgress.dependencies = current.dependencies;
   }
 
   if (enableProfilerTimer) {
     // Don't update "base" render times for bailouts.
+    // 不要更新紧急援助的“基准”渲染时间。
     stopProfilerTimerIfRunning(workInProgress);
   }
 
@@ -2752,15 +2754,20 @@ function bailoutOnAlreadyFinishedWork(
   }
 
   // Check if the children have any pending work.
+  // 检查孩子们是否有 pending 工作。
   const childExpirationTime = workInProgress.childExpirationTime;
   if (childExpirationTime < renderExpirationTime) {
     // The children don't have any work either. We can skip them.
-    // TODO: Once we add back resuming, we should check if the children are
-    // a work-in-progress set. If so, we need to transfer their effects.
+    // 孩子们也没有任何工作。 我们可以跳过它们。
+    // TODO: Once we add back resuming, we should check if the children are a work-in-progress set.
+    // TODO:一旦我们添加 back resuming ，我们应该检查子级是否是 work-in-progress 集。
+    // If so, we need to transfer their effects.
     return null;
   } else {
-    // This fiber doesn't have work, but its subtree does. Clone the child
-    // fibers and continue.
+    // This fiber doesn't have work, but its subtree does.
+    // 该 fiber 没有工作，但它的子树有工作。
+    // Clone the child fibers and continue.
+    // 克隆子 fibers 并继续。
     cloneChildFibers(current, workInProgress);
     return workInProgress.child;
   }

@@ -87,6 +87,7 @@ function unwindWork(
       if (effectTag & ShouldCapture) {
         workInProgress.effectTag = (effectTag & ~ShouldCapture) | DidCapture;
         // Captured a suspense effect. Re-render the boundary.
+        // //捕获了 suspense effect 。 重新渲染边界。
         return workInProgress;
       }
       return null;

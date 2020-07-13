@@ -166,12 +166,15 @@ export type Fiber = {|
   // Remaining fields belong to Fiber
 
   // The Fiber to return to after finishing processing this one.
-  // This is effectively the parent, but there can be multiple parents (two)
-  // so this is only the parent of the thing we're currently processing.
+  // 完成处理后返回的 fiber 。
+  // This is effectively the parent, but there can be multiple parents (two) so this is only the parent of the thing we're currently processing.
+  // 这实际上是 parent ，但可能有多个父（两个），因此这只是我们当前正在处理对象的父对象。
   // It is conceptually the same as the return address of a stack frame.
+  // 从概念上讲，它与栈帧的返回地址相同。
   return: Fiber | null,
 
   // Singly Linked List Tree Structure.
+  // 单链表树结构。
   child: Fiber | null,
   sibling: Fiber | null,
   index: number,
@@ -181,7 +184,7 @@ export type Fiber = {|
   ref: null | (((handle: mixed) => void) & {_stringRef: ?string}) | RefObject,
 
   // Input is the data coming into process this fiber. Arguments. Props.
-  // 输入是进入光纤处理的数据。Arguments。Props。
+  // 输入是进入 fiber 处理的数据。Arguments。Props。
   pendingProps: any, // This type will be more specific once we overload the tag. 一旦我们重载标记，这种类型将更加具体。
   memoizedProps: any, // The props used to create the output.
 
@@ -208,7 +211,7 @@ export type Fiber = {|
   effectTag: SideEffectTag,
 
   // Singly linked list fast path to the next fiber with side-effects.
-  // 单链表快速路径到下一个纤维与副作用。
+  // 单链表快速路径到下一个 fiber 与副作用。
   nextEffect: Fiber | null,
 
   // The first and last fiber with side-effect within this subtree.

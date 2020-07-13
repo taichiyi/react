@@ -198,6 +198,7 @@ export function getPublicInstance(instance: Instance): * {
 }
 
 export function prepareForCommit(containerInfo: Container): void {
+  // taichiyi
   eventsEnabled = ReactBrowserEventEmitterIsEnabled();
   selectionInformation = getSelectionInformation();
   ReactBrowserEventEmitterSetEnabled(false);
@@ -220,7 +221,7 @@ export function createInstance(
   let parentNamespace: string;
   if (__DEV__) {
     // TODO: take namespace into account when validating.
-    const hostContextDev = ((hostContext: any): HostContextDev);
+    const hostContextDev = (hostContext: HostContextDev);
     validateDOMNesting(type, null, hostContextDev.ancestorInfo);
     if (
       typeof props.children === 'string' ||
@@ -235,7 +236,7 @@ export function createInstance(
     }
     parentNamespace = hostContextDev.namespace;
   } else {
-    parentNamespace = ((hostContext: any): HostContextProd);
+    parentNamespace = hostContext: HostContextProd);
   }
   const domElement: Instance = createElement(
     type,
@@ -275,7 +276,7 @@ export function prepareUpdate(
   hostContext: HostContext,
 ): null | Array<mixed> {
   if (__DEV__) {
-    const hostContextDev = ((hostContext: any): HostContextDev);
+    const hostContextDev = hostContext: HostContextDev);
     if (
       typeof newProps.children !== typeof oldProps.children &&
       (typeof newProps.children === 'string' ||
@@ -322,7 +323,7 @@ export function createTextInstance(
   internalInstanceHandle: Object,
 ): TextInstance {
   if (__DEV__) {
-    const hostContextDev = ((hostContext: any): HostContextDev);
+    const hostContextDev = hostContext: HostContextDev);
     validateDOMNesting(null, text, hostContextDev.ancestorInfo);
   }
   const textNode: TextInstance = createTextNode(text, rootContainerInstance);
@@ -695,10 +696,10 @@ export function hydrateInstance(
   updateFiberProps(instance, props);
   let parentNamespace: string;
   if (__DEV__) {
-    const hostContextDev = ((hostContext: any): HostContextDev);
+    const hostContextDev = hostContext: HostContextDev);
     parentNamespace = hostContextDev.namespace;
   } else {
-    parentNamespace = ((hostContext: any): HostContextProd);
+    parentNamespace = hostContext: HostContextProd);
   }
   return diffHydratedProperties(
     instance,

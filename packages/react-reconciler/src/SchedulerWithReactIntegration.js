@@ -207,10 +207,12 @@ function flushSyncCallbackQueueImpl() {
       syncQueue = null;
     } catch (error) {
       // If something throws, leave the remaining callbacks on the queue.
+      // 如果发生异常，请将其余的回调保留在队列中。
       if (syncQueue !== null) {
         syncQueue = syncQueue.slice(i + 1);
       }
       // Resume flushing in the next tick
+      // 在下一个滴答声中继续刷新
       Scheduler_scheduleCallback(
         Scheduler_ImmediatePriority,
         flushSyncCallbackQueue,

@@ -208,6 +208,7 @@ if (__DEV__) {
 }
 
 //taichiyi 如果 current 为 null ，则很可能是初次渲染
+//taichiyi react Element 转为 fiber 树
 export function reconcileChildren(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -864,7 +865,7 @@ function finishClassComponent(
       }
       setCurrentPhase(null);
     } else {
-      nextChildren = instance.render();
+      nextChildren = instance./*✨*/render();
     }
   }
 
@@ -894,7 +895,9 @@ function finishClassComponent(
   }
 
   // Memoize state using the values we just used to render.
+  // 使用我们刚刚用于渲染的值来记忆状态。
   // TODO: Restructure so we never read values from the instance.
+  // TODO：进行重组，因此我们永远不会从实例中读取值。
   workInProgress.memoizedState = instance.state;
 
   // The context might have changed so we need to recalculate it.
@@ -1077,10 +1080,13 @@ function mountLazyComponent(
 
   const props = workInProgress.pendingProps;
   // We can't start a User Timing measurement with correct label yet.
+  // 我们尚无法使用正确的标签开始进行用户计时。
   // Cancel and resume right after we know the tag.
+  // 取消并在我们知道标签后立即恢复。
   cancelWorkTimer(workInProgress);
   let Component = readLazyComponentType(elementType);
   // Store the unwrapped component in the type.
+  // 将展开的组件存储在类型中。
   workInProgress.type = Component;
   const resolvedTag = (workInProgress.tag = resolveLazyComponentTag(Component));
   startWorkTimer(workInProgress);
@@ -2837,6 +2843,7 @@ function remountFiber(
 }
 
 //taichiyi beginWork 方法总是会返回一个指向下一个将要被处理的孩子节点的指针，如果返回 null 说明 当前 fiber 没有子代。
+// 把 workInProgress 的孩子从 ReactElement 转为 Fiber
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,

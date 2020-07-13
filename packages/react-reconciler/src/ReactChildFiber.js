@@ -1397,6 +1397,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Remaining cases are all treated as empty.
+    // 其余的案例都被视为空的。
     return deleteRemainingChildren(returnFiber, currentFirstChild);
   }
 

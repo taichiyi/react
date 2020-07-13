@@ -55,8 +55,8 @@ let lastContextWithAllBitsObserved: ReactContext<any> | null = null;
 let isDisallowedContextReadInDEV: boolean = false;
 
 export function resetContextDependencies(): void {
-  // This is called right before React yields execution, to ensure `readContext`
-  // cannot be called outside the render phase.
+  // This is called right before React yields execution, to ensure `readContext` cannot be called outside the render phase.
+  // 这在React yields 执行之前被调用，以确保不能在渲染阶段之外调用 `eadContext`。
   currentlyRenderingFiber = null;
   lastContextDependency = null;
   lastContextWithAllBitsObserved = null;
@@ -347,23 +347,26 @@ export function readContext<T>(
 
   if (lastContextWithAllBitsObserved === context) {
     // Nothing to do. We already observe everything in this context.
+    // 没什么可做的。我们已经观察到了这方面的一切。
   } else if (observedBits === false || observedBits === 0) {
     // Do not observe any updates.
+    // 不要观察任何更新。
   } else {
-    let resolvedObservedBits; // Avoid deopting on observable arguments or heterogeneous types.
+    let resolvedObservedBits; // Avoid deopting on observable arguments or heterogeneous types. // 避免选择可观察参数或异构类型。
     if (
       typeof observedBits !== 'number' ||
       observedBits === MAX_SIGNED_31_BIT_INT
     ) {
       // Observe all updates.
-      lastContextWithAllBitsObserved = ((context: any): ReactContext<mixed>);
+      // 观察所有更新。
+      lastContextWithAllBitsObserved = (context: ReactContext<mixed>);
       resolvedObservedBits = MAX_SIGNED_31_BIT_INT;
     } else {
       resolvedObservedBits = observedBits;
     }
 
     let contextItem = {
-      context: ((context: any): ReactContext<mixed>),
+      context: (context: ReactContext<mixed>),
       observedBits: resolvedObservedBits,
       next: null,
     };
@@ -378,6 +381,7 @@ export function readContext<T>(
       );
 
       // This is the first dependency for this component. Create a new list.
+      // 这是此组件的第一个依赖项。 创建一个新列表。
       lastContextDependency = contextItem;
       currentlyRenderingFiber.dependencies = {
         expirationTime: NoWork,

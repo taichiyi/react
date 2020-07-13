@@ -89,7 +89,7 @@ if (__DEV__) {
     if (callback === null || typeof callback === 'function') {
       return;
     }
-    const key = `${callerName}_${(callback: any)}`;
+    const key = `${callerName}_${(callback)}`;
     if (!didWarnOnInvalidCallback.has(key)) {
       didWarnOnInvalidCallback.add(key);
       warningWithoutStack(
@@ -528,6 +528,7 @@ function adoptClassInstance(workInProgress: Fiber, instance: any): void {
   instance.updater = classComponentUpdater;
   workInProgress.stateNode = instance;
   // The instance needs access to the fiber so that it can schedule updates
+  // 该实例需要访问 fiber ，以便可以安排更新
   setInstance(instance, workInProgress);
   if (__DEV__) {
     instance._reactInternalInstance = fakeInternalInstance;
@@ -589,7 +590,7 @@ function constructClassInstance(
   }
 
   if (typeof contextType === 'object' && contextType !== null) {
-    context = readContext((contextType: any));
+    context = readContext(contextType);
   } else if (!disableLegacyContext) {
     unmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
     const contextTypes = ctor.contextTypes;
@@ -601,6 +602,7 @@ function constructClassInstance(
   }
 
   // Instantiate twice to help detect side-effects.
+  // 实例化两次以帮助检测副作用。
   if (__DEV__) {
     if (
       debugRenderPhaseSideEffectsForStrictMode &&
@@ -610,7 +612,7 @@ function constructClassInstance(
     }
   }
 
-  const instance = new ctor(props, context);
+  /*✨*/const instance = new ctor(props, context);
   const state = (workInProgress.memoizedState =
     instance.state !== null && instance.state !== undefined
       ? instance.state
@@ -703,7 +705,9 @@ function constructClassInstance(
   }
 
   // Cache unmasked context so we can avoid recreating masked context unless necessary.
+  // 缓存未屏蔽的上下文，因此除非必要，否则我们可以避免重新创建屏蔽的上下文。
   // ReactFiberContext usually updates this cache but can't for newly-created instances.
+  // ReactFiberContext通常会更新此缓存，但不能更新新创建的实例。
   if (isLegacyContextConsumer) {
     cacheContext(workInProgress, unmaskedContext, context);
   }
@@ -774,6 +778,7 @@ function callComponentWillReceiveProps(
 }
 
 // Invokes the mount life-cycles on a previously never rendered instance.
+// 在以前从未渲染过的实例上调用挂载生命周期。
 function mountClassInstance(
   workInProgress: Fiber,
   ctor: any,
@@ -843,7 +848,7 @@ function mountClassInstance(
 
   const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
   if (typeof getDerivedStateFromProps === 'function') {
-    applyDerivedStateFromProps(
+    /*✨*/applyDerivedStateFromProps(
       workInProgress,
       ctor,
       getDerivedStateFromProps,
@@ -911,12 +916,13 @@ function resumeMountClassInstance(
     typeof getDerivedStateFromProps === 'function' ||
     typeof instance.getSnapshotBeforeUpdate === 'function';
 
-  // Note: During these life-cycles, instance.props/instance.state are what
-  // ever the previously attempted to render - not the "current". However,
-  // during componentDidUpdate we pass the "current" props.
+  // Note: During these life-cycles, instance.props/instance.state are what ever the previously attempted to render - not the "current".
+  // 注意：在这些生命周期中，instance.props / instance.state是以前尝试呈现的内容-而不是“当前”。
+  // However, during componentDidUpdate we pass the "current" props.
+  // 但是，在componentDidUpdate期间，我们传递了 "current" 道具。
 
-  // In order to support react-lifecycles-compat polyfilled components,
-  // Unsafe lifecycles should not be invoked for components using the new APIs.
+  // In order to support react-lifecycles-compat polyfilled components, Unsafe lifecycles should not be invoked for components using the new APIs.
+  // 为了支持与react-lifecycles兼容的polyfilled组件，不应使用新的API为组件调用Unsafe生命周期。
   if (
     !hasNewLifecycles &&
     (typeof instance.UNSAFE_componentWillReceiveProps === 'function' ||
@@ -953,8 +959,8 @@ function resumeMountClassInstance(
     !hasContextChanged() &&
     !checkHasForceUpdateAfterProcessing()
   ) {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
+    // If an update was already in progress, we should schedule an Update effect even though we're bailing out, so that cWU/cDU are called.
+    // 如果更新已经在进行中，即使我们正在等待更新，也应该安排更新效果，以便调用cWU / cDU。
     if (typeof instance.componentDidMount === 'function') {
       workInProgress.effectTag |= Update;
     }

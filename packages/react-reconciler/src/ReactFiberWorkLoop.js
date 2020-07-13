@@ -201,12 +201,12 @@ const RenderContext = /*                */ 0b010000; // 16
 const CommitContext = /*                */ 0b100000; // 32
 
 type RootExitStatus = 0 | 1 | 2 | 3 | 4 | 5;
-const RootIncomplete = 0;
-const RootFatalErrored = 1;
-const RootErrored = 2;
+const RootIncomplete = 0; // 未完成
+const RootFatalErrored = 1; // 致命的错误
+const RootErrored = 2; // 出错了
 const RootSuspended = 3;
 const RootSuspendedWithDelay = 4;
-const RootCompleted = 5;
+const RootCompleted = 5; // 已完成
 
 export type Thenable = {
   then(resolve: () => mixed, reject?: () => mixed): Thenable | void,
@@ -636,8 +636,8 @@ function ensureRootIsScheduled(root: FiberRoot) {
     return;
   }
 
-  // TODO: If this is an update, we already read the current time. Pass the
-  // time as an argument.
+  // TODO: If this is an update, we already read the current time. Pass the time as an argument.
+  // TODO: 如果这是更新，我们已经阅读了当前时间。 通过时间作为参数。
   const currentTime = requestCurrentTimeForUpdate();
   const priorityLevel = inferPriorityFromExpirationTime(
     currentTime,
@@ -661,8 +661,7 @@ function ensureRootIsScheduled(root: FiberRoot) {
       return;
     }
     // Need to schedule a new task.
-    // TODO: Instead of scheduling a new task, we should be able to change the
-    // priority of the existing one.
+    // TODO: Instead of scheduling a new task, we should be able to change the priority of the existing one.
     cancelCallback(existingCallbackNode);
   }
 
@@ -683,8 +682,10 @@ function ensureRootIsScheduled(root: FiberRoot) {
     callbackNode = scheduleCallback(
       priorityLevel,
       performConcurrentWorkOnRoot.bind(null, root),
-      // Compute a task timeout based on the expiration time. This also affects
-      // ordering because tasks are processed in timeout order.
+      // Compute a task timeout based on the expiration time.
+      // 根据过期时间计算任务超时。
+      // This also affects ordering because tasks are processed in timeout order.
+      // 这也会影响排序，因为任务是按超时顺序处理的。
       {timeout: expirationTimeToMs(expirationTime) - now()},
     );
   }
@@ -1087,6 +1088,9 @@ function performSyncWorkOnRoot(root) {
       /*✨*/    handleError(root, thrownValue);
       /*✨*/  }
       /*✨*/} while (true);
+
+      // 到这里时，workInProgressRootExitStatus 的值为 RootCompleted
+
       resetContextDependencies();
       executionContext = prevExecutionContext;
       popDispatcher(prevDispatcher);
@@ -1139,6 +1143,7 @@ function finishSyncRender(root, exitStatus, expirationTime) {
       flushSuspensePriorityWarningInDEV();
     }
   }
+  // 渲染阶段结束，开始进入提交阶段
   commitRoot(root);
 }
 
@@ -1583,17 +1588,20 @@ function performUnitOfWork(unitOfWork: Fiber): Fiber | null {
   return next;
 }
 
-//taichiyi 然而要是返回了 null，这时 React 知道已经到达了分支的末端，所以一旦当前的节点处理完成，接下来就需要处理它的兄弟节点，或者返回到父节点。这些都在 completeUnitOfWork 函数中执行。
-//taichiyi 该函数的主体是一个大的 while循环。当 workInProgress 没有孩子节点的时候 React 就会进入这个函数。
+// 当 beginWork 函数的返回值为 null 时，说明 unitOfWork(workInProgress) child 为 null，就会进入此函数；
+// 如果 workInProgress 有 sibling 时，则返回 sibling ;
+// 没有 sibling , 则 workInProgress = returnFiber , 然后继续循环;
+// 如果 workInProgress === null , 说明 fiber 树 已经...
 function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
   // Attempt to complete the current unit of work, then move to the next sibling.
   // If there are no more siblings, return to the parent fiber.
   // 尝试完成当前工作单元，然后移动到下一个同级。
   // 如果没有更多的同级，则返回到父 fiber 。
   workInProgress = unitOfWork;
+  //taichiyi 此时 workInProgress 的 child 为 null.
   do {
     // The current, flushed, state of this fiber is the alternate.
-    // 该光纤的“当前”状态（刷新状态）为“ alternate”。
+    // 该 fiber 的“当前”状态（刷新状态）为“ alternate”。
     // Ideally nothing should rely on this, but relying on it here means that we don't need an additional field on the work in progress.
     // 理想情况下，不应该依赖于此，但在这里依赖它意味着我们不需要在 work in progress 上增加字段。
     const current = workInProgress.alternate;
@@ -1602,6 +1610,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
     // Check if the work completed or if something threw.
     // 检查工作是否完成或是否有东西扔了。
     if ((workInProgress.effectTag & Incomplete) === NoEffect) {
+      // 已完成
       setCurrentDebugFiberInDEV(workInProgress);
       let next;
       if (
@@ -1815,7 +1824,7 @@ function resetChildExpirationTime(completedWork: Fiber) {
 /**
  * shannon
  *
- * 在提交阶段运行的主函数是 commitRoot，基本上它做了如下工作：
+ * 在提交阶段运行的主函数是 commitRootImpl ，基本上它做了如下工作：
  *
  *
  * - 在标记 Snapshot  副作用的节点上调用 getSnapshotBeforeUpdate 生命周期方法。
@@ -1826,9 +1835,9 @@ function resetChildExpirationTime(completedWork: Fiber) {
  * - 在标记了 Update 副作用的组件节点上调用 componentDidUpdate 生命周期方法。
  *
  *
- * 在 getSnapshotBeforeUpdate  调用后，React 会提交整棵树的所有副作用。整个过程分为两步。
- * 第一步执行 DOM 插入，更新，删除，ref 的卸载。接下来 React 将finishedWork 赋值给 FiberRoot ，并标记 workInProgress 树为  current 树。
- * 这样做的原因是，第一步相当于是 componentWillUnmount 阶段，current指向之前的树，而接下里的第二步则相当于是 componentDidMount/Update 阶段，current要指向新树。
+ * 在 getSnapshotBeforeUpdate 调用后，React 会提交整棵树的所有副作用。整个过程分为两步:
+ * 1. 第一步执行 DOM 插入，更新，删除，ref 的卸载。接下来 React 将finishedWork 赋值给 FiberRoot ，并标记 workInProgress 树为  current 树。
+ * 2. 这样做的原因是，第一步相当于是 componentWillUnmount 阶段，current指向之前的树，而接下里的第二步则相当于是 componentDidMount/Update 阶段，current要指向新树。
  *
  */
 function commitRoot(root) {
@@ -1872,7 +1881,7 @@ function commitRootImpl(root, renderPriorityLevel) {
   );
 
   // commitRoot never returns a continuation; it always finishes synchronously.
-  // commitRoot从不返回 continuation。 它总是同步完成。
+  // commitRoot从不返回 continuation 。 它总是同步完成。
   // So we can clear these now to allow a new callback to be scheduled.
   // 所以我们现在可以清除这些，以便安排一个新的回调。
   root.callbackNode = null;
@@ -1885,7 +1894,7 @@ function commitRootImpl(root, renderPriorityLevel) {
   // Update the first and last pending times on this root.
   // 更新此根上的第一个和最后一个挂起时间。
   // The new first pending time is whatever is left on the root fiber.
-  // 新的第一个 pending time 是根光纤上剩下的任何部分。
+  // 新的第一个 pending time 是 root fiber 上剩下的任何部分。
   const remainingExpirationTimeBeforeCommit = getRemainingExpirationTime(
     finishedWork,
   );
@@ -1930,6 +1939,7 @@ function commitRootImpl(root, renderPriorityLevel) {
   }
 
   if (firstEffect !== null) {
+    // 真正开始提交
     const prevExecutionContext = executionContext;
     executionContext |= CommitContext;
     const prevInteractions = pushInteractions(root);
@@ -1944,7 +1954,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     // 我们为每个阶段单独进行效果列表传递：所有 mutation 效果都在所有布局效果之前，依此类推。
 
     // The first phase a "before mutation" phase.
-    // 第一阶段是“before mutation”阶段。
+    // 第一阶段是"before mutation"阶段。
     // We use this phase to read the state of the host tree right before we mutate it.
     // 我们使用此阶段在对它进行 mutate 之前立即读取宿主树的状态。
     // This is where getSnapshotBeforeUpdate is called.
@@ -2222,6 +2232,7 @@ function commitBeforeMutationEffects() {
 //taichiyi React 执行DOM 更新使的是  commitMutationEffects  函数。
 function commitMutationEffects(root: FiberRoot, renderPriorityLevel) {
   // TODO: Should probably move the bulk of this function to commitWork.
+  // TODO: 可能应该将此功能的大部分移至 commitWork。
   while (nextEffect !== null) {
     setCurrentDebugFiberInDEV(nextEffect);
 
@@ -2238,27 +2249,27 @@ function commitMutationEffects(root: FiberRoot, renderPriorityLevel) {
       }
     }
 
-    // The following switch statement is only concerned about placement,
-    // updates, and deletions. To avoid needing to add a case for every possible
-    // bitmap value, we remove the secondary effects from the effect tag and
-    // switch on that value.
+    // The following switch statement is only concerned about placement, updates, and deletions.
+    // 下面的switch语句只关心 placement, updates, and deletions.
+    // To avoid needing to add a case for every possible bitmap value, we remove the secondary effects from the effect tag and switch on that value.
+    // 为了避免需要为每个可能的位图值添加大小写，我们从效果标签中删除了次要效果，然后打开该值。
     let primaryEffectTag =
       effectTag & (Placement | Update | Deletion | Hydrating);
     switch (primaryEffectTag) {
       case Placement: {
         commitPlacement(nextEffect);
-        // Clear the "placement" from effect tag so that we know that this is
-        // inserted, before any life-cycles like componentDidMount gets called.
-        // TODO: findDOMNode doesn't rely on this any more but isMounted does
-        // and isMounted is deprecated anyway so we should be able to kill this.
+        // Clear the "placement" from effect tag so that we know that this is inserted, before any life-cycles like componentDidMount gets called.
+        // 从effect标签中清除 "placement" ，以便我们知道在调用诸如componentDidMount之类的任何生命周期之前已将其插入。
+        // TODO: findDOMNode doesn't rely on this any more but isMounted does and isMounted is deprecated anyway so we should be able to kill this.
+        // TODO：findDOMNode 不再依赖于此，但是 isMounted 依赖于此，并且 isMounted 无论如何都已弃用，因此我们应该可以杀死它。
         nextEffect.effectTag &= ~Placement;
         break;
       }
       case PlacementAndUpdate: {
         // Placement
         commitPlacement(nextEffect);
-        // Clear the "placement" from effect tag so that we know that this is
-        // inserted, before any life-cycles like componentDidMount gets called.
+        // Clear the "placement" from effect tag so that we know that this is inserted, before any life-cycles like componentDidMount gets called.
+        // 从effect标签中清除 "placement" ，以便我们知道在调用诸如componentDidMount之类的任何生命周期之前已将其插入。
         nextEffect.effectTag &= ~Placement;
 
         // Update
@@ -2303,6 +2314,7 @@ function commitLayoutEffects(
   committedExpirationTime: ExpirationTime,
 ) {
   // TODO: Should probably move the bulk of this function to commitWork.
+  // TODO: 可能应该将此功能的大部分移至 commitWork。
   while (nextEffect !== null) {
     setCurrentDebugFiberInDEV(nextEffect);
 
@@ -2356,6 +2368,7 @@ function flushPassiveEffectsImpl() {
     'Cannot flush passive effects while already rendering.',
   );
   const prevExecutionContext = executionContext;
+  // 执行上下文改为 CommitContext
   executionContext |= CommitContext;
   const prevInteractions = pushInteractions(root);
 
@@ -2386,6 +2399,7 @@ function flushPassiveEffectsImpl() {
     }
     const nextNextEffect = effect.nextEffect;
     // Remove nextEffect pointer to assist GC
+    // 删除nextEffect指针以协助GC
     effect.nextEffect = null;
     effect = nextNextEffect;
   }
@@ -2399,8 +2413,10 @@ function flushPassiveEffectsImpl() {
 
   flushSyncCallbackQueue();
 
-  // If additional passive effects were scheduled, increment a counter. If this
-  // exceeds the limit, we'll fire a warning.
+  // If additional passive effects were scheduled, increment a counter.
+  // 如果计划了其他被动效果，请增加一个计数器。
+  // If this exceeds the limit, we'll fire a warning.
+  // 如果超过限制，我们将发出警告。
   nestedPassiveUpdateCount =
     rootWithPendingPassiveEffects === null ? 0 : nestedPassiveUpdateCount + 1;
 

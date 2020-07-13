@@ -258,9 +258,10 @@ function commitBeforeMutationLifeCycles(
           const prevState = current.memoizedState;
           startPhaseTimer(finishedWork, 'getSnapshotBeforeUpdate');
           const instance = finishedWork.stateNode;
-          // We could update instance props and state here,
-          // but instead we rely on them being set during last render.
+          // We could update instance props and state here, but instead we rely on them being set during last render.
+          // 我们可以在此处更新实例 props 和 state ，但是我们依赖于在上一次渲染期间设置它们。
           // TODO: revisit this when we implement resuming.
+          // TODO:当我们实现恢复时，请重新考虑这个问题。
           if (__DEV__) {
             if (
               finishedWork.type === finishedWork.elementType &&
@@ -286,7 +287,7 @@ function commitBeforeMutationLifeCycles(
               );
             }
           }
-          const snapshot = instance.getSnapshotBeforeUpdate(
+          /*✨*/const snapshot = instance.getSnapshotBeforeUpdate(
             finishedWork.elementType === finishedWork.type
               ? prevProps
               : resolveDefaultProps(finishedWork.type, prevProps),
@@ -428,9 +429,9 @@ function commitLifeCycles(
       if (finishedWork.effectTag & Update) {
         if (current === null) {
           startPhaseTimer(finishedWork, 'componentDidMount');
-          // We could update instance props and state here,
-          // but instead we rely on them being set during last render.
-          // TODO: revisit this when we implement resuming.
+          // We could update instance props and state here, but instead we rely on them being set during last render.
+          // 我们可以在此处更新实例 props 和 state ，但是我们依赖于在上一次渲染期间设置它们。
+          // TODO:当我们实现恢复时，请重新考虑这个问题。
           if (__DEV__) {
             if (
               finishedWork.type === finishedWork.elementType &&
@@ -456,7 +457,7 @@ function commitLifeCycles(
               );
             }
           }
-          instance.componentDidMount();
+          /*✨*/instance.componentDidMount();
           stopPhaseTimer();
         } else {
           const prevProps =
@@ -465,9 +466,10 @@ function commitLifeCycles(
               : resolveDefaultProps(finishedWork.type, current.memoizedProps);
           const prevState = current.memoizedState;
           startPhaseTimer(finishedWork, 'componentDidUpdate');
-          // We could update instance props and state here,
-          // but instead we rely on them being set during last render.
+          // We could update instance props and state here, but instead we rely on them being set during last render.
           // TODO: revisit this when we implement resuming.
+          // 我们可以在此处更新实例 props 和 state ，但是我们依赖于在上一次渲染期间设置它们。
+          // TODO:当我们实现恢复时，请重新考虑这个问题。
           if (__DEV__) {
             if (
               finishedWork.type === finishedWork.elementType &&
@@ -496,7 +498,7 @@ function commitLifeCycles(
           instance.componentDidUpdate(
             prevProps,
             prevState,
-            instance.__reactInternalSnapshotBeforeUpdate,
+            /*✨*/instance.__reactInternalSnapshotBeforeUpdate,
           );
           stopPhaseTimer();
         }
@@ -531,6 +533,8 @@ function commitLifeCycles(
         // We could update instance props and state here,
         // but instead we rely on them being set during last render.
         // TODO: revisit this when we implement resuming.
+        // 我们可以在此处更新实例 props 和 state ，但是我们依赖于在上一次渲染期间设置它们。
+        // TODO:当我们实现恢复时，请重新考虑这个问题。
         commitUpdateQueue(
           finishedWork,
           updateQueue,
@@ -1030,16 +1034,17 @@ function getHostSibling(fiber: Fiber): ?Instance {
   }
 }
 
-//taichiyi 非常有趣，在 commitDeletion  函数中 React 调用 componentWillUnmount  是方法作为删除处理的一部分。
 function commitPlacement(finishedWork: Fiber): void {
   if (!supportsMutation) {
     return;
   }
 
   // Recursively insert all host nodes into the parent.
+  // 以递归方式将所有 host nodes 插入父节点。
   const parentFiber = getHostParentFiber(finishedWork);
 
   // Note: these two variables *must* always be updated together.
+  // 注意：这两个变量*必须*总是一起更新。
   let parent;
   let isContainer;
   const parentStateNode = parentFiber.stateNode;
@@ -1071,14 +1076,15 @@ function commitPlacement(finishedWork: Fiber): void {
   }
   if (parentFiber.effectTag & ContentReset) {
     // Reset the text content of the parent before doing any insertions
+    // 进行任何插入之前，请重置父级的文本内容
     resetTextContent(parent);
     // Clear ContentReset from the effect tag
     parentFiber.effectTag &= ~ContentReset;
   }
 
   const before = getHostSibling(finishedWork);
-  // We only have the top Fiber that was inserted but we need to recurse down its
-  // children to find all the terminal nodes.
+  // We only have the top Fiber that was inserted but we need to recurse down its children to find all the terminal nodes.
+  // 我们只插入了顶部的 fiber ，但我们需要递归其子级以找到所有终端节点。
   let node: Fiber = finishedWork;
   while (true) {
     const isHost = node.tag === HostComponent || node.tag === HostText;
@@ -1098,9 +1104,10 @@ function commitPlacement(finishedWork: Fiber): void {
         }
       }
     } else if (node.tag === HostPortal) {
-      // If the insertion itself is a portal, then we don't want to traverse
-      // down its children. Instead, we'll get insertions from each child in
-      // the portal directly.
+      // If the insertion itself is a portal, then we don't want to traverse down its children.
+      // 如果插入本身是一个 portal ，那么我们不想遍历它的子级。
+      // Instead, we'll get insertions from each child in the portal directly.
+      // 相反，我们将直接从 portal 中的每个孩子那里获得插入。
     } else if (node.child !== null) {
       node.child.return = node;
       node = node.child;
@@ -1125,8 +1132,7 @@ function unmountHostComponents(
   current,
   renderPriorityLevel,
 ): void {
-  // We only have the top Fiber that was deleted but we need to recurse down its
-  // children to find all the terminal nodes.
+  // We only have the top Fiber that was deleted but we need to recurse down its children to find all the terminal nodes.
   let node: Fiber = current;
 
   // Each iteration, currentParent is populated with node's host parent if not
@@ -1275,10 +1281,13 @@ function commitDeletion(
 ): void {
   if (supportsMutation) {
     // Recursively delete all host nodes from the parent.
+    // 从父级递归删除所有 host nodes 。
     // Detach refs and call componentWillUnmount() on the whole subtree.
+    // 分离引用并在整个子树上调用componentWillUnmount（）。
     unmountHostComponents(finishedRoot, current, renderPriorityLevel);
   } else {
     // Detach refs and call componentWillUnmount() on the whole subtree.
+    // 分离引用并在整个子树上调用componentWillUnmount（）。
     commitNestedUnmounts(finishedRoot, current, renderPriorityLevel);
   }
   detachFiber(current);

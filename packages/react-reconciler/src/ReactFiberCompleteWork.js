@@ -629,6 +629,8 @@ function cutOffTailIfNeeded(
   }
 }
 
+//taichiyi workInProgress 的 child 为 null.
+//tachiyi 完成树末端(就是没有 child) fiber 的构建
 function completeWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -887,7 +889,7 @@ function completeWork(
           // Delete the fallback.
           // TODO: Would it be better to store the fallback fragment on
           // the stateNode during the begin phase?
-          const currentFallbackChild: Fiber | null = (current.child: any)
+          const currentFallbackChild: Fiber | null = current.child
             .sibling;
           if (currentFallbackChild !== null) {
             // Deletions go at the beginning of the return fiber's effect list
@@ -925,7 +927,7 @@ function completeWork(
             hasInvisibleChildContext ||
             hasSuspenseContext(
               suspenseStackCursor.current,
-              (InvisibleParentSuspenseContext: SuspenseContext),
+              InvisibleParentSuspenseContext,
             )
           ) {
             // If this was in an invisible tree or a new render, then showing

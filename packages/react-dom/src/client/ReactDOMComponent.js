@@ -287,7 +287,7 @@ function getOwnerDocumentFromRootContainer(
 ): Document {
   return rootContainerElement.nodeType === DOCUMENT_NODE
     ? (rootContainerElement: any)
-    : rootContainerElement.ownerDocument;
+    : rootContainerElement./*✨*/ownerDocument;
 }
 
 function noop() {}
@@ -400,8 +400,8 @@ export function createElement(
 ): Element {
   let isCustomComponentTag;
 
-  // We create tags in the namespace of their parent container, except HTML
-  // tags get no namespace.
+  // We create tags in the namespace of their parent container, except HTML tags get no namespace.
+  // 我们在其父容器的命名空间中创建标记，但HTML标记不获得命名空间。
   const ownerDocument: Document = getOwnerDocumentFromRootContainer(
     rootContainerElement,
   );
@@ -446,7 +446,7 @@ export function createElement(
       domElement = div.removeChild(firstChild);
     } else if (typeof props.is === 'string') {
       // $FlowIssue `createElement` should be updated for Web Components
-      domElement = ownerDocument.createElement(type, {is: props.is});
+      domElement = ownerDocument./*✨*/createElement(type, {is: props.is});
     } else {
       // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
       // See discussion in https://github.com/facebook/react/pull/6896
@@ -461,14 +461,15 @@ export function createElement(
       // See https://github.com/facebook/react/issues/13222
       // and https://github.com/facebook/react/issues/14239
       if (type === 'select') {
-        const node = ((domElement: any): HTMLSelectElement);
+        const node = (domElement: HTMLSelectElement);
         if (props.multiple) {
           node.multiple = true;
         } else if (props.size) {
-          // Setting a size greater than 1 causes a select to behave like `multiple=true`, where
-          // it is possible that no option is selected.
+          // Setting a size greater than 1 causes a select to behave like `multiple=true`, where it is possible that no option is selected.
+          // 设置大于1的大小会导致选择的行为类似于“ multiple = true”，这时可能没有选择任何选项。
           //
           // This is only necessary when a select in "single selection mode".
+          // 仅在“单选模式”中选择时才需要。
           node.size = props.size;
         }
       }
@@ -616,13 +617,13 @@ export function setInitialProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement: any));
+      track(domElement);
       ReactDOMInputPostMountWrapper(domElement, rawProps, false);
       break;
     case 'textarea':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement: any));
+      track(domElement);
       ReactDOMTextareaPostMountWrapper(domElement, rawProps);
       break;
     case 'option':
@@ -634,7 +635,7 @@ export function setInitialProperties(
     default:
       if (typeof props.onClick === 'function') {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement: any): HTMLElement));
+        trapClickOnNonInteractiveElement((domElement: HTMLElement));
       }
       break;
   }
@@ -685,7 +686,7 @@ export function diffProperties(
         typeof nextProps.onClick === 'function'
       ) {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement: any): HTMLElement));
+        trapClickOnNonInteractiveElement((domElement: HTMLElement));
       }
       break;
   }
@@ -1169,13 +1170,13 @@ export function diffHydratedProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement: any));
+      track(domElement);
       ReactDOMInputPostMountWrapper(domElement, rawProps, true);
       break;
     case 'textarea':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement: any));
+      track(domElement);
       ReactDOMTextareaPostMountWrapper(domElement, rawProps);
       break;
     case 'select':
@@ -1189,7 +1190,7 @@ export function diffHydratedProperties(
     default:
       if (typeof rawProps.onClick === 'function') {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement: any): HTMLElement));
+        trapClickOnNonInteractiveElement((domElement: HTMLElement));
       }
       break;
   }

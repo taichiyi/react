@@ -34,8 +34,10 @@ if (__DEV__) {
 }
 
 // A cursor to the current merged context object on the stack.
+// 指向栈上当前合并上下文对象的指针。
 let contextStackCursor: StackCursor<Object> = createCursor(emptyContextObject);
 // A cursor to a boolean indicating whether the context has changed.
+// 指向布尔值的指针，指示上下文是否已更改。
 let didPerformWorkStackCursor: StackCursor<boolean> = createCursor(false);
 // Keep track of the previous context object that was on the stack.
 // We use this to get access to the parent context after we have already

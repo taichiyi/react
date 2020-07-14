@@ -104,18 +104,20 @@ export function discreteUpdates(fn, a, b, c) {
 
 let lastFlushedEventTimeStamp = 0;
 export function flushDiscreteUpdatesIfNeeded(timeStamp: number) {
-  // event.timeStamp isn't overly reliable due to inconsistencies in
-  // how different browsers have historically provided the time stamp.
-  // Some browsers provide high-resolution time stamps for all events,
-  // some provide low-resolution time stamps for all events. FF < 52
-  // even mixes both time stamps together. Some browsers even report
-  // negative time stamps or time stamps that are 0 (iOS9) in some cases.
-  // Given we are only comparing two time stamps with equality (!==),
-  // we are safe from the resolution differences. If the time stamp is 0
-  // we bail-out of preventing the flush, which can affect semantics,
-  // such as if an earlier flush removes or adds event listeners that
-  // are fired in the subsequent flush. However, this is the same
-  // behaviour as we had before this change, so the risks are low.
+  // event.timeStamp isn't overly reliable due to inconsistencies in how different browsers have historically provided the time stamp.
+  // 由于历史上不同的浏览器提供时间戳的方式不一致，因此event.timeStamp不太可靠。
+  // Some browsers provide high-resolution time stamps for all events, some provide low-resolution time stamps for all events.
+  // 一些浏览器为所有事件提供高分辨率时间戳，一些浏览器为所有事件提供低分辨率时间戳。
+  // FF < 52 even mixes both time stamps together.
+  // FF <52甚至将两个时间戳混合在一起。
+  // Some browsers even report negative time stamps or time stamps that are 0 (iOS9) in some cases.
+  // 在某些情况下，某些浏览器甚至会报告负时间戳或时间戳为0（iOS9）。
+  // Given we are only comparing two time stamps with equality (!==), we are safe from the resolution differences.
+  // 鉴于我们只是比较两个时间戳与相等（！==），我们不受分辨率差异的影响。
+  // If the time stamp is 0 we bail-out of preventing the flush, which can affect semantics, such as if an earlier flush removes or adds event listeners that are fired in the subsequent flush.
+  // 如果时间戳为0，我们就无法阻止刷新，这可能会影响语义，例如如果先前的刷新删除或添加了在后续刷新中激发的事件侦听器。
+  // However, this is the same behaviour as we had before this change, so the risks are low.
+  // 然而，这和我们在这次变革之前的行为是一样的，所以风险很低。
   if (
     !isInsideEventHandler &&
     (!enableFlareAPI ||

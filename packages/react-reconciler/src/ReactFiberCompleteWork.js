@@ -132,8 +132,8 @@ import {updateEventListeners} from './ReactFiberEvents';
 import {createScopeMethods} from './ReactFiberScope';
 
 function markUpdate(workInProgress: Fiber) {
-  // Tag the fiber with an update effect. This turns a Placement into
-  // a PlacementAndUpdate.
+  // Tag the fiber with an update effect. This turns a Placement into a PlacementAndUpdate.
+  // 用更新效果标记 fiber 。 这会将Placement转换为PlacementAndUpdate。
   workInProgress.effectTag |= Update;
 }
 
@@ -154,8 +154,8 @@ if (supportsMutation) {
     needsVisibilityToggle: boolean,
     isHidden: boolean,
   ) {
-    // We only have the top Fiber that was created but we need recurse down its
-    // children to find all the terminal nodes.
+    // We only have the top Fiber that was created but we need recurse down its children to find all the terminal nodes.
+    // 我们只有创建的 top fiber，但是我们需要向下递归其子级以找到所有终端节点。
     let node = workInProgress.child;
     while (node !== null) {
       if (node.tag === HostComponent || node.tag === HostText) {
@@ -163,9 +163,10 @@ if (supportsMutation) {
       } else if (enableFundamentalAPI && node.tag === FundamentalComponent) {
         appendInitialChild(parent, node.stateNode.instance);
       } else if (node.tag === HostPortal) {
-        // If we have a portal child, then we don't want to traverse
-        // down its children. Instead, we'll get insertions from each child in
-        // the portal directly.
+        // If we have a portal child, then we don't want to traverse down its children.
+        // 如果我们有一个 portal child ，那么我们不想遍历它的子节点。
+        // Instead, we'll get insertions from each child in the portal directly.
+        // 相反，我们将 portal directly 中的每个子级获取插入。
       } else if (node.child !== null) {
         node.child.return = node;
         node = node.child;
@@ -199,8 +200,8 @@ if (supportsMutation) {
     // schedule a side-effect to do the updates.
     const oldProps = current.memoizedProps;
     if (oldProps === newProps) {
-      // In mutation mode, this is sufficient for a bailout because
-      // we won't touch this node even if children changed.
+      // In mutation mode, this is sufficient for a bailout because we won't touch this node even if children changed.
+      // 在突变模式下，这对于紧急救助来说已经足够了，因为即使孩子们变了，我们也不会碰这个节点。
       return;
     }
 
@@ -711,7 +712,7 @@ function completeWork(
 
         const currentHostContext = getHostContext();
         // TODO: Move createInstance to beginWork and keep it on a context "stack" as the parent.
-        // TODO: 将 createInstance 移动到 beginWork ，并将其作为父级保留在上下文“堆栈”中。
+        // TODO: 将 createInstance 移动到 beginWork ，并将其作为父级保留在上下文“栈”中。
         // Then append children as we go in beginWork or completeWork depending on we want to add then top->down or bottom->up. Top->down is faster in IE11.
         // 然后在 beginWork 或 completeWork 中附加子元素，这取决于我们想要添加的内容，然后是top->down或bottom->up。在IE11中Top->down更快。
         let wasHydrated = popHydrationState(workInProgress);
@@ -740,6 +741,7 @@ function completeWork(
             }
           }
         } else {
+          // 搜索 “// TODO: take namespace into account when validating.”
           let instance = createInstance(
             type,
             newProps,
@@ -751,7 +753,7 @@ function completeWork(
           appendAllChildren(instance, workInProgress, false, false);
 
           // This needs to be set before we mount Flare event listeners
-          // 在安装Flare事件侦听器之前，需要设置此设置
+          // 在安装Flare事件侦听器之前，需要先进行设置
           workInProgress.stateNode = instance;
 
           if (enableFlareAPI) {

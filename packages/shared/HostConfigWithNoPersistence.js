@@ -9,8 +9,8 @@
 
 import invariant from 'shared/invariant';
 
-// Renderers that don't support persistence
-// can re-export everything from this module.
+// Renderers that don't support persistence can re-export everything from this module.
+// 不支持持久性的渲染器可以重新导出此模块中的所有内容。
 
 function shim(...args: any) {
   invariant(

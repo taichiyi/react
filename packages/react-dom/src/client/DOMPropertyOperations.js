@@ -36,7 +36,7 @@ export function getValueForProperty(
   if (__DEV__) {
     if (propertyInfo.mustUseProperty) {
       const {propertyName} = propertyInfo;
-      return (node: any)[propertyName];
+      return node[propertyName];
     } else {
       if (!disableJavaScriptURLs && propertyInfo.sanitizeURL) {
         // If we haven't fully disabled javascript: URLs, and if
@@ -138,6 +138,7 @@ export function setValueForProperty(
     value = null;
   }
   // If the prop isn't in the special list, treat it as a simple attribute.
+  // 如果 prop 不在特殊列表中，则将其视为简单属性。
   if (isCustomComponentTag || propertyInfo === null) {
     if (isAttributeNameSafe(name)) {
       const attributeName = name;
@@ -154,11 +155,11 @@ export function setValueForProperty(
     const {propertyName} = propertyInfo;
     if (value === null) {
       const {type} = propertyInfo;
-      (node: any)[propertyName] = type === BOOLEAN ? false : '';
+      node[propertyName] = type === BOOLEAN ? false : '';
     } else {
       // Contrary to `setAttribute`, object properties are properly
       // `toString`ed by IE8/9.
-      (node: any)[propertyName] = value;
+      node[propertyName] = value;
     }
     return;
   }

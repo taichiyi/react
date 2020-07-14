@@ -1098,6 +1098,7 @@ function commitPlacement(finishedWork: Fiber): void {
         }
       } else {
         if (isContainer) {
+          // 搜索 “This container might be used for a portal.”
           appendChildToContainer(parent, stateNode);
         } else {
           appendChild(parent, stateNode);
@@ -1340,8 +1341,8 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
     case ForwardRef:
     case MemoComponent:
     case SimpleMemoComponent: {
-      // Note: We currently never use MountMutation, but useLayout uses
-      // UnmountMutation.
+      // Note: We currently never use MountMutation, but useLayout uses UnmountMutation.
+      // Note: 我们目前从未使用过 MountMutation ，但是 useLayout 使用 UnmountMutation 。
       commitHookEffectList(UnmountMutation, MountMutation, finishedWork);
       return;
     }
@@ -1352,13 +1353,16 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
       const instance: Instance = finishedWork.stateNode;
       if (instance != null) {
         // Commit the work prepared earlier.
+        // 提交早先准备的工作。
         const newProps = finishedWork.memoizedProps;
-        // For hydration we reuse the update path but we treat the oldProps
-        // as the newProps. The updatePayload will contain the real change in
-        // this case.
+        // For hydration we reuse the update path but we treat the oldProps as the newProps.
+        // 对于 hydration ，我们重复使用更新路径，但将oldProps视为newProps。
+        // The updatePayload will contain the real change in this case.
+        // 在这种情况下，updatePayload 将包含实际更改。
         const oldProps = current !== null ? current.memoizedProps : newProps;
         const type = finishedWork.type;
         // TODO: Type the updateQueue to be specific to host components.
+        // TODO: 键入要特定于主机组件的 updateQueue 。
         const updatePayload: null | UpdatePayload = (finishedWork.updateQueue: any);
         finishedWork.updateQueue = null;
         if (updatePayload !== null) {
@@ -1389,11 +1393,12 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
       );
       const textInstance: TextInstance = finishedWork.stateNode;
       const newText: string = finishedWork.memoizedProps;
-      // For hydration we reuse the update path but we treat the oldProps
-      // as the newProps. The updatePayload will contain the real change in
-      // this case.
+      // For hydration we reuse the update path but we treat the oldProps as the newProps.
+      // 对于 hydration ，我们重复使用更新路径，但将oldProps视为newProps。
+      // The updatePayload will contain the real change in this case.
+      // 在这种情况下，updatePayload 将包含实际更改。
       const oldText: string =
-        current !== null ? current.memoizedProps : newText;
+      current !== null ? current.memoizedProps : newText;
       commitTextUpdate(textInstance, oldText, newText);
       return;
     }
@@ -1402,6 +1407,7 @@ function commitWork(current: Fiber | null, finishedWork: Fiber): void {
         const root: FiberRoot = finishedWork.stateNode;
         if (root.hydrate) {
           // We've just hydrated. No need to hydrate again.
+          // 我们刚刚 hydrated 。不用再 hydrate 了。
           root.hydrate = false;
           commitHydratedContainer(root.containerInfo);
         }

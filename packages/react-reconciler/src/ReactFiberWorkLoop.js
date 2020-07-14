@@ -1061,7 +1061,7 @@ function performSyncWorkOnRoot(root) {
     flushPassiveEffects();
 
     // If the root or expiration time have changed, throw out the existing stack and prepare a fresh one. Otherwise we'll continue where we left off.
-    // 如果根或到期时间已更改，则丢弃现有堆栈并准备新的堆栈。否则，我们将从中断的地方继续。
+    // 如果根或到期时间已更改，则丢弃现有栈并准备新的栈。否则，我们将从中断的地方继续。
     if (
       root !== workInProgressRoot ||
       expirationTime !== renderExpirationTime
@@ -1680,7 +1680,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
       // This fiber did not complete because something threw.
       // 这个 fiber 没有完成，因为有东西抛出。
       // Pop values off the stack without entering the complete phase.
-      // 在不进入完整阶段的情况下从堆栈中弹出值。
+      // 在不进入完整阶段的情况下从栈中弹出值。
       // If this is a boundary, capture values if possible.
       // 如果这是一个边界，则尽可能捕获值。
       const next = unwindWork(workInProgress, renderExpirationTime);
@@ -2229,7 +2229,7 @@ function commitBeforeMutationEffects() {
   }
 }
 
-//taichiyi React 执行DOM 更新使的是  commitMutationEffects  函数。
+//taichiyi React 执行 DOM 更新使的是 commitMutationEffects 函数。
 function commitMutationEffects(root: FiberRoot, renderPriorityLevel) {
   // TODO: Should probably move the bulk of this function to commitWork.
   // TODO: 可能应该将此功能的大部分移至 commitWork。

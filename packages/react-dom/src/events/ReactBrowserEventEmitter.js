@@ -106,21 +106,24 @@ export function getListeningSetForElement(
 
 /**
  * We listen for bubbled touch events on the document object.
+ * 我们在 document object 上监听冒泡的触摸事件。
  *
- * Firefox v8.01 (and possibly others) exhibited strange behavior when
- * mounting `onmousemove` events at some node that was not the document
- * element. The symptoms were that if your mouse is not moving over something
- * contained within that mount point (for example on the background) the
- * top-level listeners for `onmousemove` won't be called. However, if you
- * register the `mousemove` on the document object, then it will of course
- * catch all `mousemove`s. This along with iOS quirks, justifies restricting
- * top-level listeners to the document object only, at least for these
- * movement types of events and possibly all events.
+ * Firefox v8.01 (and possibly others) exhibited strange behavior when mounting `onmousemove` events at some node that was not the document element.
+ * 当在不是文档元素的某个节点上挂载“ onmousemove”事件时，Firefox v8.01（可能还有其他）表现出奇怪的行为。
+ *
+ * The symptoms were that if your mouse is not moving over something contained within that mount point (for example on the background) the top-level listeners for `onmousemove` won't be called.
+ * 其症状是，如果你的鼠标没有移动到该挂载点内的某个位置（例如在后台），则不会调用“onmousemove”的顶级侦听器。
+ *
+ * However, if you register the `mousemove` on the document object, then it will of course catch all `mousemove`s.
+ * 但是，如果在文档对象上注册`mousemove`，那么它当然会捕获所有`mousemove`。
+ *
+ * This along with iOS quirks, justifies restricting top-level listeners to the document object only, at least for these movement types of events and possibly all events.
+ * 加上iOS的怪癖，至少在事件的这些移动类型以及可能的所有事件中，仅将顶级侦听器限制为文档对象是合理的。
  *
  * @see http://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
  *
- * Also, `keyup`/`keypress`/`keydown` do not bubble to the window on IE, but
- * they bubble to document.
+ * Also, `keyup`/`keypress`/`keydown` do not bubble to the window on IE, but they bubble to document.
+ * 另外，`keyup` /`keypress` /`keydown`不会冒泡到IE上的 window ，但会冒泡到 document 。
  *
  * @param {string} registrationName Name of listener (e.g. `onClick`).
  * @param {object} mountAt Container where to mount the listener
@@ -152,8 +155,8 @@ export function listenToTopLevel(
       case TOP_BLUR:
         trapCapturedEvent(TOP_FOCUS, mountAt);
         trapCapturedEvent(TOP_BLUR, mountAt);
-        // We set the flag for a single dependency later in this function,
-        // but this ensures we mark both as attached rather than just one.
+        // We set the flag for a single dependency later in this function, but this ensures we mark both as attached rather than just one.
+        // 我们稍后会在此函数中为单个依赖项设置标志，但这可确保我们将二者都标记为已附加，而不只是一个。
         listeningSet.add(TOP_BLUR);
         listeningSet.add(TOP_FOCUS);
         break;
@@ -167,11 +170,15 @@ export function listenToTopLevel(
       case TOP_SUBMIT:
       case TOP_RESET:
         // We listen to them on the target DOM elements.
+        // 我们在目标DOM元素上监听它们。
         // Some of them bubble so we don't want them to fire twice.
+        // 他们中的一些是泡沫，所以我们不想让他们发射两次。
         break;
       default:
         // By default, listen on the top level to all non-media events.
+        // 默认情况下，在顶层侦听所有非媒体事件。
         // Media events don't bubble so adding the listener wouldn't do anything.
+        // 媒体事件不会冒泡，因此添加侦听器不会做任何事情。
         const isMediaEvent = mediaEventTypes.indexOf(topLevelType) !== -1;
         if (!isMediaEvent) {
           trapBubbledEvent(topLevelType, mountAt);

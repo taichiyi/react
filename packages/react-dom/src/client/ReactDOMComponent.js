@@ -269,6 +269,9 @@ if (__DEV__) {
   };
 }
 
+/**
+ * 确保事件监听至
+ */
 function ensureListeningTo(
   rootContainerElement: Element | Node,
   registrationName: string,
@@ -327,7 +330,7 @@ function setInitialDOMProperties(
       }
       // Relies on `updateStylesByID` not mutating `styleUpdates`.
       setValueForStyles(domElement, nextProp);
-    } else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
+    } else if (propKey === /*✨*/DANGEROUSLY_SET_INNER_HTML) {
       const nextHtml = nextProp ? nextProp[HTML] : undefined;
       if (nextHtml != null) {
         setInnerHTML(domElement, nextHtml);
@@ -376,6 +379,7 @@ function updateDOMProperties(
   isCustomComponentTag: boolean,
 ): void {
   // TODO: Handle wasCustomComponentTag
+  // TODO: 处理 wasCustomComponentTag
   for (let i = 0; i < updatePayload.length; i += 2) {
     const propKey = updatePayload[i];
     const propValue = updatePayload[i + 1];
@@ -522,7 +526,7 @@ export function setInitialProperties(
     if (
       isCustomComponentTag &&
       !didWarnShadyDOM &&
-      (domElement: any).shadyRoot
+      domElement.shadyRoot
     ) {
       warning(
         false,
@@ -535,6 +539,7 @@ export function setInitialProperties(
   }
 
   // TODO: Make sure that we check isMounted before firing any of these events.
+  // TODO: 在触发任何这些事件之前，请确保我们选中了isMounted。
   let props: Object;
   switch (tag) {
     case 'iframe':
@@ -546,6 +551,7 @@ export function setInitialProperties(
     case 'video':
     case 'audio':
       // Create listener for each media event
+      // 为每个媒体事件创建侦听器
       for (let i = 0; i < mediaEventTypes.length; i++) {
         trapBubbledEvent(mediaEventTypes[i], domElement);
       }
@@ -575,8 +581,8 @@ export function setInitialProperties(
       ReactDOMInputInitWrapperState(domElement, rawProps);
       props = ReactDOMInputGetHostProps(domElement, rawProps);
       trapBubbledEvent(TOP_INVALID, domElement);
-      // For controlled components we always need to ensure we're listening
-      // to onChange. Even if there is no listener.
+      // For controlled components we always need to ensure we're listening to onChange. Even if there is no listener.
+      // 对于受控组件，我们始终需要确保我们正在侦听onChange。 即使没有侦听器。
       ensureListeningTo(rootContainerElement, 'onChange');
       break;
     case 'option':
@@ -587,16 +593,16 @@ export function setInitialProperties(
       ReactDOMSelectInitWrapperState(domElement, rawProps);
       props = ReactDOMSelectGetHostProps(domElement, rawProps);
       trapBubbledEvent(TOP_INVALID, domElement);
-      // For controlled components we always need to ensure we're listening
-      // to onChange. Even if there is no listener.
+      // For controlled components we always need to ensure we're listening to onChange. Even if there is no listener.
+      // 对于受控组件，我们始终需要确保我们正在侦听onChange。 即使没有侦听器。
       ensureListeningTo(rootContainerElement, 'onChange');
       break;
     case 'textarea':
       ReactDOMTextareaInitWrapperState(domElement, rawProps);
       props = ReactDOMTextareaGetHostProps(domElement, rawProps);
       trapBubbledEvent(TOP_INVALID, domElement);
-      // For controlled components we always need to ensure we're listening
-      // to onChange. Even if there is no listener.
+      // For controlled components we always need to ensure we're listening to onChange. Even if there is no listener.
+      // 对于受控组件，我们始终需要确保我们正在侦听onChange。 即使没有侦听器。
       ensureListeningTo(rootContainerElement, 'onChange');
       break;
     default:
@@ -847,6 +853,7 @@ export function diffProperties(
 }
 
 // Apply the diff.
+// 应用差异。
 export function updateProperties(
   domElement: Element,
   updatePayload: Array<any>,
@@ -855,8 +862,11 @@ export function updateProperties(
   nextRawProps: Object,
 ): void {
   // Update checked *before* name.
+  // 更新选中的 *之前* 名称。
   // In the middle of an update, it is possible to have multiple checked.
+  // 在更新过程中，可以进行多次检查。
   // When a checked radio tries to change name, browser makes another radio's checked false.
+  // 当被选中的单选框试图更改名称时，浏览器会将另一个选中的单选框设为false。
   if (
     tag === 'input' &&
     nextRawProps.type === 'radio' &&
@@ -875,13 +885,14 @@ export function updateProperties(
     isCustomComponentTag,
   );
 
-  // TODO: Ensure that an update gets scheduled if any of the special props
-  // changed.
+  // TODO: Ensure that an update gets scheduled if any of the special props changed.
+  // TODO: 如果更改了任何特殊道具，请确保安排更新。
   switch (tag) {
     case 'input':
-      // Update the wrapper around inputs *after* updating props. This has to
-      // happen after `updateDOMProperties`. Otherwise HTML5 input validations
-      // raise warnings and prevent the new value from being assigned.
+      // Update the wrapper around inputs *after* updating props. This has to happen after `updateDOMProperties`.
+      // *在*更新道具后，更新输入周围的包装器。 这必须在`updateDOMProperties`之后发生。
+      // Otherwise HTML5 input validations raise warnings and prevent the new value from being assigned.
+      // 否则，HTML5输入验证会发出警告并阻止分配新值。
       ReactDOMInputUpdateWrapper(domElement, nextRawProps);
       break;
     case 'textarea':

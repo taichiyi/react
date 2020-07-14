@@ -236,7 +236,7 @@ export function createInstance(
     }
     parentNamespace = hostContextDev.namespace;
   } else {
-    parentNamespace = hostContext: HostContextProd);
+    parentNamespace = hostContext;
   }
   const domElement: Instance = createElement(
     type,
@@ -377,10 +377,11 @@ export function commitUpdate(
   newProps: Props,
   internalInstanceHandle: Object,
 ): void {
-  // Update the props handle so that we know which props are the ones with
-  // with current event handlers.
+  // Update the props handle so that we know which props are the ones with  with current event handlers.
+  // 更新props句柄，以便我们知道当前事件处理程序中有哪些props。
   updateFiberProps(domElement, newProps);
   // Apply the diff to the DOM node.
+  // 将diff应用于DOM节点。
   updateProperties(domElement, updatePayload, type, oldProps, newProps);
 }
 
@@ -416,12 +417,15 @@ export function appendChildToContainer(
     parentNode.appendChild(child);
   }
   // This container might be used for a portal.
-  // If something inside a portal is clicked, that click should bubble
-  // through the React tree. However, on Mobile Safari the click would
-  // never bubble through the *DOM* tree unless an ancestor with onclick
-  // event exists. So we wouldn't see it and dispatch it.
-  // This is why we ensure that non React root containers have inline onclick
-  // defined.
+  // 该容器可能用于门户。
+  // If something inside a portal is clicked, that click should bubble through the React tree.
+  // 如果单击了门户内的某些内容，则该单击应在React树中冒泡。
+  // However, on Mobile Safari the click would never bubble through the *DOM* tree unless an ancestor with onclick event exists.
+  // 但是，在Mobile Safari上，除非存在具有onclick事件的祖先，否则单击将永远不会在* DOM *树中冒泡。
+  // So we wouldn't see it and dispatch it.
+  // 因此，我们不会看到它并进行分发。
+  // This is why we ensure that non React root containers have inline onclick defined.
+  // 这就是为什么我们确保非React根容器已定义了内联onclick的原因。
   // https://github.com/facebook/react/issues/11918
   const reactRootContainer = container._reactRootContainer;
   if (
@@ -429,6 +433,7 @@ export function appendChildToContainer(
     parentNode.onclick === null
   ) {
     // TODO: This cast may not be sound for SVG, MathML or custom elements.
+    // TODO: 对于SVG，MathML或自定义元素，此转换可能不正确。
     trapClickOnNonInteractiveElement(((parentNode: any): HTMLElement));
   }
 }

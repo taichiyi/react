@@ -8,6 +8,8 @@
  */
 
 //taichiyi 副作用类型
+//taichiyi workInProgress 的 fiber 的 SideEffectTag 是在渲染阶段确定的。
+//taichiyi 在提交阶段，通过 workInProgress 的 fiber 通过 SideEffectTag 判断如果更新到对应的 current 上。
 export type SideEffectTag = number;
 
 // Don't change these two values. They're used by React Dev Tools.

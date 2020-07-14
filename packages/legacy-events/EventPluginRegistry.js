@@ -169,6 +169,8 @@ export const eventNameDispatchConfigs = {};
 
 /**
  * Mapping from registration name to plugin module
+ *
+ * taichiyi: 键是各种事件名称，例如：onClick、onBlur
  */
 export const registrationNameModules = {};
 

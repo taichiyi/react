@@ -22,6 +22,9 @@ const internalInstanceKey = '__reactInternalInstance$' + randomKey;
 const internalEventHandlersKey = '__reactEventHandlers$' + randomKey;
 const internalContainerInstanceKey = '__reactContainere$' + randomKey;
 
+/**
+ * 在 DOM node 中添加 在 react 里对应的 fiber
+ */
 export function precacheFiberNode(hostInst, node) {
   node[internalInstanceKey] = hostInst;
 }
@@ -164,6 +167,11 @@ export function getFiberCurrentPropsFromNode(node) {
   return node[internalEventHandlersKey] || null;
 }
 
+/**
+ * 把 fiber 的 props 添加到 DOM node 中
+ * @param {*} node
+ * @param {*} props
+ */
 export function updateFiberProps(node, props) {
   node[internalEventHandlersKey] = props;
 }

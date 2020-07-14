@@ -27,6 +27,7 @@ const setInnerHTML = createMicrosoftUnsafeLocalFunction(function(
   node: Element,
   html: string | TrustedValue,
 ): void {
+  // 只有 dangerouslySetInnerHTML 的情况下，才会用到这个方法
   if (node.namespaceURI === Namespaces.svg) {
     if (__DEV__) {
       if (enableTrustedTypesIntegration) {

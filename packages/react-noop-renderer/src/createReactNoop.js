@@ -134,8 +134,8 @@ function createReactNoop(reconciler: Function, useMutation: boolean) {
     beforeChild: Instance | TextInstance,
   ) {
     if (typeof parentInstance.rootID !== 'string') {
-      // Some calls to this aren't typesafe.
-      // This helps surface mistakes in tests.
+      // Some calls to this aren't typesafe. This helps surface mistakes in tests.
+      // 对此的某些调用不是类型安全的。 这有助于发现测试中的错误。
       throw new Error(
         'insertInContainerBefore() first argument is not a container.',
       );

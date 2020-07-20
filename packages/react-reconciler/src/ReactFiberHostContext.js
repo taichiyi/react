@@ -45,20 +45,26 @@ function getRootHostContainer(): Container {
 
 function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
   // Push current root instance onto the stack;
+  // 将当前的根实例推入栈；
   // This allows us to reset root when portals are popped.
+  // 这允许我们在弹出门户时重置根目录。
   push(rootInstanceStackCursor, nextRootInstance, fiber);
   // Track the context and the Fiber that provided it.
+  // 跟踪上下文和提供上下文的光纤。
   // This enables us to pop only Fibers that provide unique contexts.
+  // 这使我们能够仅弹出提供独特上下文的光纤。
   push(contextFiberStackCursor, fiber, fiber);
 
   // Finally, we need to push the host context to the stack.
-  // However, we can't just call getRootHostContext() and push it because
-  // we'd have a different number of entries on the stack depending on
-  // whether getRootHostContext() throws somewhere in renderer code or not.
+  // 最后，我们需要将主机上下文推送到栈。
+  // However, we can't just call getRootHostContext() and push it because we'd have a different number of entries on the stack depending on whether getRootHostContext() throws somewhere in renderer code or not.
+  // 但是，我们不能只调用getRootHostContext（）并推送它，因为根据getRootHostContext（）是否在渲染器代码中抛出某个地方，栈中的条目数会有所不同。
   // So we push an empty value first. This lets us safely unwind on errors.
+  // 因此，我们首先推送一个空值。 这使我们可以安全地消除错误。
   push(contextStackCursor, NO_CONTEXT, fiber);
   const nextRootContext = getRootHostContext(nextRootInstance);
   // Now that we know this function doesn't throw, replace it.
+  // 现在我们知道该函数不会抛出，请替换它。
   pop(contextStackCursor, fiber);
   push(contextStackCursor, nextRootContext, fiber);
 }

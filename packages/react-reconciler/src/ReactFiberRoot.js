@@ -196,24 +196,28 @@ export function markRootUpdatedAtTime(
   expirationTime: ExpirationTime,
 ): void {
   // Update the range of pending times
+  // 更新 pending times 范围
   const firstPendingTime = root.firstPendingTime;
   if (expirationTime > firstPendingTime) {
     root.firstPendingTime = expirationTime;
   }
 
-  // Update the range of suspended times. Treat everything lower priority or
-  // equal to this update as unsuspended.
+  // Update the range of suspended times.
+  // 更新 suspended times 范围。
+  // Treat everything lower priority or equal to this update as unsuspended.
+  // 将优先级较低或与此更新相同的所有内容视为 unsuspended 。
   const firstSuspendedTime = root.firstSuspendedTime;
   if (firstSuspendedTime !== NoWork) {
     if (expirationTime >= firstSuspendedTime) {
       // The entire suspended range is now unsuspended.
+      // 整个暂停范围现在不再悬停。
       root.firstSuspendedTime = root.lastSuspendedTime = root.nextKnownPendingLevel = NoWork;
     } else if (expirationTime >= root.lastSuspendedTime) {
       root.lastSuspendedTime = expirationTime + 1;
     }
 
-    // This is a pending level. Check if it's higher priority than the next
-    // known pending level.
+    // This is a pending level. Check if it's higher priority than the next known pending level.
+    // 这是一个 pending 的级别。检查它的优先级是否高于下一个已知的 pending 级别。
     if (expirationTime > root.nextKnownPendingLevel) {
       root.nextKnownPendingLevel = expirationTime;
     }

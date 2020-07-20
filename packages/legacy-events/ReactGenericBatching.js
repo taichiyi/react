@@ -64,8 +64,8 @@ export function batchedUpdates(fn, bookkeeping) {
 
 export function batchedEventUpdates(fn, a, b) {
   if (isBatchingEventUpdates) {
-    // If we are currently inside another batch, we need to wait until it
-    // fully completes before restoring state.
+    // If we are currently inside another batch, we need to wait until it fully completes before restoring state.
+    // 如果我们当前在另一个批次中，则需要等到它完全完成后再恢复状态。
     return fn(a, b);
   }
   isBatchingEventUpdates = true;

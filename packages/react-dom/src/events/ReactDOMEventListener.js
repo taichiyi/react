@@ -149,14 +149,14 @@ function handleTopLevel(bookKeeping: BookKeepingInstance) {
   let targetInst = bookKeeping.targetInst;
 
   // Loop through the hierarchy, in case there's any nested components.
-  // It's important that we build the array of ancestors before calling any
-  // event handlers, because event handlers can modify the DOM, leading to
-  // inconsistencies with ReactMount's node cache. See #1105.
+  // 遍历层次结构，以防存在任何嵌套的组件。
+  // It's important that we build the array of ancestors before calling any event handlers, because event handlers can modify the DOM, leading to inconsistencies with ReactMount's node cache. See #1105.
+  // 在调用任何事件处理程序之前，先构建祖先数组非常重要，因为事件处理程序可以修改DOM，从而导致与ReactMount的节点缓存不一致。 请参阅＃1105。
   let ancestor = targetInst;
   do {
     if (!ancestor) {
       const ancestors = bookKeeping.ancestors;
-      ((ancestors: any): Array<Fiber | null>).push(ancestor);
+      (ancestors: Array<Fiber | null>).push(ancestor);
       break;
     }
     const root = findRootContainerNode(ancestor);
@@ -332,9 +332,10 @@ export function dispatchEvent(
     return;
   }
   if (hasQueuedDiscreteEvents() && isReplayableDiscreteEvent(topLevelType)) {
-    // If we already have a queue of discrete events, and this is another discrete
-    // event, then we can't dispatch it regardless of its target, since they
-    // need to dispatch in order.
+    // If we already have a queue of discrete events, and this is another discrete event,
+    // 如果我们已经有一系列离散事件，而这是另一个离散事件，
+    // then we can't dispatch it regardless of its target, since they need to dispatch in order.
+    // 则无论目标是什么，我们都无法调度，因为他们需要按顺序调度。
     queueDiscreteEvent(
       null, // Flags that we're not actually blocked on anything as far as we know.
       topLevelType,
@@ -409,12 +410,14 @@ export function dispatchEvent(
 }
 
 // Attempt dispatching an event. Returns a SuspenseInstance or Container if it's blocked.
+// 尝试调度事件。如果被阻止，则返回一个SuspenseInstance或容器。
 export function attemptToDispatchEvent(
   topLevelType: DOMTopLevelEventType,
   eventSystemFlags: EventSystemFlags,
   nativeEvent: AnyNativeEvent,
 ): null | Container | SuspenseInstance {
   // TODO: Warn if _enabled is false.
+  // TODO: 如果_enabled为false，则发出警告。
 
   const nativeEventTarget = getEventTarget(nativeEvent);
   let targetInst = getClosestInstanceFromNode(nativeEventTarget);
@@ -423,35 +426,36 @@ export function attemptToDispatchEvent(
     let nearestMounted = getNearestMountedFiber(targetInst);
     if (nearestMounted === null) {
       // This tree has been unmounted already. Dispatch without a target.
+      // 该树已被卸载。 没有目标就派遣。
       targetInst = null;
     } else {
       const tag = nearestMounted.tag;
       if (tag === SuspenseComponent) {
         let instance = getSuspenseInstanceFromFiber(nearestMounted);
         if (instance !== null) {
-          // Queue the event to be replayed later. Abort dispatching since we
-          // don't want this event dispatched twice through the event system.
-          // TODO: If this is the first discrete event in the queue. Schedule an increased
-          // priority for this boundary.
+          // Queue the event to be replayed later. Abort dispatching since we don't want this event dispatched twice through the event system.
+          // 将事件排队以便稍后重播。中止调度，因为我们不希望此事件通过事件系统调度两次。
+          // TODO: If this is the first discrete event in the queue. Schedule an increased priority for this boundary.
+          // TODO: 如果这是队列中的第一个离散事件。 为该边界安排更高的优先级。
           return instance;
         }
-        // This shouldn't happen, something went wrong but to avoid blocking
-        // the whole system, dispatch the event without a target.
+        // This shouldn't happen, something went wrong but to avoid blocking the whole system, dispatch the event without a target.
+        // 这不应该发生，出了点问题，但是为了避免阻塞整个系统，请在没有目标的情况下调度事件。
         // TODO: Warn.
         targetInst = null;
       } else if (tag === HostRoot) {
         const root: FiberRoot = nearestMounted.stateNode;
         if (root.hydrate) {
-          // If this happens during a replay something went wrong and it might block
-          // the whole system.
+          // If this happens during a replay something went wrong and it might block the whole system.
+          // 如果在重播期间发生这种情况，则可能出了点问题，可能会阻塞整个系统。
           return getContainerFromFiber(nearestMounted);
         }
         targetInst = null;
       } else if (nearestMounted !== targetInst) {
-        // If we get an event (ex: img onload) before committing that
-        // component's mount, ignore it for now (that is, treat it as if it was an
-        // event on a non-React tree). We might also consider queueing events and
-        // dispatching them after the mount.
+        // If we get an event (ex: img onload) before committing that component's mount, ignore it for now (that is, treat it as if it was an event on a non-React tree).
+        // 如果在提交该组件的安装之前收到一个事件（例如：img onload），请暂时将其忽略（即，将其视为非响应树上的事件）。
+        // We might also consider queueing events and dispatching them after the mount.
+        // 我们还可以考虑对事件进行排队，并在挂载后调度它们。
         targetInst = null;
       }
     }
@@ -469,7 +473,7 @@ export function attemptToDispatchEvent(
     if (eventSystemFlags & RESPONDER_EVENT_SYSTEM) {
       // React Flare event system
       dispatchEventForResponderEventSystem(
-        (topLevelType: any),
+        topLevelType,
         targetInst,
         nativeEvent,
         nativeEventTarget,

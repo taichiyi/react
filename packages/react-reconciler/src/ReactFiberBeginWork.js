@@ -870,7 +870,7 @@ function finishClassComponent(
   }
 
   // React DevTools reads this flag.
-  // React DevTools读取此标志。
+  // React DevTools 读取此标志。
   workInProgress.effectTag |= PerformedWork;
   if (current !== null && didCaptureError) {
     // If we're recovering from an error, reconcile without reusing any of the existing children.
@@ -2881,7 +2881,9 @@ function beginWork(
       (__DEV__ ? workInProgress.type !== current.type : false)
     ) {
       // If props or context changed, mark the fiber as having performed work.
+      // 如果道具或环境发生变化，则将光纤标记为已完成工作。
       // This may be unset if the props are determined to be equal later (memo).
+      // 如果确定道具以后相等（memo），则可以不设置此设置。
       didReceiveUpdate = true;
     } else if (updateExpirationTime < renderExpirationTime) {
       didReceiveUpdate = false;

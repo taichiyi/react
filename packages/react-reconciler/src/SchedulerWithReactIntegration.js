@@ -71,7 +71,7 @@ export const requestPaint =
   // Fall back gracefully if we're running an older version of Scheduler.
   Scheduler_requestPaint !== undefined ? Scheduler_requestPaint : () => {};
 
-//taichiyi 同步队列
+//taichiyi 调度-回调队列
 let syncQueue: Array<SchedulerCallback> | null = null;
 let immediateQueueCallbackNode: mixed | null = null;
 let isFlushingSyncQueue: boolean = false;
@@ -175,17 +175,15 @@ export function cancelCallback(callbackNode: mixed) {
 }
 
 export function flushSyncCallbackQueue() {
-  //taichiyi 如果即时节点存在则中断当前节点任务，从链表中移除task节点
   if (immediateQueueCallbackNode !== null) {
     const node = immediateQueueCallbackNode;
     immediateQueueCallbackNode = null;
     Scheduler_cancelCallback(node);
   }
-  //taichiyi 同步更新队列
   flushSyncCallbackQueueImpl();
 }
 
-// 冲掉(清空)同步回调队列
+// 冲掉(清空)同步的回调队列
 function flushSyncCallbackQueueImpl() {
   //taichiyi isFlushingSyncQueue 是标志位(Flag)，标志当前方法是否正在进行，相当于锁
   if (!isFlushingSyncQueue && syncQueue !== null) {

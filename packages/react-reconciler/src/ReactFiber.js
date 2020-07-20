@@ -228,6 +228,7 @@ export type Fiber = {|
   expirationTime: ExpirationTime,
 
   // This is used to quickly determine if a subtree has no pending changes.
+  // 这用于快速确定子树是否没有挂起的更改。
   childExpirationTime: ExpirationTime,
 
   // This is a pooled version of a Fiber.
@@ -239,24 +240,32 @@ export type Fiber = {|
   alternate: Fiber | null,
 
   // Time spent rendering this Fiber and its descendants for the current update.
+  // 为当前更新渲染此光纤及其子代所花费的时间。
   // This tells us how well the tree makes use of sCU for memoization.
+  // 这告诉我们树使用sCU进行记忆的程度。
   // It is reset to 0 each time we render and only updated when we don't bailout.
+  // 每次渲染时，它将重置为0，并且仅在不进行紧急救援时才更新。
   // This field is only set when the enableProfilerTimer flag is enabled.
+  // 此字段仅在启用enableProfilerTimer标志时设置。
   actualDuration?: number,
 
   // If the Fiber is currently active in the "render" phase,
+  // 如果光纤当前在“渲染”阶段处于活动状态，
   // This marks the time at which the work began.
   // This field is only set when the enableProfilerTimer flag is enabled.
+  // 此字段仅在启用enableProfilerTimer标志时设置。
   actualStartTime?: number,
 
   // Duration of the most recent render time for this Fiber.
   // This value is not updated when we bailout for memoization purposes.
   // This field is only set when the enableProfilerTimer flag is enabled.
+  // 此字段仅在启用enableProfilerTimer标志时设置。
   selfBaseDuration?: number,
 
   // Sum of base times for all descendants of this Fiber.
   // This value bubbles up during the "complete" phase.
   // This field is only set when the enableProfilerTimer flag is enabled.
+  // 此字段仅在启用enableProfilerTimer标志时设置。
   treeBaseDuration?: number,
 
   // Conceptual aliases

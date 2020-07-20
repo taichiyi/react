@@ -992,6 +992,7 @@ function resumeMountClassInstance(
   if (shouldUpdate) {
     // In order to support react-lifecycles-compat polyfilled components,
     // Unsafe lifecycles should not be invoked for components using the new APIs.
+    // 为了支持与react-lifecycles兼容的polyfilled组件，不应使用新的API为组件调用Unsafe生命周期。
     if (
       !hasNewLifecycles &&
       (typeof instance.UNSAFE_componentWillMount === 'function' ||
@@ -1012,18 +1013,19 @@ function resumeMountClassInstance(
   } else {
     // If an update was already in progress, we should schedule an Update
     // effect even though we're bailing out, so that cWU/cDU are called.
+    // 如果更新已经在进行中，即使我们正在等待更新，也应该安排更新效果，以便调用cWU / cDU。
     if (typeof instance.componentDidMount === 'function') {
       workInProgress.effectTag |= Update;
     }
 
-    // If shouldComponentUpdate returned false, we should still update the
-    // memoized state to indicate that this work can be reused.
+    // If shouldComponentUpdate returned false, we should still update the memoized state to indicate that this work can be reused.
+    // 如果 shouldComponentUpdate 返回 false，我们仍然应该更新 memoized state 以指示该工作可以重用。
     workInProgress.memoizedProps = newProps;
     workInProgress.memoizedState = newState;
   }
 
-  // Update the existing instance's state, props, and context pointers even
-  // if shouldComponentUpdate returns false.
+  // Update the existing instance's state, props, and context pointers even if shouldComponentUpdate returns false.
+  // 即使 shouldComponentUpdate 返回false，也要更新现有实例的状态，属性和上下文指针。
   instance.props = newProps;
   instance.state = newState;
   instance.context = nextContext;
@@ -1032,6 +1034,7 @@ function resumeMountClassInstance(
 }
 
 // Invokes the update life-cycles and returns false if it shouldn't rerender.
+// 调用更新生命周期，如果不应该重新渲染，则返回false。
 function updateClassInstance(
   current: Fiber,
   workInProgress: Fiber,
@@ -1062,12 +1065,13 @@ function updateClassInstance(
     typeof getDerivedStateFromProps === 'function' ||
     typeof instance.getSnapshotBeforeUpdate === 'function';
 
-  // Note: During these life-cycles, instance.props/instance.state are what
-  // ever the previously attempted to render - not the "current". However,
-  // during componentDidUpdate we pass the "current" props.
+  // Note: During these life-cycles, instance.props/instance.state are what ever the previously attempted to render - not the "current".
+  // 注意：在这些生命周期中，instance.props / instance.state是以前尝试呈现的内容-而不是 "current" 。
+  // However, during componentDidUpdate we pass the "current" props.
+  // 但是，在componentDidUpdate期间，我们传递了 "current" props 。
 
-  // In order to support react-lifecycles-compat polyfilled components,
-  // Unsafe lifecycles should not be invoked for components using the new APIs.
+  // In order to support react-lifecycles-compat polyfilled components, Unsafe lifecycles should not be invoked for components using the new APIs.
+  // 为了支持 react-lifecycles-compat polyfilled 组件，不应使用新的API为组件调用 Unsafe 生命周期。
   if (
     !hasNewLifecycles &&
     (typeof instance.UNSAFE_componentWillReceiveProps === 'function' ||
@@ -1105,8 +1109,8 @@ function updateClassInstance(
     !hasContextChanged() &&
     !checkHasForceUpdateAfterProcessing()
   ) {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
+    // If an update was already in progress, we should schedule an Update effect even though we're bailing out, so that cWU/cDU are called.
+    // 如果更新已经在进行中，即使我们正在等待更新，也应该安排更新效果，以便调用cWU / cDU。
     if (typeof instance.componentDidUpdate === 'function') {
       if (
         oldProps !== current.memoizedProps ||
@@ -1151,6 +1155,7 @@ function updateClassInstance(
   if (shouldUpdate) {
     // In order to support react-lifecycles-compat polyfilled components,
     // Unsafe lifecycles should not be invoked for components using the new APIs.
+    // 为了支持与react-lifecycles兼容的polyfilled组件，不应使用新的API为组件调用Unsafe生命周期。
     if (
       !hasNewLifecycles &&
       (typeof instance.UNSAFE_componentWillUpdate === 'function' ||
@@ -1174,6 +1179,7 @@ function updateClassInstance(
   } else {
     // If an update was already in progress, we should schedule an Update
     // effect even though we're bailing out, so that cWU/cDU are called.
+    // 如果更新已经在进行中，即使我们正在等待更新，也应该安排更新效果，以便调用cWU / cDU。
     if (typeof instance.componentDidUpdate === 'function') {
       if (
         oldProps !== current.memoizedProps ||

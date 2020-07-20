@@ -251,10 +251,12 @@ function warnOnFunctionType() {
   );
 }
 
-// This wrapper function exists because I expect to clone the code in each path
-// to be able to optimize each path individually by branching early. This needs
-// a compiler or we can do it manually. Helpers that don't need this branching
-// live outside of this function.
+// This wrapper function exists because I expect to clone the code in each path to be able to optimize each path individually by branching early.
+// 我希望每个路径都能在这个函数中单独地进行分支，因为我希望每个路径都能在这个函数中单独地进行克隆。
+// This needs a compiler or we can do it manually.
+// 这需要编译器，或者我们可以手动完成。
+// Helpers that don't need this branching live outside of this function.
+// 不需要此分支的助手位于此函数之外。
 
 //taichiyi 去看看 ChildReconciler 函数，了解一下 React 对于构建起来的 Fiber 节点，所做的全部操作及其对应的函数实现。
 function ChildReconciler(shouldTrackSideEffects) {
@@ -649,7 +651,9 @@ function ChildReconciler(shouldTrackSideEffects) {
   ): Fiber | null {
     if (typeof newChild === 'string' || typeof newChild === 'number') {
       // Text nodes don't have keys, so we neither have to check the old nor new node for the key.
+      // 文本节点没有键，因此我们不必检查新旧节点的键。
       // If both are text nodes, they match.
+      // 如果两者都是文本节点，则它们匹配。
       const matchedFiber = existingChildren.get(newIdx) || null;
       return updateTextNode(
         returnFiber,

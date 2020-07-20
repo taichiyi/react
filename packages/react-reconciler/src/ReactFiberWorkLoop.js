@@ -477,18 +477,16 @@ export function scheduleUpdateOnFiber(
 }
 export const scheduleWork = scheduleUpdateOnFiber;
 
-// This is split into a separate function so we can mark a fiber with pending
-// work without treating it as a typical update that originates from an event;
-// e.g. retrying a Suspense boundary isn't an update, but it does schedule work
-// on a fiber.
+// This is split into a separate function so we can mark a fiber with pending work without treating it as a typical update that originates from an event;
 // 我们可以将 fiber 标记为待处理的工作，而无需将其视为源自事件的典型_update；
-// 例如 重试Suspense边界不是_update，但可以在 fiber 上调度工作。
+// e.g. retrying a Suspense boundary isn't an update, but it does schedule work on a fiber.
+// 例如 重试Suspense边界不是 update，但可以在 fiber 上调度工作。
 
-//taichiyi 将fiber上的更新时间
-//taichiyi 获取root节点，并且给root节点添加标记。
-//taichiyi 寻找到在更新的root
+// 1. 获取root节点
+// 2. 标记从 fiber 到 root 的更新时间
 function markUpdateTimeFromFiberToRoot(fiber, expirationTime) {
   // Update the source fiber's expiration time
+  // 更新源 fiber 的到期时间
   if (fiber.expirationTime < expirationTime) {
     fiber.expirationTime = expirationTime;
   }
@@ -618,6 +616,8 @@ function ensureRootIsScheduled(root: FiberRoot) {
     // 特殊情况：过期的工作应同步冲洗。
     root.callbackExpirationTime = Sync;
     root.callbackPriority = ImmediatePriority;
+    //
+    // 同步的React回调被安排在一个特殊的内部同步队列中
     root.callbackNode = scheduleSyncCallback(
       performSyncWorkOnRoot.bind(null, root),
     );
@@ -1095,7 +1095,7 @@ function performSyncWorkOnRoot(root) {
       executionContext = prevExecutionContext;
       popDispatcher(prevDispatcher);
       if (enableSchedulerTracing) {
-        popInteractions(((prevInteractions: any): Set<Interaction>));
+        popInteractions(prevInteractions);
       }
 
       if (workInProgressRootExitStatus === RootFatalErrored) {
@@ -1608,7 +1608,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
     const returnFiber = workInProgress.return;
 
     // Check if the work completed or if something threw.
-    // 检查工作是否完成或是否有东西扔了。
+    // 检查工作是否完成或是否有错误抛出。
     if ((workInProgress.effectTag & Incomplete) === NoEffect) {
       // 已完成
       setCurrentDebugFiberInDEV(workInProgress);
@@ -2071,7 +2071,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     requestPaint();
 
     if (enableSchedulerTracing) {
-      popInteractions(((prevInteractions: any): Set<Interaction>));
+      popInteractions(prevInteractions);
     }
     executionContext = prevExecutionContext;
   } else {

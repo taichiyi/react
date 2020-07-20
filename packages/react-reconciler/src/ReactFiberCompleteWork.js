@@ -630,8 +630,7 @@ function cutOffTailIfNeeded(
   }
 }
 
-//taichiyi workInProgress 的 child 为 null.
-//tachiyi 完成树末端(就是没有 child) fiber 的构建
+// fiber 完成
 function completeWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -774,6 +773,7 @@ function completeWork(
           // Make sure such renderers get scheduled for later work.
           // 确保这样的渲染器被安排在以后的工作中。
           if (
+            // 搜索："setInitialProperties(domElement"
             finalizeInitialChildren(
               instance,
               type,

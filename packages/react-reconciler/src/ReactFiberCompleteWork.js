@@ -205,15 +205,16 @@ if (supportsMutation) {
       return;
     }
 
-    // If we get updated because one of our children updated, we don't
-    // have newProps so we'll have to reuse them.
+    // If we get updated because one of our children updated, we don't have newProps so we'll have to reuse them.
+    // 如果我们由于其中一个子代更新而得到更新，则我们没有newProps，因此我们将不得不重用它们。
     // TODO: Split the update API as separate for the props vs. children.
     // Even better would be if children weren't special cased at all tho.
     const instance: Instance = workInProgress.stateNode;
     const currentHostContext = getHostContext();
     // TODO: Experiencing an error where oldProps is null. Suggests a host
-    // component is hitting the resume path. Figure out why. Possibly
-    // related to `hidden`.
+    // component is hitting the resume path. Figure out why. Possibly related to `hidden`.
+
+    // 跳转搜索 “Calculate the diff between the two objects.”
     const updatePayload = prepareUpdate(
       instance,
       type,
@@ -679,6 +680,7 @@ function completeWork(
       const rootContainerInstance = getRootHostContainer();
       const type = workInProgress.type;
       if (current !== null && workInProgress.stateNode != null) {
+        // 根据 newProps 与 oldProps 差来更新 fiber 的 updateQueue
         updateHostComponent(
           current,
           workInProgress,

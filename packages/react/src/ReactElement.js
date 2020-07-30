@@ -112,6 +112,7 @@ function defineRefPropWarningGetter(props, displayName) {
  * indicating filename, line number, and/or other information.
  * @internal
  */
+// createReactElement(2/2)
 const ReactElement = function(type, key, ref, self, source, owner, props) {
   const element = {
     // This tag allows us to uniquely identify this as a React Element
@@ -316,10 +317,12 @@ export function jsxDEV(type, config, maybeKey, source, self) {
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
  */
+// createReactElement(1/2)
 export function createElement(type, config, children) {
   let propName;
 
   // Reserved names are extracted
+  // 提取保留名称
   const props = {};
 
   let key = null;
@@ -338,6 +341,7 @@ export function createElement(type, config, children) {
     self = config.__self === undefined ? null : config.__self;
     source = config.__source === undefined ? null : config.__source;
     // Remaining properties are added to a new props object
+    // 其余属性添加到新的props对象
     for (propName in config) {
       if (
         hasOwnProperty.call(config, propName) &&
@@ -348,8 +352,8 @@ export function createElement(type, config, children) {
     }
   }
 
-  // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
+  // Children can be more than one argument, and those are transferred onto the newly allocated props object.
+  // 子对象可以是多个参数，并且这些参数将转移到新分配的道具对象上。
   const childrenLength = arguments.length - 2;
   if (childrenLength === 1) {
     props.children = children;
@@ -367,6 +371,7 @@ export function createElement(type, config, children) {
   }
 
   // Resolve default props
+  // 解决默认道具
   if (type && type.defaultProps) {
     const defaultProps = type.defaultProps;
     for (propName in defaultProps) {

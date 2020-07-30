@@ -59,6 +59,7 @@ if (__DEV__) {
 
 /**
  * Dispatch the event to the listener.
+ * 将事件发送给侦听器。
  * @param {SyntheticEvent} event SyntheticEvent to handle
  * @param {function} listener Application-level callback
  * @param {*} inst Internal component instance
@@ -72,6 +73,7 @@ export function executeDispatch(event, listener, inst) {
 
 /**
  * Standard/simple iteration through an event's collected dispatches.
+ * 通过事件的收集调度进行标准/简单迭代。
  */
 export function executeDispatchesInOrder(event) {
   const dispatchListeners = event._dispatchListeners;
@@ -85,6 +87,7 @@ export function executeDispatchesInOrder(event) {
         break;
       }
       // Listeners and Instances are two parallel arrays that are always in sync.
+      // 侦听器和实例是两个始终保持同步的并行阵列。
       executeDispatch(event, dispatchListeners[i], dispatchInstances[i]);
     }
   } else if (dispatchListeners) {

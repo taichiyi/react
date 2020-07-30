@@ -58,8 +58,8 @@ export function invokeGuardedCallback<A, B, C, D, E, F, Context>(
 }
 
 /**
- * Same as invokeGuardedCallback, but instead of returning an error, it stores
- * it in a global so it can be rethrown by `rethrowCaughtError` later.
+ * Same as invokeGuardedCallback, but instead of returning an error, it stores it in a global so it can be rethrown by `rethrowCaughtError` later.
+ * 与invokeGuardedCallback相同，但是它不返回错误，而是将其存储在全局变量中，以便稍后可以由`rethrowCaughtError`抛出。
  * TODO: See if caughtError and rethrowError can be unified.
  *
  * @param {String} name of the guard to use for logging or debugging

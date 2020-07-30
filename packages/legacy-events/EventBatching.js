@@ -22,6 +22,7 @@ let eventQueue: ?(Array<ReactSyntheticEvent> | ReactSyntheticEvent) = null;
 
 /**
  * Dispatches an event and releases it back into the pool, unless persistent.
+ * 调度事件并将其释放回池中，除非是持久的。
  *
  * @param {?object} event Synthetic event to be dispatched.
  * @private
@@ -46,8 +47,8 @@ export function runEventsInBatch(
     eventQueue = accumulateInto(eventQueue, events);
   }
 
-  // Set `eventQueue` to null before processing it so that we can tell if more
-  // events get enqueued while processing.
+  // Set `eventQueue` to null before processing it so that we can tell if more events get enqueued while processing.
+  // 在处理 `eventQueue` 之前将其设置为null，这样我们就可以知道在处理过程中是否有更多的事件进入队列。
   const processingEventQueue = eventQueue;
   eventQueue = null;
 

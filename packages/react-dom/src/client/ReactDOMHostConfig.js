@@ -490,7 +490,7 @@ export function removeChild(
   child: Instance | TextInstance | SuspenseInstance,
 ): void {
   dispatchDetachedVisibleNodeEvent(child);
-  parentInstance.removeChild(child);
+  /* ✨ */parentInstance.removeChild(child);
 }
 
 export function removeChildFromContainer(

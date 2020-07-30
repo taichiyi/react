@@ -240,7 +240,7 @@ export type Fiber = {|
   alternate: Fiber | null,
 
   // Time spent rendering this Fiber and its descendants for the current update.
-  // 为当前更新渲染此光纤及其子代所花费的时间。
+  // 为当前更新渲染此 fiber 及其子代所花费的时间。
   // This tells us how well the tree makes use of sCU for memoization.
   // 这告诉我们树使用sCU进行记忆的程度。
   // It is reset to 0 each time we render and only updated when we don't bailout.
@@ -250,7 +250,7 @@ export type Fiber = {|
   actualDuration?: number,
 
   // If the Fiber is currently active in the "render" phase,
-  // 如果光纤当前在“渲染”阶段处于活动状态，
+  // 如果 fiber 当前在“渲染”阶段处于活动状态，
   // This marks the time at which the work began.
   // This field is only set when the enableProfilerTimer flag is enabled.
   // 此字段仅在启用enableProfilerTimer标志时设置。

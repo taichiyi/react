@@ -173,7 +173,7 @@ const callComponentWillUnmountWithTimer = function(current, instance) {
   startPhaseTimer(current, 'componentWillUnmount');
   instance.props = current.memoizedProps;
   instance.state = current.memoizedState;
-  instance.componentWillUnmount();
+  /* ✨ */instance.componentWillUnmount();
   stopPhaseTimer();
 };
 
@@ -287,16 +287,14 @@ function commitBeforeMutationLifeCycles(
               );
             }
           }
-          /*✨*/const snapshot = instance.getSnapshotBeforeUpdate(
+          /* ✨ */const snapshot = instance.getSnapshotBeforeUpdate(
             finishedWork.elementType === finishedWork.type
               ? prevProps
               : resolveDefaultProps(finishedWork.type, prevProps),
             prevState,
           );
           if (__DEV__) {
-            const didWarnSet = ((didWarnAboutUndefinedSnapshotBeforeUpdate: any): Set<
-              mixed,
-            >);
+            const didWarnSet = (didWarnAboutUndefinedSnapshotBeforeUpdate);
             if (snapshot === undefined && !didWarnSet.has(finishedWork.type)) {
               didWarnSet.add(finishedWork.type);
               warningWithoutStack(
@@ -319,6 +317,7 @@ function commitBeforeMutationLifeCycles(
     case HostPortal:
     case IncompleteClassComponent:
       // Nothing to do for these component types
+      // 对这些组件类型不做任何操作
       return;
     default: {
       invariant(
@@ -457,7 +456,7 @@ function commitLifeCycles(
               );
             }
           }
-          /*✨*/instance.componentDidMount();
+          /* ✨ */instance.componentDidMount();
           stopPhaseTimer();
         } else {
           const prevProps =
@@ -498,7 +497,7 @@ function commitLifeCycles(
           instance.componentDidUpdate(
             prevProps,
             prevState,
-            /*✨*/instance.__reactInternalSnapshotBeforeUpdate,
+            /* ✨ */instance.__reactInternalSnapshotBeforeUpdate,
           );
           stopPhaseTimer();
         }
@@ -864,11 +863,12 @@ function commitNestedUnmounts(
   root: Fiber,
   renderPriorityLevel: ReactPriorityLevel,
 ): void {
-  // While we're inside a removed host node we don't want to call
-  // removeChild on the inner nodes because they're removed by the top
-  // call anyway. We also want to call componentWillUnmount on all
-  // composites before this host node is removed from the tree. Therefore
-  // we do an inner loop while we're still inside the host node.
+  // While we're inside a removed host node we don't want to call removeChild on the inner nodes because they're removed by the top call anyway.
+  // 当我们在一个已删除的“主机节点”中时，我们不想在内部节点上调用removeChild，因为无论如何它们都是被top调用删除的。
+  // We also want to call componentWillUnmount on all composites before this host node is removed from the tree.
+  // 我们还想在从树中删除此主机节点之前，在所有组合上调用componentWillUnmount。
+  // Therefore we do an inner loop while we're still inside the host node.
+  // 因此，当我们仍在主机节点内时，我们会进行内部循环。
   let node: Fiber = root;
   while (true) {
     commitUnmount(finishedRoot, node, renderPriorityLevel);

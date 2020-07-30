@@ -28,7 +28,7 @@ let setTextContent = function(node: Element, text: string): void {
       firstChild === node.lastChild &&
       firstChild.nodeType === TEXT_NODE
     ) {
-      firstChild./*✨*/nodeValue = text;
+      firstChild./* ✨ */nodeValue = text;
       return;
     }
   }

@@ -110,6 +110,7 @@ function findRootContainerNode(inst) {
 }
 
 // Used to store ancestor hierarchy in top level callback
+// 用于在顶级回调中存储祖先层次结构
 function getTopLevelCallbackBookKeeping(
   topLevelType: DOMTopLevelEventType,
   nativeEvent: AnyNativeEvent,
@@ -315,8 +316,8 @@ function dispatchEventForPluginEventSystem(
   );
 
   try {
-    // Event queue being processed in the same cycle allows
-    // `preventDefault`.
+    // Event queue being processed in the same cycle allows `preventDefault`.
+    // 在同一周期中处理的事件队列允许使用 `preventDefault` 。
     batchedEventUpdates(handleTopLevel, bookKeeping);
   } finally {
     releaseTopLevelCallbackBookKeeping(bookKeeping);

@@ -306,9 +306,10 @@ function ChildReconciler(shouldTrackSideEffects) {
     returnFiber: Fiber,
     currentFirstChild: Fiber,
   ): Map<string | number, Fiber> {
-    // Add the remaining children to a temporary map so that we can find them by
-    // keys quickly. Implicit (null) keys get added to this set with their index
-    // instead.
+    // Add the remaining children to a temporary map so that we can find them by keys quickly.
+    // 将剩余的孩子添加到临时地图中，以便我们可以通过按键快速找到它们。
+    // Implicit (null) keys get added to this set with their index instead.
+    // 隐式（空）键将使用其索引添加到此集合中。
     const existingChildren: Map<string | number, Fiber> = new Map();
 
     let existingChild = currentFirstChild;
@@ -552,6 +553,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     return null;
   }
 
+  // diff 算法
   function updateSlot(
     returnFiber: Fiber,
     oldFiber: Fiber | null,
@@ -812,6 +814,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     let lastPlacedIndex = 0;
     let newIdx = 0;
     let nextOldFiber = null;
+    // diff 算法
     for (; oldFiber !== null && newIdx < newChildren.length; newIdx++) {
       if (oldFiber.index > newIdx) {
         nextOldFiber = oldFiber;
@@ -895,7 +898,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Add all children to a key map for quick lookups.
-    // 将所有子项添加到键映射以进行快速查找。
+    // 将(剩余的)所有子项添加到键映射以进行快速查找。
     const existingChildren = mapRemainingChildren(returnFiber, oldFiber);
 
     // Keep scanning and use the map to restore deleted items as moves.

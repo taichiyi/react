@@ -26,6 +26,7 @@ export const warnAboutDeprecatedLifecycles = true;
 export const enableProfilerTimer = __PROFILE__;
 
 // Trace which interactions trigger each commit.
+// 跟踪哪些交互触发每次提交。
 export const enableSchedulerTracing = __PROFILE__;
 
 // SSR experiments

@@ -610,7 +610,6 @@ function getNextRootExpirationTimeToWorkOn(root: FiberRoot): ExpirationTime {
 //taichiyi 确保 FiberRoot 节点已经被调度
 function ensureRootIsScheduled(root: FiberRoot) {
   const lastExpiredTime = root.lastExpiredTime;
-  //taichiyi lastExpiredTime 初始值为 noWork，只有当任务过期时，会被更改为过期时间（markRootExpiredAtTime方法）
   if (lastExpiredTime !== NoWork) {
     // Special case: Expired work should flush synchronously.
     // 特殊情况：过期的工作应同步冲洗。
@@ -1080,14 +1079,14 @@ function performSyncWorkOnRoot(root) {
       const prevInteractions = pushInteractions(root);
       startWorkLoopTimer(workInProgress);
 
-      /*✨*/do {
-      /*✨*/  try {
-      /*✨*/    workLoopSync();
-      /*✨*/    break;
-      /*✨*/  } catch (thrownValue) {
-      /*✨*/    handleError(root, thrownValue);
-      /*✨*/  }
-      /*✨*/} while (true);
+      /* ✨ */do {
+      /* ✨ */  try {
+      /* ✨ */    workLoopSync();
+      /* ✨ */    break;
+      /* ✨ */  } catch (thrownValue) {
+      /* ✨ */    handleError(root, thrownValue);
+      /* ✨ */  }
+      /* ✨ */} while (true);
 
       // 到这里时，workInProgressRootExitStatus 的值为 RootCompleted
 
@@ -1119,7 +1118,7 @@ function performSyncWorkOnRoot(root) {
         // We now have a consistent tree. Because this is a sync render, we  will commit it even if something suspended.
         // 现在，我们有了一棵一致的树。 因为这是同步渲染，所以即使某些东西暂停，我们也将“提交”它。
         stopFinishedWorkLoopTimer();
-        root.finishedWork = (root.current.alternate: any);
+        /* ✨ */root.finishedWork = (root.current.alternate: any);
         root.finishedExpirationTime = expirationTime;
         finishSyncRender(root, workInProgressRootExitStatus, expirationTime);
       }
@@ -2028,11 +2027,11 @@ function commitRootImpl(root, renderPriorityLevel) {
     // This must come after the mutation phase, so that the previous tree is still current during componentWillUnmount,
     // 这必须发生在 mutation 阶段之后，以便上一个树在 componentWillUnmount 期间仍然是当前树，
     // but before the layout phase, so that the finished work is current during componentDidMount/Update.
-    // 但是在布局阶段之前，以便在 componentDidMount / Update 期间完成的工作是 current 。
-    root.current = finishedWork;
+    // 但是在 layout phase 之前，以便在 componentDidMount / Update 期间完成的工作是 current 。
+    /* ✨ */root.current = finishedWork;
 
     // The next phase is the layout phase, where we call effects that read the host tree after it's been mutated.
-    // 下一个阶段是 layout 阶段，在这个阶段中，我们调用在宿主树发生变化后读取它的效果。
+    // 下一个阶段是 layout 阶段，在这个阶段中，我们调用在 host tree 发生变化后读取它的效果。
     // The idiomatic use case for this is layout, but class component lifecycles also fire here for legacy reasons.
     // 这方面的惯用用例是 layout ，但是由于遗留原因，类组件生命周期也在这里触发。
     startCommitLifeCyclesTimer();
@@ -2076,7 +2075,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     executionContext = prevExecutionContext;
   } else {
     // No effects.
-    root.current = finishedWork;
+    /* ✨ */root.current = finishedWork;
     // Measure these anyway so the flamegraph explicitly shows that there were no effects.
     // 无论如何都要进行测量，以便火焰图清楚地表明没有影响。
     // TODO: Maybe there's a better way to report this.
@@ -3192,8 +3191,11 @@ function scheduleInteractions(root, expirationTime, interactions) {
 
 function schedulePendingInteractions(root, expirationTime) {
   // This is called when work is scheduled on a root.
+  // 在根目录上安排工作时将调用此方法。
   // It associates the current interactions with the newly-scheduled expiration.
+  // 它将当前交互与新计划的到期时间相关联。
   // They will be restored when that expiration is later committed.
+  // 它们将在以后到期时恢复。
   if (!enableSchedulerTracing) {
     return;
   }

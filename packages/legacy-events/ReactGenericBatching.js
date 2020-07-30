@@ -13,11 +13,14 @@ import {
 import {enableFlareAPI} from 'shared/ReactFeatureFlags';
 import {invokeGuardedCallbackAndCatchFirstError} from 'shared/ReactErrorUtils';
 
-// Used as a way to call batchedUpdates when we don't have a reference to
-// the renderer. Such as when we're dispatching events or if third party
-// libraries need to call batchedUpdates. Eventually, this API will go away when
-// everything is batched by default. We'll then have a similar API to opt-out of
-// scheduled work and instead do synchronous work.
+// Used as a way to call batchedUpdates when we don't have a reference to the renderer.
+// 当我们没有对渲染器的引用时，用作调用batchedUpdates的方式。
+// Such as when we're dispatching events or if third party libraries need to call batchedUpdates.
+// 例如，当我们调度事件或第三方库需要调用batchedUpdates时。
+// Eventually, this API will go away when everything is batched by default.
+// 最终，默认情况下所有批处理都将取消此API。
+// We'll then have a similar API to opt-out of scheduled work and instead do synchronous work.
+// 然后，我们将有一个类似的API以选择退出计划的工作，而是进行同步工作。
 
 // Defaults
 let batchedUpdatesImpl = function(fn, bookkeeping) {

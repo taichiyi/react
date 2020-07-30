@@ -865,7 +865,7 @@ function finishClassComponent(
       }
       setCurrentPhase(null);
     } else {
-      nextChildren = instance./*✨*/render();
+      nextChildren = instance./* ✨ */render();
     }
   }
 
@@ -945,7 +945,7 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
   const nextState = workInProgress.memoizedState;
   // Caution: React DevTools currently depends on this property  being called "element".
   // 注意：React DevTools 当前依赖于此属性，称为“ element”。
-  /*✨*/const nextChildren = nextState.element;
+  /* ✨ */const nextChildren = nextState.element;
   if (nextChildren === prevChildren) {
     // If the state is the same as before,
     // that's a bailout because we had no work that expires at this time.
@@ -2881,7 +2881,7 @@ function beginWork(
       (__DEV__ ? workInProgress.type !== current.type : false)
     ) {
       // If props or context changed, mark the fiber as having performed work.
-      // 如果道具或环境发生变化，则将光纤标记为已完成工作。
+      // 如果道具或环境发生变化，则将 fiber 标记为已完成工作。
       // This may be unset if the props are determined to be equal later (memo).
       // 如果确定道具以后相等（memo），则可以不设置此设置。
       didReceiveUpdate = true;

@@ -111,10 +111,10 @@ if (__DEV__) {
       // call the user-provided callback.
       const funcArgs = Array.prototype.slice.call(arguments, 3);
       function callCallback() {
-        // We immediately remove the callback from event listeners so that
-        // nested `invokeGuardedCallback` calls do not clash. Otherwise, a
-        // nested call would trigger the fake event handlers of any call higher
-        // in the stack.
+        // We immediately remove the callback from event listeners so that nested `invokeGuardedCallback` calls do not clash.
+        // 我们会立即从事件监听器中删除回调，以免嵌套的`invokeGuardedCallback`调用发生冲突。
+        // Otherwise, a nested call would trigger the fake event handlers of any call higher in the stack.
+        // 否则，嵌套调用将触发堆栈中任何更高级别调用的虚假事件处理程序。
         fakeNode.removeEventListener(evtType, callCallback, false);
 
         // We check for window.hasOwnProperty('event') to prevent the
@@ -169,14 +169,18 @@ if (__DEV__) {
       }
 
       // Create a fake event type.
+      // 创建一个假事件类型。
       const evtType = `react-${name ? name : 'invokeguardedcallback'}`;
 
       // Attach our event handlers
+      // 附加我们的事件处理程序
       window.addEventListener('error', handleWindowError);
       fakeNode.addEventListener(evtType, callCallback, false);
 
-      // Synchronously dispatch our fake event. If the user-provided function
-      // errors, it will trigger our global error handler.
+      // Synchronously dispatch our fake event.
+      // 同步调度我们的假事件。
+      // If the user-provided function errors, it will trigger our global error handler.
+      // 如果用户提供的功能出错，它将触发我们的全局错误处理程序。
       evt.initEvent(evtType, false, false);
       fakeNode.dispatchEvent(evt);
 

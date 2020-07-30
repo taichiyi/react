@@ -60,6 +60,7 @@ var LOW_PRIORITY_TIMEOUT = 10000;
 var IDLE_PRIORITY = maxSigned31BitInt;
 
 // Tasks are stored on a min heap
+// 任务存储在最小堆中
 var taskQueue = [];
 var timerQueue = [];
 
@@ -125,9 +126,11 @@ function flushWork(hasTimeRemaining, initialTime) {
   }
 
   // We'll need a host callback the next time work is scheduled.
+  // 下次安排工作时，我们将需要主机回调。
   isHostCallbackScheduled = false;
   if (isHostTimeoutScheduled) {
     // We scheduled a timeout but it's no longer needed. Cancel it.
+    // 我们已安排超时，但不再需要。 取消它。
     isHostTimeoutScheduled = false;
     cancelHostTimeout();
   }
@@ -174,6 +177,7 @@ function workLoop(hasTimeRemaining, initialTime) {
       (!hasTimeRemaining || shouldYieldToHost())
     ) {
       // This currentTask hasn't expired, and we've reached the deadline.
+      // 这个 currentTask 尚未过期，我们已经到了最后期限。
       break;
     }
     const callback = currentTask.callback;
@@ -329,6 +333,7 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
 
   if (startTime > currentTime) {
     // This is a delayed task.
+    // 这是一个延迟的任务。
     newTask.sortIndex = startTime;
     push(timerQueue, newTask);
     if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
@@ -349,10 +354,11 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
       markTaskStart(newTask, currentTime);
       newTask.isQueued = true;
     }
-    // Schedule a host callback, if needed. If we're already performing work,
-    // wait until the next time we yield.
+    // Schedule a host callback, if needed. If we're already performing work, wait until the next time we yield.
+    // 如果需要，安排一个主机回调。 如果我们已经在执行工作，请等到下一次我们 yield 。
     if (!isHostCallbackScheduled && !isPerformingWork) {
       isHostCallbackScheduled = true;
+      // 搜索 "requestHostCallback = function(callback) {"
       requestHostCallback(flushWork);
     }
   }

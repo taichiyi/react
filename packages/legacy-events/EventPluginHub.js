@@ -124,8 +124,8 @@ export function getListener(inst: Fiber, registrationName: string) {
 }
 
 /**
- * Allows registered plugins an opportunity to extract events from top-level
- * native browser events.
+ * Allows registered plugins an opportunity to extract events from top-level native browser events.
+ * 允许注册的插件有机会从顶级原生浏览器事件中提取事件。
  *
  * @return {*} An accumulation of synthetic events.
  * @internal
@@ -142,6 +142,7 @@ function extractPluginEvents(
     // Not every plugin in the ordering may be loaded at runtime.
     const possiblePlugin: PluginModule<AnyNativeEvent> = plugins[i];
     if (possiblePlugin) {
+      // extractedEvents↓ 为 react 合成事件
       const extractedEvents = possiblePlugin.extractEvents(
         topLevelType,
         targetInst,

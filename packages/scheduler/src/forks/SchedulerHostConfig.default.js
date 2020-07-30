@@ -50,6 +50,7 @@ if (
   requestHostCallback = function(cb) {
     if (_callback !== null) {
       // Protect against re-entrancy.
+      // 防止再次进入。
       setTimeout(requestHostCallback, 0, cb);
     } else {
       _callback = cb;

@@ -50,9 +50,9 @@ function pushHostContainer(fiber: Fiber, nextRootInstance: Container) {
   // 这允许我们在弹出门户时重置根目录。
   push(rootInstanceStackCursor, nextRootInstance, fiber);
   // Track the context and the Fiber that provided it.
-  // 跟踪上下文和提供上下文的光纤。
+  // 跟踪上下文和提供上下文的 fiber 。
   // This enables us to pop only Fibers that provide unique contexts.
-  // 这使我们能够仅弹出提供独特上下文的光纤。
+  // 这使我们能够仅弹出提供独特上下文的 fiber 。
   push(contextFiberStackCursor, fiber, fiber);
 
   // Finally, we need to push the host context to the stack.

@@ -290,7 +290,7 @@ function getOwnerDocumentFromRootContainer(
 ): Document {
   return rootContainerElement.nodeType === DOCUMENT_NODE
     ? (rootContainerElement: any)
-    : rootContainerElement./*✨*/ownerDocument;
+    : rootContainerElement./* ✨ */ownerDocument;
 }
 
 function noop() {}
@@ -330,7 +330,7 @@ function setInitialDOMProperties(
       }
       // Relies on `updateStylesByID` not mutating `styleUpdates`.
       setValueForStyles(domElement, nextProp);
-    } else if (propKey === /*✨*/DANGEROUSLY_SET_INNER_HTML) {
+    } else if (propKey === /* ✨ */DANGEROUSLY_SET_INNER_HTML) {
       const nextHtml = nextProp ? nextProp[HTML] : undefined;
       if (nextHtml != null) {
         setInnerHTML(domElement, nextHtml);
@@ -450,7 +450,7 @@ export function createElement(
       domElement = div.removeChild(firstChild);
     } else if (typeof props.is === 'string') {
       // $FlowIssue `createElement` should be updated for Web Components
-      domElement = ownerDocument./*✨*/createElement(type, {is: props.is});
+      domElement = ownerDocument./* ✨ */createElement(type, {is: props.is});
     } else {
       // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
       // See discussion in https://github.com/facebook/react/pull/6896
@@ -692,7 +692,7 @@ export function diffProperties(
         typeof nextProps.onClick === 'function'
       ) {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement((domElement: HTMLElement));
+        trapClickOnNonInteractiveElement(domElement);
       }
       break;
   }

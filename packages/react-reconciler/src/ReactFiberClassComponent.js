@@ -612,7 +612,7 @@ function constructClassInstance(
     }
   }
 
-  /*✨*/const instance = new ctor(props, context);
+  /* ✨ */const instance = new ctor(props, context);
   const state = (workInProgress.memoizedState =
     instance.state !== null && instance.state !== undefined
       ? instance.state
@@ -848,7 +848,7 @@ function mountClassInstance(
 
   const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
   if (typeof getDerivedStateFromProps === 'function') {
-    /*✨*/applyDerivedStateFromProps(
+    /* ✨ */applyDerivedStateFromProps(
       workInProgress,
       ctor,
       getDerivedStateFromProps,

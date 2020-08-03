@@ -1405,8 +1405,8 @@ function pushDispatcher(root) {
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
   if (prevDispatcher === null) {
     // The React isomorphic package does not include a default dispatcher.
-    // Instead the first renderer will lazily attach one, in order to give nicer error messages.
     // React同构包不包括默认的调度程序。
+    // Instead the first renderer will lazily attach one, in order to give nicer error messages.
     // 相反，第一个渲染器将延迟附加一个渲染器，以提供更好的错误消息。
     return ContextOnlyDispatcher;
   } else {
@@ -1536,6 +1536,8 @@ function inferTimeFromExpirationTimeWithSuspenseConfig(
 // The work loop is an extremely hot path. Tell Closure not to inline it.
 // 工作循环是一条非常热的路径。告诉 Closure 不要内联它。
 /** @noinline */
+
+// workInProgress 的 children 转为 fiber ,
 function workLoopSync() {
   // Already timed out, so perform work without checking if we need to yield.
   // 已经超时，所以执行工作时不检查是否需要 yield 。

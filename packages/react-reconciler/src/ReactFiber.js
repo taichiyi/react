@@ -439,6 +439,7 @@ const createFiber = function(
   return new FiberNode(tag, pendingProps, key, mode);
 };
 
+// 判断是否为 ClassComponent
 function shouldConstruct(Component: Function) {
   const prototype = Component.prototype;
   return !!(prototype && prototype.isReactComponent);
@@ -697,7 +698,7 @@ export function createFiberFromTypeAndProps(
   let resolvedType = type;
   if (typeof type === 'function') {
     if (shouldConstruct(type)) {
-      fiberTag = ClassComponent;
+      /* ✨ */fiberTag = ClassComponent;
       if (__DEV__) {
         resolvedType = resolveClassForHotReloading(resolvedType);
       }
@@ -753,7 +754,7 @@ export function createFiberFromTypeAndProps(
               }
               break getTag;
             case REACT_MEMO_TYPE:
-              fiberTag = MemoComponent;
+              /* ✨ */fiberTag = MemoComponent;
               break getTag;
             case REACT_LAZY_TYPE:
               fiberTag = LazyComponent;

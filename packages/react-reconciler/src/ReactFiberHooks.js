@@ -474,11 +474,11 @@ export function renderWithHooks(
   // at the beginning of the render phase and there's no re-entrancy.
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
 
-  const renderedWork: Fiber = (currentlyRenderingFiber: any);
+  const renderedWork: Fiber = currentlyRenderingFiber;
 
   renderedWork.memoizedState = firstWorkInProgressHook;
   renderedWork.expirationTime = remainingExpirationTime;
-  renderedWork.updateQueue = (componentUpdateQueue: any);
+  renderedWork.updateQueue = componentUpdateQueue;
   renderedWork.effectTag |= sideEffectTag;
 
   if (__DEV__) {

@@ -989,10 +989,12 @@ function isHostParent(fiber: Fiber): boolean {
 }
 
 function getHostSibling(fiber: Fiber): ?Instance {
-  // We're going to search forward into the tree until we find a sibling host
-  // node. Unfortunately, if multiple insertions are done in a row we have to
-  // search past them. This leads to exponential search for the next sibling.
+  // We're going to search forward into the tree until we find a sibling host node.
+  // 我们将向前搜索树，直到找到同级主机节点。
+  // Unfortunately, if multiple insertions are done in a row we have to search past them. This leads to exponential search for the next sibling.
+  // 不幸的是，如果在一行中执行多个插入，我们必须搜索它们。这将导致对下一个兄弟姐妹的指数搜索。
   // TODO: Find a more efficient way to do this.
+  // TODO：找到一种更有效的方法。
   let node: Fiber = fiber;
   siblings: while (true) {
     // If we didn't find anything, let's try the next sibling.
@@ -1094,6 +1096,7 @@ function commitPlacement(finishedWork: Fiber): void {
         if (isContainer) {
           insertInContainerBefore(parent, stateNode, before);
         } else {
+          // 搜索 “export function insertBefore”
           insertBefore(parent, stateNode, before);
         }
       } else {

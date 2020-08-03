@@ -501,7 +501,7 @@ export function removeChildFromContainer(
     (container.parentNode: any).removeChild(child);
   } else {
     dispatchDetachedVisibleNodeEvent(child);
-    container.removeChild(child);
+    /* ✨ */container.removeChild(child);
   }
 }
 

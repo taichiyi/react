@@ -208,7 +208,7 @@ if (__DEV__) {
 }
 
 //taichiyi 如果 current 为 null ，则很可能是初次渲染
-//taichiyi react Element 转为 fiber 树
+//taichiyi react Element 转为 fiber
 export function reconcileChildren(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -387,15 +387,15 @@ function updateMemoComponent(
       isSimpleFunctionComponent(type) &&
       Component.compare === null &&
       // SimpleMemoComponent codepath doesn't resolve outer props either.
+      // SimpleMemoComponent 代码路径也无法解析外部 props。
       Component.defaultProps === undefined
     ) {
       let resolvedType = type;
       if (__DEV__) {
         resolvedType = resolveFunctionForHotReloading(type);
       }
-      // If this is a plain function component without default props,
-      // and with only the default shallow comparison, we upgrade it
-      // to a SimpleMemoComponent to allow fast path updates.
+      // If this is a plain function component without default props, and with only the default shallow comparison, we upgrade it to a SimpleMemoComponent to allow fast path updates.
+      // 如果这是没有默认属性的纯函数组件，并且仅具有默认的浅表比较，则我们将其升级到 SimpleMemoComponent 以允许快速更新路径。
       workInProgress.tag = SimpleMemoComponent;
       workInProgress.type = resolvedType;
       if (__DEV__) {
@@ -489,10 +489,12 @@ function updateSimpleMemoComponent(
   updateExpirationTime,
   renderExpirationTime: ExpirationTime,
 ): null | Fiber {
-  // TODO: current can be non-null here even if the component
-  // hasn't yet mounted. This happens when the inner render suspends.
+  // TODO: current can be non-null here even if the component hasn't yet mounted.
+  // 及时组件还没有挂载，current 也能不为 null。
+  // This happens when the inner render suspends.
+  // 内部渲染挂起时会发生这种情况。
   // We'll need to figure out if this is fine or can cause issues.
-
+  // 我们需要确定这是否正常或会导致问题。
   if (__DEV__) {
     if (workInProgress.type !== workInProgress.elementType) {
       // Lazy component props can't be validated in createElement
@@ -520,7 +522,7 @@ function updateSimpleMemoComponent(
   if (current !== null) {
     const prevProps = current.memoizedProps;
     if (
-      shallowEqual(prevProps, nextProps) &&
+      /* ✨ memo 的本质 */shallowEqual(prevProps, nextProps) &&
       current.ref === workInProgress.ref &&
       // Prevent bailout if the implementation changed due to hot reload:
       (__DEV__ ? workInProgress.type === current.type : true)
@@ -1255,10 +1257,10 @@ function mountIndeterminateComponent(
   renderExpirationTime,
 ) {
   if (_current !== null) {
-    // An indeterminate component only mounts if it suspended inside a non-
-    // concurrent tree, in an inconsistent state. We want to treat it like
-    // a new mount, even though an empty version of it already committed.
+    // An indeterminate component only mounts if it suspended inside a non-concurrent tree, in an inconsistent state. We want to treat it like a new mount, even though an empty version of it already committed.
+    // 不确定的组件仅在其以不一致的状态悬挂在非并发树中时才安装。 即使已经提交了空版本，我们也希望将其视为新的安装。
     // Disconnect the alternate pointers.
+    // 断开备用指针。
     _current.alternate = null;
     workInProgress.alternate = null;
     // Since this is conceptually a new fiber, schedule a Placement effect
@@ -1349,9 +1351,11 @@ function mountIndeterminateComponent(
     }
 
     // Proceed under the assumption that this is a class instance
+    // 在假定这是一个类实例的情况下进行
     workInProgress.tag = ClassComponent;
 
     // Throw out any hooks that were used.
+    // 扔掉所有使用过的钩子。
     resetHooks();
 
     // Push context providers early to prevent context stack mismatches.
@@ -1390,6 +1394,7 @@ function mountIndeterminateComponent(
     );
   } else {
     // Proceed under the assumption that this is a function component
+    // 在假设这是 function component 的情况下进行
     workInProgress.tag = FunctionComponent;
     if (__DEV__) {
       if (disableLegacyContext && Component.contextTypes) {
@@ -2735,6 +2740,7 @@ export function markWorkInProgressReceivedUpdate() {
   didReceiveUpdate = true;
 }
 
+// workInProgress 复制 current(包括 child)
 function bailoutOnAlreadyFinishedWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -2843,7 +2849,7 @@ function remountFiber(
 }
 
 //taichiyi beginWork 方法总是会返回一个指向下一个将要被处理的孩子节点的指针，如果返回 null 说明 当前 fiber 没有子代。
-// 把 workInProgress 的孩子从 ReactElement 转为 Fiber
+// 把 workInProgress 的孩子们从 ReactElement 转为 Fiber
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -3075,6 +3081,7 @@ function beginWork(
   // 在进入开始阶段之前，请清除过期时间。
   workInProgress.expirationTime = NoWork;
 
+  // 根据不同 fiber 的 tag 来选择处理 fiber children 的方式
   switch (workInProgress.tag) {
     case IndeterminateComponent: {
       return mountIndeterminateComponent(

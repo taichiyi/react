@@ -667,7 +667,7 @@ function updateFunctionComponent(
     }
     setCurrentPhase(null);
   } else {
-    nextChildren = renderWithHooks(
+    nextChildren = /* ✨ */renderWithHooks(
       current,
       workInProgress,
       Component,

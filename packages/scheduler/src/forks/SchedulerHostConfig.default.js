@@ -190,9 +190,10 @@ if (
   const performWorkUntilDeadline = () => {
     if (scheduledHostCallback !== null) {
       const currentTime = getCurrentTime();
-      // Yield after `yieldInterval` ms, regardless of where we are in the vsync
-      // cycle. This means there's always time remaining at the beginning of
-      // the message event.
+      // Yield after `yieldInterval` ms, regardless of where we are in the vsync cycle.
+
+      // This means there's always time remaining at the beginning of the message event.
+      // 这意味着在消息事件的开始时刻总是有剩余时间。
       deadline = currentTime + yieldInterval;
       const hasTimeRemaining = true;
       try {
@@ -204,21 +205,21 @@ if (
           isMessageLoopRunning = false;
           scheduledHostCallback = null;
         } else {
-          // If there's more work, schedule the next message event at the end
-          // of the preceding one.
+          // If there's more work, schedule the next message event at the end of the preceding one.
+          // 如果还有更多工作要做，请将下一个消息事件安排在上一个事件的末尾。
           port.postMessage(null);
         }
       } catch (error) {
-        // If a scheduler task throws, exit the current browser task so the
-        // error can be observed.
+        // If a scheduler task throws, exit the current browser task so the error can be observed.
+        // 如果调度程序任务抛出，请退出当前浏览器任务，以便可以观察到该错误。
         port.postMessage(null);
         throw error;
       }
     } else {
       isMessageLoopRunning = false;
     }
-    // Yielding to the browser will give it a chance to paint, so we can
-    // reset this.
+    // Yielding to the browser will give it a chance to paint, so we can reset this.
+    // 浏览器的 Yielding 将使其有机会绘画，因此我们可以重置它。
     needsPaint = false;
   };
 

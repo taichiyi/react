@@ -46,7 +46,7 @@ export function isContainerMarkedAsRoot(node) {
 // If the target node is part of a hydrated or not yet rendered subtree, then this may also return a SuspenseComponent or HostRoot to indicate that.
 // 如果目标节点是 hydrated 或尚未渲染的子树的一部分，那么这也可能会返回SuspenseComponent或HostRoot来表明这一点。
 // Conceptually the HostRoot fiber is a child of the Container node.
-// 从概念上讲，HostRoot光纤是“容器”节点的子代。
+// 从概念上讲，HostRoot fiber是“容器”节点的子代。
 // So if you pass the Container node as the targetNode, you will not actually get the HostRoot back.
 // 因此，如果将Container节点作为targetNode传递，则实际上不会获得HostRoot。
 // To get to the HostRoot, you need to pass a child of it.

@@ -168,15 +168,17 @@ type BasicStateAction<S> = (S => S) | S;
 type Dispatch<A> = A => void;
 
 // These are set right before calling the component.
+// 它们在调用组件之前设置好。
 let renderExpirationTime: ExpirationTime = NoWork;
-// The work-in-progress fiber. I've named it differently to distinguish it from
-// the work-in-progress hook.
+// The work-in-progress fiber. I've named it differently to distinguish it from the work-in-progress hook.
+// 工作中的 fiber。 我以不同的方式命名了它，以区别于进行中的钩子。
 let currentlyRenderingFiber: Fiber | null = null;
 
-// Hooks are stored as a linked list on the fiber's memoizedState field. The
-// current hook list is the list that belongs to the current fiber. The
-// work-in-progress hook list is a new list that will be added to the
-// work-in-progress fiber.
+// Hooks are stored as a linked list on the fiber's memoizedState field.
+// Hooks 以链表的形式存储在 fiber 的 memoizedState 字段中。
+// The current hook list is the list that belongs to the current fiber.
+// 当前 hook 列表是属于当前 fiber 的列表。
+// The work-in-progress hook list is a new list that will be added to the work-in-progress fiber.
 let currentHook: Hook | null = null;
 let nextCurrentHook: Hook | null = null;
 let firstWorkInProgressHook: Hook | null = null;
@@ -348,8 +350,8 @@ function areHookInputsEqual(
   }
 
   if (__DEV__) {
-    // Don't bother comparing lengths in prod because these arrays should be
-    // passed inline.
+    // Don't bother comparing lengths in prod because these arrays should be passed inline.
+    // 不要费心比较prod中的长度，因为这些数组应该内联传递。
     if (nextDeps.length !== prevDeps.length) {
       warning(
         false,
@@ -470,8 +472,8 @@ export function renderWithHooks(
     numberOfReRenders = 0;
   }
 
-  // We can assume the previous dispatcher is always this one, since we set it
-  // at the beginning of the render phase and there's no re-entrancy.
+  // We can assume the previous dispatcher is always this one, since we set it at the beginning of the render phase and there's no re-entrancy.
+  // 我们可以假设以前的调度程序始终是这个调度程序，因为我们在渲染阶段的开始就设置了它，并且没有重新进入。
   ReactCurrentDispatcher.current = ContextOnlyDispatcher;
 
   const renderedWork: Fiber = currentlyRenderingFiber;
@@ -582,20 +584,23 @@ function mountWorkInProgressHook(): Hook {
 
   if (workInProgressHook === null) {
     // This is the first hook in the list
+    // 这是列表中的第一个钩子
     firstWorkInProgressHook = workInProgressHook = hook;
   } else {
     // Append to the end of the list
+    // 追加到列表的末尾
     workInProgressHook = workInProgressHook.next = hook;
   }
   return workInProgressHook;
 }
 
 function updateWorkInProgressHook(): Hook {
-  // This function is used both for updates and for re-renders triggered by a
-  // render phase update. It assumes there is either a current hook we can
-  // clone, or a work-in-progress hook from a previous render pass that we can
-  // use as a base. When we reach the end of the base list, we must switch to
-  // the dispatcher used for mounts.
+  // This function is used both for updates and for re-renders triggered by a render phase update.
+  // 此功能用于更新和渲染阶段更新触发的重新渲染。
+  // It assumes there is either a current hook we can clone, or a work-in-progress hook from a previous render pass that we can use as a base.
+  // 它假设有一个可以克隆的当前钩子，或者是一个来自上一个渲染过程的正在处理的钩子，我们可以将它用作基础。
+  // When we reach the end of the base list, we must switch to the dispatcher used for mounts.
+  // 当到达基本列表的末尾时，我们必须切换到用于挂载的调度程序。
   if (nextWorkInProgressHook !== null) {
     // There's already a work-in-progress. Reuse it.
     workInProgressHook = nextWorkInProgressHook;
@@ -686,36 +691,36 @@ function updateReducer<S, I, A>(
   queue.lastRenderedReducer = reducer;
 
   if (numberOfReRenders > 0) {
-    // This is a re-render. Apply the new render phase updates to the previous
-    // work-in-progress hook.
+    // This is a re-render. Apply the new render phase updates to the previous work-in-progress hook.
+    // 这是重新渲染。 将新的渲染阶段更新应用于先前的 work-in-progress hook。
     const dispatch: Dispatch<A> = (queue.dispatch: any);
     if (renderPhaseUpdates !== null) {
       // Render phase updates are stored in a map of queue -> linked list
+      // 渲染阶段更新存储在队列映射->链表中
       const firstRenderPhaseUpdate = renderPhaseUpdates.get(queue);
       if (firstRenderPhaseUpdate !== undefined) {
         renderPhaseUpdates.delete(queue);
         let newState = hook.memoizedState;
         let update = firstRenderPhaseUpdate;
         do {
-          // Process this render phase update. We don't have to check the
-          // priority because it will always be the same as the current
-          // render's.
+          // Process this render phase update. We don't have to check the priority because it will always be the same as the current render's.
+          // 处理此渲染阶段更新。 我们不必检查优先级，因为它始终与当前渲染的优先级相同。
           const action = update.action;
           newState = reducer(newState, action);
           update = update.next;
         } while (update !== null);
 
-        // Mark that the fiber performed work, but only if the new state is
-        // different from the current state.
+        // Mark that the fiber performed work, but only if the new state is different from the current state.
+        // 标记光纤已完成工作，但前提是新状态与当前状态不同。
         if (!is(newState, hook.memoizedState)) {
           markWorkInProgressReceivedUpdate();
         }
 
         hook.memoizedState = newState;
-        // Don't persist the state accumulated from the render phase updates to
-        // the base state unless the queue is empty.
-        // TODO: Not sure if this is the desired semantics, but it's what we
-        // do for gDSFP. I can't remember why.
+        // Don't persist the state accumulated from the render phase updates to the base state unless the queue is empty.
+        // 除非队列为空，否则不要将从渲染阶段累积的状态更新为基本状态。
+        // TODO: Not sure if this is the desired semantics, but it's what we do for gDSFP. I can't remember why.
+        // TODO: 不确定这是否是所需的语义，但这就是我们对gDSFP所做的事情。 我不记得为什么。
         if (hook.baseUpdate === queue.last) {
           hook.baseState = newState;
         }
@@ -820,7 +825,7 @@ function updateReducer<S, I, A>(
   return [hook.memoizedState, dispatch];
 }
 
-function mountState<S>(
+/* ✨ */function mountState<S>(
   initialState: (() => S) | S,
 ): [S, Dispatch<BasicStateAction<S>>] {
   const hook = mountWorkInProgressHook();
@@ -1243,9 +1248,12 @@ function dispatchAction<S, A>(
     fiber === currentlyRenderingFiber ||
     (alternate !== null && alternate === currentlyRenderingFiber)
   ) {
-    // This is a render phase update. Stash it in a lazily-created map of
-    // queue -> linked list of updates. After this render pass, we'll restart
-    // and apply the stashed updates on top of the work-in-progress hook.
+    // This is a render phase update.
+    // 这是渲染阶段更新。
+    // Stash it in a lazily-created map of queue -> linked list of updates.
+    // 将它存储在一个延迟创建的 queue->linked list of updates中。
+    // After this render pass, we'll restart and apply the stashed updates on top of the work-in-progress hook.
+    // 在这个渲染过程之后，我们将重新启动并在 workinprogress 钩子上应用隐藏的更新。
     didScheduleRenderPhaseUpdate = true;
     const update: Update<S, A> = {
       expirationTime: renderExpirationTime,
@@ -1298,11 +1306,13 @@ function dispatchAction<S, A>(
     const last = queue.last;
     if (last === null) {
       // This is the first update. Create a circular list.
+      // 这是第一次更新。 创建一个循环列表。
       update.next = update;
     } else {
       const first = last.next;
       if (first !== null) {
         // Still circular.
+        // 还是圆形的。
         update.next = first;
       }
       last.next = update;
@@ -1313,9 +1323,10 @@ function dispatchAction<S, A>(
       fiber.expirationTime === NoWork &&
       (alternate === null || alternate.expirationTime === NoWork)
     ) {
-      // The queue is currently empty, which means we can eagerly compute the
-      // next state before entering the render phase. If the new state is the
-      // same as the current state, we may be able to bail out entirely.
+      // The queue is currently empty, which means we can eagerly compute the next state before entering the render phase.
+      // 队列当前为空，这意味着我们可以在进入渲染阶段之前 eagerly 计算下一个状态。
+      // If the new state is the same as the current state, we may be able to bail out entirely.
+      // 如果新状态与当前状态相同，我们可能可以完全 bail out。
       const lastRenderedReducer = queue.lastRenderedReducer;
       if (lastRenderedReducer !== null) {
         let prevDispatcher;
@@ -1326,21 +1337,22 @@ function dispatchAction<S, A>(
         try {
           const currentState: S = (queue.lastRenderedState: any);
           const eagerState = lastRenderedReducer(currentState, action);
-          // Stash the eagerly computed state, and the reducer used to compute
-          // it, on the update object. If the reducer hasn't changed by the
-          // time we enter the render phase, then the eager state can be used
-          // without calling the reducer again.
+          // Stash the eagerly computed state, and the reducer used to compute it, on the update object.
+          // 将急切计算的状态以及用于计算该状态的化约器存储在更新对象上。
+          // If the reducer hasn't changed by the time we enter the render phase, then the eager state can be used without calling the reducer again.
+          // 如果到我们进入渲染阶段时还没有更改reducer，那么可以使用eager状态，而无需再次调用reducer。
           update.eagerReducer = lastRenderedReducer;
           update.eagerState = eagerState;
           if (is(eagerState, currentState)) {
             // Fast path. We can bail out without scheduling React to re-render.
-            // It's still possible that we'll need to rebase this update later,
-            // if the component re-renders for a different reason and by that
-            // time the reducer has changed.
+            // 捷径。 我们可以纾困而无需安排React重新渲染。
+            // It's still possible that we'll need to rebase this update later, if the component re-renders for a different reason and by that time the reducer has changed.
+            // 如果组件由于其他原因而重新渲染，并且到那时reducer已经改变，我们仍然有可能需要在以后对该更新进行重新编制基准。
             return;
           }
         } catch (error) {
           // Suppress the error. It will throw again in the render phase.
+          // 抑制错误。 它将在渲染阶段再次抛出。
         } finally {
           if (__DEV__) {
             ReactCurrentDispatcher.current = prevDispatcher;

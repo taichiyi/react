@@ -173,7 +173,7 @@ const callComponentWillUnmountWithTimer = function(current, instance) {
   startPhaseTimer(current, 'componentWillUnmount');
   instance.props = current.memoizedProps;
   instance.state = current.memoizedState;
-  /* ✨ */instance.componentWillUnmount();
+  instance./* ✨ */componentWillUnmount();
   stopPhaseTimer();
 };
 
@@ -287,7 +287,7 @@ function commitBeforeMutationLifeCycles(
               );
             }
           }
-          /* ✨ */const snapshot = instance.getSnapshotBeforeUpdate(
+          const snapshot = instance./* ✨ */getSnapshotBeforeUpdate(
             finishedWork.elementType === finishedWork.type
               ? prevProps
               : resolveDefaultProps(finishedWork.type, prevProps),
@@ -456,7 +456,7 @@ function commitLifeCycles(
               );
             }
           }
-          /* ✨ */instance.componentDidMount();
+          instance./* ✨ */componentDidMount();
           stopPhaseTimer();
         } else {
           const prevProps =
@@ -494,7 +494,7 @@ function commitLifeCycles(
               );
             }
           }
-          instance.componentDidUpdate(
+          instance./* ✨ */componentDidUpdate(
             prevProps,
             prevState,
             /* ✨ */instance.__reactInternalSnapshotBeforeUpdate,

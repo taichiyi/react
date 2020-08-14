@@ -16,7 +16,7 @@ import {invokeGuardedCallbackAndCatchFirstError} from 'shared/ReactErrorUtils';
 // Used as a way to call batchedUpdates when we don't have a reference to the renderer.
 // 当我们没有对渲染器的引用时，用作调用batchedUpdates的方式。
 // Such as when we're dispatching events or if third party libraries need to call batchedUpdates.
-// 例如，当我们调度事件或第三方库需要调用batchedUpdates时。
+// 例如，当我们触发事件或第三方库需要调用batchedUpdates时。
 // Eventually, this API will go away when everything is batched by default.
 // 最终，默认情况下所有批处理都将取消此API。
 // We'll then have a similar API to opt-out of scheduled work and instead do synchronous work.

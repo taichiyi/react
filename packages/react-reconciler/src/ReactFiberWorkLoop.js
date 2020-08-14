@@ -390,7 +390,7 @@ export function computeExpirationForFiber(
   return expirationTime;
 }
 
-// 任务调度
+// 安排更新 Fiber
 export function scheduleUpdateOnFiber(
   fiber: Fiber,
   expirationTime: ExpirationTime,
@@ -441,10 +441,10 @@ export function scheduleUpdateOnFiber(
       //taichiyi React 的`执行上下文栈`为空
       if (executionContext === NoContext) {
         // Flush the synchronous work now, unless we're already working or inside a batch.
-        // This is intentionally inside scheduleUpdateOnFiber instead of scheduleCallbackForFiber to preserve the ability to schedule a callback without immediately flushing it.
-        // We only do this for user-initiated updates, to preserve historical behavior of legacy mode.
         // 立即清除同步工作，除非我们已经在工作或在批处理中。
+        // This is intentionally inside scheduleUpdateOnFiber instead of scheduleCallbackForFiber to preserve the ability to schedule a callback without immediately flushing it.
         // 故意将其放置在scheduleUpdateOnFiber而不是scheduleCallbackForFiber内，以保留在不立即刷新回调的情况下调度回调的函数。
+        // We only do this for user-initiated updates, to preserve historical behavior of legacy mode.
         // 我们仅对用户启动的更新执行此操作，以保留旧版模式的历史行为。
         flushSyncCallbackQueue();
       }
@@ -2188,6 +2188,8 @@ function commitRootImpl(root, renderPriorityLevel) {
   }
 
   if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
+    // 这种情况一般是 初次渲染
+
     // This is a legacy edge case.
     // 这是一个过时的边缘情况。
     // We just committed the initial mount of a ReactDOM.render-ed root inside of batchedUpdates.

@@ -1181,7 +1181,7 @@ export function diffHydratedProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track(domElement);
+      /* ✨ */track(domElement);
       ReactDOMInputPostMountWrapper(domElement, rawProps, true);
       break;
     case 'textarea':

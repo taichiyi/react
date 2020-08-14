@@ -481,7 +481,7 @@ export function createWorkInProgress(
     // We pool the "other" unused node that we're free to reuse.
     // This is lazily created to avoid allocating extra objects for things that are never updated.
     // It also allow us to reclaim the extra memory if needed.
-    // 我们使用✨双缓冲✨池技术，因为我们知道一棵树最多只需要两个版本。
+    // 我们使用✨双缓冲池技术，因为我们知道一棵树最多只需要两个版本。
     // 可以自由重用的“其他”未使用节点。
     // 惰性地创建它是为了避免为从未更新的对象分配额外的对象。
     // 它还允许我们在需要时回收额外的内存。

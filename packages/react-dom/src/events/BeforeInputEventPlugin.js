@@ -445,19 +445,18 @@ function extractBeforeInputEvent(
  * Create an `onBeforeInput` event to match
  * http://www.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105/#events-inputevents.
  *
- * This event plugin is based on the native `textInput` event
- * available in Chrome, Safari, Opera, and IE. This event fires after
- * `onKeyPress` and `onCompositionEnd`, but before `onInput`.
+ * This event plugin is based on the native `textInput` event available in Chrome, Safari, Opera, and IE.
+ * 这个事件插件基于Chrome，Safari，Opera和IE中的本机“ textInput”事件。
+ * This event fires after `onKeyPress` and `onCompositionEnd`, but before `onInput`.
+ * 此事件在onKeyPress和onCompositionEnd之后触发，但在onInput之前触发。
  *
- * `beforeInput` is spec'd but not implemented in any browsers, and
- * the `input` event does not provide any useful information about what has
- * actually been added, contrary to the spec. Thus, `textInput` is the best
- * available event to identify the characters that have actually been inserted
- * into the target node.
+ * `beforeInput` is spec'd but not implemented in any browsers, and the `input` event does not provide any useful information about what has actually been added, contrary to the spec.
+ * beforeInput 是指定的，但未在任何浏览器中实现，并且“ input”事件未提供有关实际添加内容的任何有用信息，这与该规范相反。
+ * Thus, `textInput` is the best available event to identify the characters that have actually been inserted into the target node.
+ * 因此，textInput 是识别实际已插入到目标节点中的字符的最佳可用事件。
  *
- * This plugin is also responsible for emitting `composition` events, thus
- * allowing us to share composition fallback code for both `beforeInput` and
- * `composition` event types.
+ * This plugin is also responsible for emitting `composition` events, thus allowing us to share composition fallback code for both `beforeInput` and `composition` event types.
+ * 这个插件还负责发出“ composition”事件，从而使我们可以共享“ beforeInput”和“ composition”事件类型的composition fallback代码。
  */
 const BeforeInputEventPlugin = {
   eventTypes: eventTypes,

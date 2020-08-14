@@ -19,7 +19,7 @@ import {REACT_RESPONDER_TYPE} from 'shared/ReactSymbols';
 import ReactCurrentDispatcher from './ReactCurrentDispatcher';
 
 function resolveDispatcher() {
-  // 获取 dispatcher (调度程序)
+  // 获取 dispatcher (触发程序)
   const dispatcher = ReactCurrentDispatcher.current;
   invariant(
     dispatcher !== null,

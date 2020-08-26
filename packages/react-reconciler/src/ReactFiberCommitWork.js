@@ -719,7 +719,7 @@ function commitAttachRef(finishedWork: Fiber) {
         }
       }
 
-      ref.current = instanceToUse;
+      /* ✨ */ref.current = instanceToUse;
     }
   }
 }

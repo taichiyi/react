@@ -42,17 +42,20 @@ function functionThatReturnsFalse() {
 }
 
 /**
- * Synthetic events are dispatched by event plugins, typically in response to a
- * top-level event delegation handler.
+ * Synthetic events are dispatched by event plugins, typically in response to a top-level event delegation handler.
+ * 合成事件由事件插件分派，通常是响应顶级事件委托处理程序。
  *
- * These systems should generally use pooling to reduce the frequency of garbage
- * collection. The system should check `isPersistent` to determine whether the
- * event should be released into the pool after being dispatched. Users that
- * need a persisted event should invoke `persist`.
+ * These systems should generally use pooling to reduce the frequency of garbage collection.
+ * 这些系统通常应使用池化以减少垃圾收集的频率。
+ * The system should check `isPersistent` to determine whether the event should be released into the pool after being dispatched.
+ * 系统应检查“ isPersistent”以确定事件在分发后是否应释放到池中。
+ * Users that need a persisted event should invoke `persist`.
+ * 需要持续事件的用户应调用“ persist”。
  *
- * Synthetic events (and subclasses) implement the DOM Level 3 Events API by
- * normalizing browser quirks. Subclasses do not necessarily have to implement a
- * DOM interface; custom application-specific events can also subclass this.
+ * Synthetic events (and subclasses) implement the DOM Level 3 Events API by normalizing browser quirks.
+ * 合成事件（和子类）通过标准化浏览器怪癖来实现DOM Level 3事件API。
+ * Subclasses do not necessarily have to implement a DOM interface; custom application-specific events can also subclass this.
+ * 子类不一定必须实现DOM接口。 定制的特定于应用程序的事件也可以将此子类化。
  *
  * @param {object} dispatchConfig Configuration used to dispatch this event.
  * @param {*} targetInst Marker identifying the event target.

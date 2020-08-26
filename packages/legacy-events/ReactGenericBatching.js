@@ -42,11 +42,12 @@ function finishEventHandler() {
   // Then we restore state of any controlled component.
   const controlledComponentsHavePendingUpdates = needsStateRestore();
   if (controlledComponentsHavePendingUpdates) {
-    // If a controlled event was fired, we may need to restore the state of
-    // the DOM node back to the controlled value. This is necessary when React
-    // bails out of the update without touching the DOM.
+    // If a controlled event was fired, we may need to restore the state of the DOM node back to the controlled value.
+    // 如果触发了受控事件，则可能需要将DOM节点的状态恢复回受控值。
+    // This is necessary when React bails out of the update without touching the DOM.
+    // 当React退出更新而不接触DOM时，这是必需的。
     flushDiscreteUpdatesImpl();
-    restoreStateIfNeeded();
+    /* ✨ 受控的关键 */restoreStateIfNeeded();
   }
 }
 

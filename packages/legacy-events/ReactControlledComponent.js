@@ -15,6 +15,7 @@ import {
 } from './EventPluginUtils';
 
 // Use to restore controlled state after a change event has fired.
+// 用于在更改事件触发后恢复受控状态。
 
 let restoreImpl = null;
 let restoreTarget = null;

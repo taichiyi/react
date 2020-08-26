@@ -157,7 +157,7 @@ export function applyDerivedStateFromProps(
     }
   }
 
-  const partialState = getDerivedStateFromProps(nextProps, prevState);
+  const partialState = getDerivedStateFromProps/* ✨ */(nextProps, prevState);
 
   if (__DEV__) {
     warnOnUndefinedDerivedState(ctor, partialState);

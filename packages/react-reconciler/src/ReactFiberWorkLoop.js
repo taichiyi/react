@@ -1176,8 +1176,8 @@ export function flushDiscreteUpdates() {
     return;
   }
   flushPendingDiscreteUpdates();
-  // If the discrete updates scheduled passive effects, flush them now so that
-  // they fire before the next serial event.
+  // If the discrete updates scheduled passive effects, flush them now so that they fire before the next serial event.
+  // 如果离散更新计划了被动效果，请立即冲洗它们，以便它们在下一个串行事件之前触发。
   flushPassiveEffects();
 }
 

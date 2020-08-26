@@ -35,15 +35,16 @@ export function createContext<T>(
   const context: ReactContext<T> = {
     $$typeof: REACT_CONTEXT_TYPE,
     _calculateChangedBits: calculateChangedBits,
-    // As a workaround to support multiple concurrent renderers, we categorize
-    // some renderers as primary and others as secondary. We only expect
-    // there to be two concurrent renderers at most: React Native (primary) and
-    // Fabric (secondary); React DOM (primary) and React ART (secondary).
+    // As a workaround to support multiple concurrent renderers, we categorize some renderers as primary and others as secondary.
+    // 作为支持多个并发渲染器的解决方法，我们将一些渲染器归类为主要渲染器，将其他渲染器归为辅助渲染器。
+    // We only expect there to be two concurrent renderers at most: React Native (primary) and Fabric (secondary); React DOM (primary) and React ART (secondary).
+    // 我们只希望最多有两个并发渲染器：React Native（主要）和Fabric（次要）。 React DOM（主要）和React ART（次要）。
     // Secondary renderers store their context values on separate fields.
+    // 次要渲染器将其上下文值存储在单独的字段中。
     _currentValue: defaultValue,
     _currentValue2: defaultValue,
-    // Used to track how many concurrent renderers this context currently
-    // supports within in a single renderer. Such as parallel server rendering.
+    // Used to track how many concurrent renderers this context currently supports within in a single renderer. Such as parallel server rendering.
+    // 用于跟踪此上下文当前在单个渲染器中支持多少个并行渲染器。 如并行服务器渲染。
     _threadCount: 0,
     // These are circular
     Provider: (null: any),

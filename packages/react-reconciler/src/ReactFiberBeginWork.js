@@ -602,7 +602,7 @@ function markRef(current: Fiber | null, workInProgress: Fiber) {
     (current !== null && current.ref !== ref)
   ) {
     // Schedule a Ref effect
-    workInProgress.effectTag |= Ref;
+    /* ✨ */workInProgress.effectTag |= Ref;
   }
 }
 
@@ -1647,7 +1647,7 @@ function updateSuspenseComponent(
     // no previous state that needs to be preserved.
     if (nextDidTimeout) {
       // Mount separate fragments for primary and fallback children.
-      const nextFallbackChildren = nextProps.fallback;
+      const nextFallbackChildren = /* ✨ */nextProps.fallback;
       const primaryChildFragment = createFiberFromFragment(
         null,
         mode,

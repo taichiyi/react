@@ -621,8 +621,8 @@ export function setInitialProperties(
 
   switch (tag) {
     case 'input':
-      // TODO: Make sure we check if this is still unmounted or do any clean
-      // up necessary since we never stop tracking anymore.
+      // TODO: Make sure we check if this is still unmounted or do any clean up necessary since we never stop tracking anymore.
+      // 待办事项：由于我们再也不会停止跟踪了，因此请确保我们仍然检查是否仍在卸载或进行任何必要的清理。
       track(domElement);
       ReactDOMInputPostMountWrapper(domElement, rawProps, false);
       break;

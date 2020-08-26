@@ -50,18 +50,16 @@ function getValueFromNode(node: HTMLInputElement): string {
 
 function trackValueOnNode(node: any): ?ValueTracker {
   const valueField = isCheckable(node) ? 'checked' : 'value';
-  const descriptor = Object.getOwnPropertyDescriptor(
+  const descriptor = /* ✨ */Object.getOwnPropertyDescriptor(
     node.constructor.prototype,
     valueField,
   );
 
   let currentValue = '' + node[valueField];
 
-  // if someone has already defined a value or Safari, then bail
-  // and don't track value will cause over reporting of changes,
-  // but it's better then a hard failure
-  // (needed for certain tests that spyOn input values and Safari)
+  // if someone has already defined a value or Safari, then bail and don't track value will cause over reporting of changes, but it's better then a hard failure (needed for certain tests that spyOn input values and Safari)
   if (
+    // 如果有人已经定义了一个值或Safari，则保释并且不跟踪值会导致对更改的过度报告，但总比硬失败更好（某些监视输入值和Safari的测试需要）
     node.hasOwnProperty(valueField) ||
     typeof descriptor === 'undefined' ||
     typeof descriptor.get !== 'function' ||
@@ -80,9 +78,10 @@ function trackValueOnNode(node: any): ?ValueTracker {
       set.call(this, value);
     },
   });
-  // We could've passed this the first time
-  // but it triggers a bug in IE11 and Edge 14/15.
+  // We could've passed this the first time but it triggers a bug in IE11 and Edge 14/15.
+  // 我们本来可以通过的，但它会触发IE11和Edge 14/15中的错误。
   // Calling defineProperty() again should be equivalent.
+  // 再次调用defineProperty（）应该等效。
   // https://github.com/facebook/react/issues/11768
   Object.defineProperty(node, valueField, {
     enumerable: descriptor.enumerable,

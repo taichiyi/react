@@ -14,7 +14,7 @@ import type {ReactContext} from 'shared/ReactTypes';
 import warningWithoutStack from 'shared/warningWithoutStack';
 import warning from 'shared/warning';
 
-export function createContext<T>(
+export function /* ✨ */createContext<T>(
   defaultValue: T,
   calculateChangedBits: ?(a: T, b: T) => number,
 ): ReactContext<T> {

@@ -10,7 +10,7 @@ import {REACT_MEMO_TYPE} from 'shared/ReactSymbols';
 import isValidElementType from 'shared/isValidElementType';
 import warningWithoutStack from 'shared/warningWithoutStack';
 
-export default function memo<Props>(
+export default function /* ✨ */memo<Props>(
   type: React$ElementType,
   compare?: (oldProps: Props, newProps: Props) => boolean,
 ) {

@@ -766,10 +766,10 @@ function updateClassComponent(
       nextProps,
       renderExpirationTime,
     );
-    shouldUpdate = true;
+    shouldUpdate = true;/* 组件还没被渲染过，所以必须渲染 */
   } else if (current === null) {
     // In a resume, we'll already have an instance we can reuse.
-    // 在摘要中，我们已经有一个可以重用的实例。
+    // 在 resume 中，我们已经有一个可以重用的实例。
     shouldUpdate = resumeMountClassInstance(
       workInProgress,
       Component,
@@ -789,7 +789,7 @@ function updateClassComponent(
     current,
     workInProgress,
     Component,
-    shouldUpdate,
+    shouldUpdate,/* ✨ 这里的 shouldUpdate 决定了是否要重新渲染组件（或者说是否要调用类组件的 render 方法） */
     hasContext,
     renderExpirationTime,
   );

@@ -179,7 +179,7 @@ export function applyDerivedStateFromProps(
 
 const classComponentUpdater = {
   isMounted,
-  enqueueSetState(inst, payload, callback) {
+  /* ✨ this.setState 是这个函数 */enqueueSetState(inst, payload, callback) {
     const fiber = getInstance(inst);
     const currentTime = requestCurrentTimeForUpdate();
     const suspenseConfig = requestCurrentSuspenseConfig();
@@ -250,7 +250,7 @@ const classComponentUpdater = {
   },
 };
 
-function checkShouldComponentUpdate(
+function /* ✨ */checkShouldComponentUpdate(
   workInProgress,
   ctor,
   oldProps,

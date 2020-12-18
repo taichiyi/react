@@ -431,7 +431,7 @@ function getStateFromUpdate<State>(
             payload.call(instance, prevState, nextProps);
           }
         }
-        partialState = payload.call(instance, prevState, nextProps);
+        partialState = /* ✨ 如果 setState 传的是函数，则在这里被调用 */payload.call(instance, prevState, nextProps);
         if (__DEV__) {
           exitDisallowedContextReadInDEV();
         }
@@ -445,7 +445,7 @@ function getStateFromUpdate<State>(
         return prevState;
       }
       // Merge the partial state and the previous state.
-      return /* ✨ */Object.assign({}, prevState, partialState);
+      return /* ✨ setState 所传的 state 在这里合并为新的 */Object.assign({}, prevState, partialState);
     }
     case ForceUpdate: {
       hasForceUpdate = true;
@@ -513,7 +513,7 @@ export function processUpdateQueue<State>(
 
       // Process it and compute a new result.
       // 处理它并计算新结果。
-      resultState = getStateFromUpdate(
+      resultState = /* ✨ 计算出类组件最新的 state */getStateFromUpdate(
         workInProgress,
         queue,
         update,

@@ -15,9 +15,10 @@ import forEachAccumulated from './forEachAccumulated';
 import {executeDispatchesInOrder} from './EventPluginUtils';
 
 /**
- * Internal queue of events that have accumulated their dispatches and are
- * waiting to have their dispatches executed.
+ * Internal queue of events that have accumulated their dispatches and are waiting to have their dispatches executed.
+ * 内部事件队列，这些事件已累积了其派遣，并等待执行其派遣。
  */
+// 事件队列
 let eventQueue: ?(Array<ReactSyntheticEvent> | ReactSyntheticEvent) = null;
 
 /**

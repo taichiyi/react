@@ -173,7 +173,7 @@ const callComponentWillUnmountWithTimer = function(current, instance) {
   startPhaseTimer(current, 'componentWillUnmount');
   instance.props = current.memoizedProps;
   instance.state = current.memoizedState;
-  instance./* ✨ */componentWillUnmount();
+  instance./* ✨ 调用生命周期函数 */componentWillUnmount();
   stopPhaseTimer();
 };
 
@@ -287,7 +287,7 @@ function commitBeforeMutationLifeCycles(
               );
             }
           }
-          const snapshot = instance./* ✨ */getSnapshotBeforeUpdate(
+          const snapshot = instance./* ✨ 调用生命周期函数 */getSnapshotBeforeUpdate(
             finishedWork.elementType === finishedWork.type
               ? prevProps
               : resolveDefaultProps(finishedWork.type, prevProps),
@@ -456,7 +456,7 @@ function commitLifeCycles(
               );
             }
           }
-          instance./* ✨ */componentDidMount();
+          instance./* ✨ 调用生命周期函数 */componentDidMount();
           stopPhaseTimer();
         } else {
           const prevProps =
@@ -494,7 +494,7 @@ function commitLifeCycles(
               );
             }
           }
-          instance./* ✨ */componentDidUpdate(
+          instance./* ✨ 调用生命周期函数 */componentDidUpdate(
             prevProps,
             prevState,
             /* ✨ */instance.__reactInternalSnapshotBeforeUpdate,
@@ -719,7 +719,7 @@ function commitAttachRef(finishedWork: Fiber) {
         }
       }
 
-      /* ✨ */ref.current = instanceToUse;
+      /* ✨ 把 DOM 节点添加给 ref */ref.current = instanceToUse;
     }
   }
 }

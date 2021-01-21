@@ -10,10 +10,14 @@
 import invariant from 'shared/invariant';
 
 /**
- * Accumulates items that must not be null or undefined into the first one. This
- * is used to conserve memory by avoiding array allocations, and thus sacrifices
- * API cleanness. Since `current` can be null before being passed in and not
- * null after this function, make sure to assign it back to `current`:
+ * Accumulates items that must not be null or undefined into the first one.
+ * 将不能为空或未定义的项累积到第一个项中。
+ *
+ * This is used to conserve memory by avoiding array allocations, and thus sacrifices API cleanness.
+ * 这用于通过避免数组分配来节省内存，从而牺牲了API的简洁性。
+ *
+ * Since `current` can be null before being passed in and not null after this function, make sure to assign it back to `current`:
+ * 由于`current`在传入之前可以为null，而在此函数之后不能为null，因此请确保将其分配回`current`：
  *
  * `a = accumulateInto(a, b);`
  *

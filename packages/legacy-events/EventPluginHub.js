@@ -127,12 +127,10 @@ export function getListener(inst: Fiber, registrationName: string) {
  * Allows registered plugins an opportunity to extract events from top-level native browser events.
  * 允许注册的插件有机会从顶级原生浏览器事件中提取事件。
  *
- * 生成合成事件
- *
  * @return {*} An accumulation of synthetic events.
  * @internal
  */
-function extractPluginEvents(
+function /* ✨ 生成合成事件对象 */extractPluginEvents(
   topLevelType: TopLevelType,
   targetInst: null | Fiber,
   nativeEvent: AnyNativeEvent,
@@ -174,5 +172,6 @@ export function runExtractedPluginEventsInBatch(
     nativeEventTarget,
     eventSystemFlags,
   );
+  // 将事件添加到事件队列
   runEventsInBatch(events);
 }

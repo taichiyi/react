@@ -329,7 +329,7 @@ export function prepareToReadContext(
   }
 }
 
-export function /* ✨ */readContext<T>(
+export function /* ✨ 读取上下文的值 */readContext<T>(
   context: ReactContext<T>,
   observedBits: void | number | boolean,
 ): T {

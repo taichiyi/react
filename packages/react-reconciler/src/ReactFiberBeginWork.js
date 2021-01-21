@@ -602,7 +602,7 @@ function markRef(current: Fiber | null, workInProgress: Fiber) {
     (current !== null && current.ref !== ref)
   ) {
     // Schedule a Ref effect
-    /* ✨ */workInProgress.effectTag |= Ref;
+    /* ✨ ref */workInProgress.effectTag |= Ref;
   }
 }
 
@@ -867,7 +867,7 @@ function finishClassComponent(
       }
       setCurrentPhase(null);
     } else {
-      nextChildren = instance./* ✨ */render();
+      nextChildren = instance./* ✨ 调用类组件实例的 */render();
     }
   }
 
@@ -947,7 +947,7 @@ function updateHostRoot(current, workInProgress, renderExpirationTime) {
   const nextState = workInProgress.memoizedState;
   // Caution: React DevTools currently depends on this property  being called "element".
   // 注意：React DevTools 当前依赖于此属性，称为“ element”。
-  /* ✨ */const nextChildren = nextState.element;
+  /* ✨ ReactDOM.render(ReactElement) */const nextChildren = nextState.element;
   if (nextChildren === prevChildren) {
     // If the state is the same as before,
     // that's a bailout because we had no work that expires at this time.

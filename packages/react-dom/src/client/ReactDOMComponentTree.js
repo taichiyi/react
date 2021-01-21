@@ -175,7 +175,7 @@ export function getFiberCurrentPropsFromNode(node) {
 }
 
 /**
- * 把 fiber 的 props 添加到 DOM node 中
+ * 往 DOM node 中 添加 fiber 的 props
  * @param {*} node
  * @param {*} props
  */

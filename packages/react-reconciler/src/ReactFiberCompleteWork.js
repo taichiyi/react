@@ -743,7 +743,7 @@ function completeWork(
           }
         } else {
           // 搜索 “// TODO: take namespace into account when validating.”
-          let instance = createInstance(
+          let instance = /* ✨ 创建 DOM node */createInstance(
             type,
             newProps,
             rootContainerInstance,

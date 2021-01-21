@@ -97,7 +97,7 @@ export function discreteUpdates(fn, a, b, c) {
   const prevIsInsideEventHandler = isInsideEventHandler;
   isInsideEventHandler = true;
   try {
-    return discreteUpdatesImpl(fn, a, b, c);
+    return /* 这个函数是注入的 */discreteUpdatesImpl(fn, a, b, c);
   } finally {
     isInsideEventHandler = prevIsInsideEventHandler;
     if (!isInsideEventHandler) {

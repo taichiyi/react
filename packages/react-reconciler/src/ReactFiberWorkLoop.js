@@ -1118,7 +1118,7 @@ function performSyncWorkOnRoot(root) {
         // We now have a consistent tree. Because this is a sync render, we  will commit it even if something suspended.
         // 现在，我们有了一棵一致的树。 因为这是同步渲染，所以即使某些东西暂停，我们也将“提交”它。
         stopFinishedWorkLoopTimer();
-        /* ✨ */root.finishedWork = (root.current.alternate: any);
+        /* ✨ 把新树赋值到 finishedWork */root.finishedWork = (root.current.alternate: any);
         root.finishedExpirationTime = expirationTime;
         finishSyncRender(root, workInProgressRootExitStatus, expirationTime);
       }
@@ -1154,6 +1154,7 @@ export function flushRoot(root: FiberRoot, expirationTime: ExpirationTime) {
   }
 }
 
+// 搞定之前积攒的 DiscreteEvent与 useEffect 回调
 export function flushDiscreteUpdates() {
   // TODO: Should be able to flush inside batchedUpdates, but not inside `act`.
   // However, `act` uses `batchedUpdates`, so there's no way to distinguish
@@ -1238,6 +1239,8 @@ export function batchedEventUpdates<A, R>(fn: A => R, a: A): R {
   }
 }
 
+// 它会为React 的调度叠加一个 DiscreteEventContext 上下文，并执行 runWithPriority，
+// 这时看来它与 dispatchUserBlockingUpdate 无异，只是做了一个前置处理。
 export function discreteUpdates<A, B, C, R>(
   fn: (A, B, C) => R,
   a: A,
@@ -1611,7 +1614,7 @@ function completeUnitOfWork(unitOfWork: Fiber): Fiber | null {
     // Check if the work completed or if something threw.
     // 检查工作是否完成或是否有错误抛出。
     if ((workInProgress.effectTag & Incomplete) === NoEffect) {
-      // 已完成
+      // 未完成
       setCurrentDebugFiberInDEV(workInProgress);
       let next;
       if (
@@ -2030,7 +2033,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     // 这必须发生在 mutation 阶段之后，以便上一个树在 componentWillUnmount 期间仍然是当前树，
     // but before the layout phase, so that the finished work is current during componentDidMount/Update.
     // 但是在 layout phase 之前，以便在 componentDidMount / Update 期间完成的工作是 current 。
-    /* ✨ */root.current = finishedWork;
+    /* ✨ 新树替换旧树 */root.current = finishedWork;
 
     // The next phase is the layout phase, where we call effects that read the host tree after it's been mutated.
     // 下一个阶段是 layout 阶段，在这个阶段中，我们调用在 host tree 发生变化后读取它的效果。
@@ -2077,7 +2080,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     executionContext = prevExecutionContext;
   } else {
     // No effects.
-    /* ✨ */root.current = finishedWork;
+    /* ✨ 新树替换旧树 */root.current = finishedWork;
     // Measure these anyway so the flamegraph explicitly shows that there were no effects.
     // 无论如何都要进行测量，以便火焰图清楚地表明没有影响。
     // TODO: Maybe there's a better way to report this.
@@ -2311,7 +2314,6 @@ function commitMutationEffects(root: FiberRoot, renderPriorityLevel) {
   }
 }
 
-//taichiyi 处理副作用
 function commitLayoutEffects(
   root: FiberRoot,
   committedExpirationTime: ExpirationTime,

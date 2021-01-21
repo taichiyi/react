@@ -177,6 +177,7 @@ function handleTopLevel(bookKeeping: BookKeepingInstance) {
     const topLevelType = ((bookKeeping.topLevelType: any): DOMTopLevelEventType);
     const nativeEvent = ((bookKeeping.nativeEvent: any): AnyNativeEvent);
 
+    // 生成“合成事件对象” && 加入事件队列
     runExtractedPluginEventsInBatch(
       topLevelType,
       targetInst,
@@ -257,7 +258,7 @@ function trapEventForPluginEventSystem(
   capture: boolean,
 ): void {
   let listener;
-  switch (getEventPriority(topLevelType)) {
+  switch /* ✨ 根据不同的 DOM 事件类型选择不同的派发器当做订阅者 */(getEventPriority(topLevelType)) {
     case DiscreteEvent:
       listener = dispatchDiscreteEvent.bind(
         null,

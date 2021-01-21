@@ -111,8 +111,11 @@ export type ReactEventResponder<E, C> = {
 
 export type EventPriority = 0 | 1 | 2;
 
+// 离散事件，例如 click、blur、submit、foucs、touchStart
 export const DiscreteEvent: EventPriority = 0;
+// 用户阻塞事件，例如：touchMove、scroll
 export const UserBlockingEvent: EventPriority = 1;
+// 连续事件，例如：load、error、abort
 export const ContinuousEvent: EventPriority = 2;
 
 export type ReactFundamentalComponentInstance<C, H> = {|

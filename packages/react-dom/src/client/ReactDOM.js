@@ -101,7 +101,7 @@ if (__DEV__) {
 }
 
 setRestoreImplementation(restoreControlledState);
-setBatchingImplementation(
+/* ✨ 注入 */setBatchingImplementation(
   batchedUpdates,
   discreteUpdates,
   flushDiscreteUpdates,

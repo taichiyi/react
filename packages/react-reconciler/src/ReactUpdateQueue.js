@@ -445,7 +445,7 @@ function getStateFromUpdate<State>(
         return prevState;
       }
       // Merge the partial state and the previous state.
-      return /* ✨ setState 所传的 state 在这里合并为新的 */Object.assign({}, prevState, partialState);
+      return /* ✨ setState 所传的 state 在这里合并为新的 state 对象 */Object.assign({}, prevState, partialState);
     }
     case ForceUpdate: {
       hasForceUpdate = true;
@@ -528,6 +528,7 @@ export function processUpdateQueue<State>(
         // 将其设置为null，以防它在中止的渲染过程中发生了变化。
         update.nextEffect = null;
         if (queue.lastEffect === null) {
+          // 把副作用从 fiber queue 的 update 中分到 effect 中
           queue.firstEffect = queue.lastEffect = update;
         } else {
           queue.lastEffect.nextEffect = update;

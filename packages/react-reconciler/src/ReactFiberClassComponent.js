@@ -157,7 +157,7 @@ export function applyDerivedStateFromProps(
     }
   }
 
-  const partialState = getDerivedStateFromProps/* ✨ */(nextProps, prevState);
+  const partialState = getDerivedStateFromProps/* ✨ 调用生命周期函数 */(nextProps, prevState);
 
   if (__DEV__) {
     warnOnUndefinedDerivedState(ctor, partialState);
@@ -199,6 +199,7 @@ const classComponentUpdater = {
     }
 
     enqueueUpdate(fiber, update);
+    /* scheduleUpdateOnFiber */
     scheduleWork(fiber, expirationTime);
   },
   enqueueReplaceState(inst, payload, callback) {
@@ -612,7 +613,7 @@ function constructClassInstance(
     }
   }
 
-  /* ✨ */const instance = new ctor(props, context);
+  /* ✨ 类组件实例化 */const instance = new ctor(props, context);
   const state = (workInProgress.memoizedState =
     instance.state !== null && instance.state !== undefined
       ? instance.state
@@ -848,7 +849,7 @@ function mountClassInstance(
 
   const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
   if (typeof getDerivedStateFromProps === 'function') {
-    /* ✨ */applyDerivedStateFromProps(
+    /* ✨ 调用生命周期函数 */applyDerivedStateFromProps(
       workInProgress,
       ctor,
       getDerivedStateFromProps,

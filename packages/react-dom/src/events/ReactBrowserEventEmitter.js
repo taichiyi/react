@@ -181,7 +181,7 @@ export function listenToTopLevel(
         // 媒体事件不会冒泡，因此添加侦听器不会做任何事情。
         const isMediaEvent = mediaEventTypes.indexOf(topLevelType) !== -1;
         if (!isMediaEvent) {
-          trapBubbledEvent(topLevelType, mountAt);
+          /* ✨ 在 document 订阅对应的冒泡事件 */trapBubbledEvent(topLevelType, mountAt);
         }
         break;
     }

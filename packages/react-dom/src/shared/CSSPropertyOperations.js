@@ -59,6 +59,7 @@ export function createDangerousStringForStyles(styles) {
  * @param {DOMElement} node
  * @param {object} styles
  */
+// 把 React element props 的 style 属性添加到 DOM node
 export function setValueForStyles(node, styles) {
   const style = node.style;
   for (let styleName in styles) {

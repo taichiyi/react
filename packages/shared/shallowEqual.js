@@ -16,7 +16,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * when any key has values which are not strictly equal between the arguments.
  * Returns true when the values of all keys are strictly equal.
  */
-function shallowEqual(objA: mixed, objB: mixed): boolean {
+function /* ✨ 对象浅比较 */shallowEqual(objA: mixed, objB: mixed): boolean {
   if (is(objA, objB)) {
     return true;
   }

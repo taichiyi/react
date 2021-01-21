@@ -19,6 +19,8 @@ import {TEXT_NODE} from '../shared/HTMLNodeType';
  * @param {string} text
  * @internal
  */
+// 此时的 FiberNode 没有子代，并且 work 完成，有对应的 DOM node，
+// 所以把 React element props 的 children 为字符串，把 children 赋值给 DOM node
 let setTextContent = function(node: Element, text: string): void {
   if (text) {
     let firstChild = node.firstChild;

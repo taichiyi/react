@@ -1223,7 +1223,7 @@ function updateTransition(
   return [startTransition, isPending];
 }
 
-function dispatchAction<S, A>(
+function /* ✨ 通过 hook dispatch action */dispatchAction<S, A>(
   fiber: Fiber,
   queue: UpdateQueue<S, A>,
   action: A,

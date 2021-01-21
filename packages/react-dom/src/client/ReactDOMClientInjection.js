@@ -34,7 +34,7 @@ setComponentTree(
  * Some important event plugins included by default (without having to require
  * them).
  */
-EventPluginHubInjection.injectEventPluginsByName({
+EventPluginHubInjection./* ✨ 添加 DOM 中各种类型的事件名 */injectEventPluginsByName({
   SimpleEventPlugin: SimpleEventPlugin,
   EnterLeaveEventPlugin: EnterLeaveEventPlugin,
   ChangeEventPlugin: ChangeEventPlugin,

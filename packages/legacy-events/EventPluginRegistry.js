@@ -170,8 +170,9 @@ export const eventNameDispatchConfigs = {};
 /**
  * Mapping from registration name to plugin module
  *
- * taichiyi: 键是各种事件名称，例如：onClick、onBlur
  */
+// 事件名称和事件处理模块 集合
+// 键是各种事件名称，例如：onClick、onBlur
 export const registrationNameModules = {};
 
 /**
@@ -220,7 +221,7 @@ export function injectEventPluginOrder(
  * @internal
  * @see {EventPluginHub.injection.injectEventPluginsByName}
  */
-export function injectEventPluginsByName(
+export function /* ✨ 往集合里添加事件名称 */injectEventPluginsByName(
   injectedNamesToPlugins: NamesToPlugins,
 ): void {
   let isOrderingDirty = false;

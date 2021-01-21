@@ -277,8 +277,7 @@ export function hydrate(
   );
 }
 
-// ReactDOM.render
-export function render(
+export function /* ✨ ReactDOM.render */render(
   element: React$Element<any>,
   container: DOMContainer,
   callback: ?Function,

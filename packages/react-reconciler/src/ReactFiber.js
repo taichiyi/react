@@ -157,6 +157,10 @@ export type Fiber = {|
 
   // The local state associated with this fiber.
   // 与此 fiber 关联的本地状态。
+  //   对于原生组件，这个值指向一个 dom 节点（虽然已经被创建了，但不代表就被插入了 document ）
+  //   对于类组件，这个值指向对应的类实例
+  //   对于函数组件，这个值指向 Null
+  //   对于 RootFiber，这个值指向 FiberRoot （如图）
   stateNode: any,
 
   // Conceptual aliases
@@ -698,7 +702,7 @@ export function createFiberFromTypeAndProps(
   let resolvedType = type;
   if (typeof type === 'function') {
     if (shouldConstruct(type)) {
-      /* ✨ */fiberTag = ClassComponent;
+      /* ✨ 设置 fiber 的 tag */fiberTag = ClassComponent;
       if (__DEV__) {
         resolvedType = resolveClassForHotReloading(resolvedType);
       }
@@ -754,7 +758,7 @@ export function createFiberFromTypeAndProps(
               }
               break getTag;
             case REACT_MEMO_TYPE:
-              /* ✨ */fiberTag = MemoComponent;
+              /* ✨ 设置 fiber 的 tag */fiberTag = MemoComponent;
               break getTag;
             case REACT_LAZY_TYPE:
               fiberTag = LazyComponent;

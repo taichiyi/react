@@ -318,7 +318,7 @@ export function jsxDEV(type, config, maybeKey, source, self) {
  * See https://reactjs.org/docs/react-api.html#createelement
  */
 // createReactElement(1/2)
-export function createElement(type, config, children) {
+export function /* ✨ */createElement(type, config, children) {
   let propName;
 
   // Reserved names are extracted

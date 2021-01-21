@@ -270,7 +270,7 @@ if (__DEV__) {
 }
 
 /**
- * 确保事件监听至
+ * 确保事件有被监听
  */
 function ensureListeningTo(
   rootContainerElement: Element | Node,
@@ -282,7 +282,7 @@ function ensureListeningTo(
   const doc = isDocumentOrFragment
     ? rootContainerElement
     : rootContainerElement.ownerDocument;
-  listenTo(registrationName, doc);
+  /* ✨ 在 document 订阅事件 */listenTo(registrationName, doc);
 }
 
 function getOwnerDocumentFromRootContainer(
@@ -290,7 +290,7 @@ function getOwnerDocumentFromRootContainer(
 ): Document {
   return rootContainerElement.nodeType === DOCUMENT_NODE
     ? (rootContainerElement: any)
-    : rootContainerElement./* ✨ */ownerDocument;
+    : rootContainerElement./* ✨ 获取 document 对象 */ownerDocument;
 }
 
 function noop() {}
@@ -308,6 +308,7 @@ export function trapClickOnNonInteractiveElement(node: HTMLElement) {
   node.onclick = noop;
 }
 
+// /* ✨ 把 React element 有效的 props 设置初始化到 DOM node 上 */
 function setInitialDOMProperties(
   tag: string,
   domElement: Element,
@@ -359,7 +360,7 @@ function setInitialDOMProperties(
       // We could have excluded it in the property list instead of
       // adding a special case here, but then it wouldn't be emitted
       // on server rendering (but we *do* want to emit it in SSR).
-    } else if (registrationNameModules.hasOwnProperty(propKey)) {
+    } else if (/* ✨ 判断是否为 DOM 事件，例如: onClick */registrationNameModules.hasOwnProperty(propKey)) {
       if (nextProp != null) {
         if (__DEV__ && typeof nextProp !== 'function') {
           warnForInvalidEventListener(propKey, nextProp);
@@ -450,7 +451,7 @@ export function createElement(
       domElement = div.removeChild(firstChild);
     } else if (typeof props.is === 'string') {
       // $FlowIssue `createElement` should be updated for Web Components
-      domElement = ownerDocument./* ✨ */createElement(type, {is: props.is});
+      domElement = ownerDocument./* ✨ 创建 DOM 元素(节点) */createElement(type, {is: props.is});
     } else {
       // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
       // See discussion in https://github.com/facebook/react/pull/6896
@@ -514,7 +515,7 @@ export function createTextNode(
   );
 }
 
-export function setInitialProperties(
+export function /* ✨ 处理 React element 的 props */setInitialProperties(
   domElement: Element,
   tag: string,
   rawProps: Object,
@@ -1181,7 +1182,7 @@ export function diffHydratedProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      /* ✨ */track(domElement);
+      /* ✨ 受控组件 */track(domElement);
       ReactDOMInputPostMountWrapper(domElement, rawProps, true);
       break;
     case 'textarea':

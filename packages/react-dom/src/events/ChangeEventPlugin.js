@@ -96,6 +96,7 @@ function manualDispatchChangeEvent(nativeEvent) {
   // components don't work properly in conjunction with event bubbling because
   // the component is rerendered and the value reverted before all the event
   // handlers can run. See https://github.com/facebook/react/issues/708.
+  // 为了确保所有事件处理程序在下一次重新渲染之前运行，这里必须进行批处理（包括附加到祖先元素上的事件处理程序，而不是直接在输入上运行的事件处理程序）。 否则，受控组件将无法与事件冒泡一起正常工作，因为在所有事件处理程序可以运行之前，该组件将被重新呈现并且值将被还原。 参见https://github.com/facebook/react/issues/708。
   batchedUpdates(runEventInBatch, event);
 }
 

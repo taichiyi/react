@@ -69,8 +69,7 @@ type BaseFiberRootProperties = {|
   lastSuspendedTime: ExpirationTime,
   // The next known expiration time after the suspended range
   nextKnownPendingLevel: ExpirationTime,
-  // The latest time at which a suspended component pinged the root to
-  // render again
+  // The latest time at which a suspended component pinged the root to render again
   lastPingedTime: ExpirationTime,
   lastExpiredTime: ExpirationTime,
 |};

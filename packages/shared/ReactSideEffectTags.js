@@ -18,15 +18,23 @@ export const NoEffect = /*              */ 0b0000000000000; // 0
 export const PerformedWork = /*         */ 0b0000000000001; // 1
 
 // You can change the rest (and add more).
+// 插入 DOM
 export const Placement = /*             */ 0b0000000000010; // 1
+// 更新 DOM
 export const Update = /*                */ 0b0000000000100; // 4
 export const PlacementAndUpdate = /*    */ 0b0000000000110; // 6
+// 删除 DOM
 export const Deletion = /*              */ 0b0000000001000; // 8
 export const ContentReset = /*          */ 0b0000000010000; // 16
+// 回电
 export const Callback = /*              */ 0b0000000100000; // 32
 export const DidCapture = /*            */ 0b0000001000000; // 64
+// DOM node 指向 fiber node
 export const Ref = /*                   */ 0b0000010000000; // 128
+// 调用 Snapshot 声明周期函数
 export const Snapshot = /*              */ 0b0000100000000; // 256
+// useEffect(...)
+// 被动 副作用
 export const Passive = /*               */ 0b0001000000000; // 512
 export const Hydrating = /*             */ 0b0010000000000; // 1024
 export const HydratingAndUpdate = /*    */ 0b0010000000100; // 1028

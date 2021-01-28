@@ -94,6 +94,8 @@ export const injection = {
  * @param {object} inst The instance, which is the source of events.
  * @param {string} registrationName Name of listener (e.g. `onClick`).
  * @return {?function} The stored callback.
+ *
+ * 获取 fiber 上相关事件类型的监听器
  */
 export function getListener(inst: Fiber, registrationName: string) {
   let listener;
@@ -130,7 +132,7 @@ export function getListener(inst: Fiber, registrationName: string) {
  * @return {*} An accumulation of synthetic events.
  * @internal
  */
-function /* ✨ 生成合成事件对象 */extractPluginEvents(
+function /* ✨ 从全部插件中提取符合条件的合成事件对象 */extractPluginEvents(
   topLevelType: TopLevelType,
   targetInst: null | Fiber,
   nativeEvent: AnyNativeEvent,
@@ -142,7 +144,7 @@ function /* ✨ 生成合成事件对象 */extractPluginEvents(
     // Not every plugin in the ordering may be loaded at runtime.
     const possiblePlugin: PluginModule<AnyNativeEvent> = plugins[i];
     if (possiblePlugin) {
-      // extractedEvents↓ 为 react 合成事件
+      /* 尝试从插件集中提取合成事件对象，如果事件类型符合某个插件，则会返回“合成事件对象” */
       const extractedEvents = possiblePlugin.extractEvents(
         topLevelType,
         targetInst,

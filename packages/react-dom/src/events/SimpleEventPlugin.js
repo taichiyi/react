@@ -62,7 +62,7 @@ import getEventCharCode from './getEventCharCode';
  *   [TOP_ABORT, { sameConfig }],
  * ]);
  */
-
+// 在这个文件中，给 DOM 最新标准中定义的事件类型，添加了优先级
 type EventTuple = [DOMTopLevelEventType, string, EventPriority];
 
 const eventTuples: Array<EventTuple> = [
@@ -355,7 +355,7 @@ const SimpleEventPlugin: PluginModule<MouseEvent> & {
         EventConstructor = SyntheticEvent;
         break;
     }
-    const event = EventConstructor.getPooled(
+    const event = /* ✨ 新鲜出炉的合成事件对象 */EventConstructor.getPooled(
       dispatchConfig,
       targetInst,
       nativeEvent,

@@ -43,8 +43,14 @@ const UNIT_SIZE = 10;
 const MAGIC_NUMBER_OFFSET = Batched - 1;
 
 // 1 unit of expiration time represents 10ms.
-// 1单位的有效时间代表10毫秒。
-//taichiyi 毫秒时间转为过期时间
+// 1 单位的有效时间代表10毫秒。
+
+/*
+ExpirationTime 表示这个 fiber 的能活多久(单位是 10ms)
+由于 1 个单位是 10ms，所以正尺度最大为≈124.27天(Sync/100/60/60/24)
+刻度随着线程的存活时间的增加，往负极值方向走。
+所以 ExpirationTime 越大（刻度值），说明存在时间越早，优先级越高。
+ */
 export function msToExpirationTime(ms: number): ExpirationTime {
   // Always add an offset so that we don't clash with the magic number for NoWork.
   // 始终添加偏移量，以免与NoWork的魔幻数字发生冲突。

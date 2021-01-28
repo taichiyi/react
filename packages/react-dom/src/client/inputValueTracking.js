@@ -58,8 +58,8 @@ function trackValueOnNode(node: any): ?ValueTracker {
   let currentValue = '' + node[valueField];
 
   // if someone has already defined a value or Safari, then bail and don't track value will cause over reporting of changes, but it's better then a hard failure (needed for certain tests that spyOn input values and Safari)
+  // 如果有人已经定义了一个值或Safari，则保释并且不跟踪值会导致对更改的过度报告，但总比硬失败更好（某些监视输入值和Safari的测试需要）
   if (
-    // 如果有人已经定义了一个值或Safari，则保释并且不跟踪值会导致对更改的过度报告，但总比硬失败更好（某些监视输入值和Safari的测试需要）
     node.hasOwnProperty(valueField) ||
     typeof descriptor === 'undefined' ||
     typeof descriptor.get !== 'function' ||

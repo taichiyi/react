@@ -8,8 +8,8 @@
 import {TEXT_NODE} from '../shared/HTMLNodeType';
 
 /**
- * Gets the target node from a native browser event by accounting for
- * inconsistencies in browser DOM APIs.
+ * Gets the target node from a native browser event by accounting for inconsistencies in browser DOM APIs.
+ * 获取目标节点
  *
  * @param {object} nativeEvent Native browser event.
  * @return {DOMEventTarget} Target node.

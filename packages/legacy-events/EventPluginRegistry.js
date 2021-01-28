@@ -159,6 +159,7 @@ function publishRegistrationName(
 
 /**
  * Ordered list of injected plugins.
+ * 插件集合，一开始的时候时空的，后面会注入其他插件
  */
 export const plugins = [];
 

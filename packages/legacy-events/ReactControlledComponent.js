@@ -38,6 +38,7 @@ function restoreStateOfTarget(target) {
   restoreImpl(internalInstance.stateNode, internalInstance.type, props);
 }
 
+// restoreImpl 是注入的
 export function setRestoreImplementation(
   impl: (domElement: Element, tag: string, props: Object) => void,
 ): void {
@@ -56,6 +57,7 @@ export function enqueueStateRestore(target: EventTarget): void {
   }
 }
 
+// controlledComponentsHavePendingUpdates
 export function needsStateRestore(): boolean {
   return restoreTarget !== null || restoreQueue !== null;
 }

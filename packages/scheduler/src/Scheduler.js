@@ -20,7 +20,7 @@ import {
   getCurrentTime,
   forceFrameRate,
   requestPaint,
-} from './SchedulerHostConfig';
+} from './SchedulerHostConfig';/* 根据宿主环境配置调度器 */
 import {push, pop, peek} from './SchedulerMinHeap';
 
 // TODO: Use symbols?
@@ -74,9 +74,12 @@ var currentTask = null;
 var currentPriorityLevel = NormalPriority;
 
 // This is set while performing work, to prevent re-entrancy.
+// 是正在执行 work?
 var isPerformingWork = false;
 
+// 是宿主回调 handler 调度？
 var isHostCallbackScheduled = false;
+// 是宿主超时 handler 调度？
 var isHostTimeoutScheduled = false;
 
 function advanceTimers(currentTime) {

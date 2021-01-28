@@ -71,7 +71,7 @@ export const requestPaint =
   // Fall back gracefully if we're running an older version of Scheduler.
   Scheduler_requestPaint !== undefined ? Scheduler_requestPaint : () => {};
 
-//taichiyi 调度-回调队列
+// 这个是同步回调队列
 let syncQueue: Array<SchedulerCallback> | null = null;
 let immediateQueueCallbackNode: mixed | null = null;
 let isFlushingSyncQueue: boolean = false;
@@ -90,7 +90,12 @@ let initialTimeMs: number = Scheduler_now(); //taichiyi 如果环境支持 perfo
 // 在较旧的浏览器中，Scheduler退回到`Date.now`，它返回Unix时间戳。
 // 在这种情况下，减去模块初始化时间即可模拟performance.now的行为，并使我们的时间保持足够小以适合32位。
 
-//taichiyi 初始时间误差控制在 10s 内
+/*
+//taichiyi
+调用 now 函数获取线程的存活时间
+
+发过表达式“initialTimeMs < 10000”为假，说明 Scheduler_now 是 Date.now
+ */
 export const now =
   initialTimeMs < 10000 ? Scheduler_now : () => Scheduler_now() - initialTimeMs;
 
@@ -146,6 +151,8 @@ export function scheduleCallback(
   return Scheduler_scheduleCallback(priorityLevel, callback, options);
 }
 
+// 把回调加入同步回调队列
+// 把刷新函数添加的调度器队列，等待下一时刻刷新
 export function scheduleSyncCallback(callback: SchedulerCallback) {
   // Push this callback into an internal queue. We'll flush these either in the next tick, or earlier if something calls `flushSyncCallbackQueue`.
   // 将此回调推送到内部同步队列中。 我们将在下一个tick中或更早地刷新它们（如果有人调用`flushSyncCallbackQueue`）。
@@ -176,6 +183,7 @@ export function cancelCallback(callbackNode: mixed) {
 
 export function flushSyncCallbackQueue() {
   if (immediateQueueCallbackNode !== null) {
+    // 不等下一时刻了，我要同步执行
     const node = immediateQueueCallbackNode;
     immediateQueueCallbackNode = null;
     Scheduler_cancelCallback(node);

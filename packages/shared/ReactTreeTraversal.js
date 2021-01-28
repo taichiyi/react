@@ -7,6 +7,7 @@
 
 import {HostComponent} from './ReactWorkTags';
 
+// 获取父元素中，fiber type === HostComponent 的 fiber
 function getParent(inst) {
   do {
     inst = inst.return;
@@ -82,8 +83,9 @@ export function getParentInstance(inst) {
 
 /**
  * Simulates the traversal of a two-phase, capture/bubble event dispatch.
+ * 模拟两阶段捕获/冒泡事件分发的遍历。
  */
-export function traverseTwoPhase(inst, fn, arg) {
+export function/* ✨ 在 fiber tree 上模拟 capture 和 bubble */ traverseTwoPhase(inst, fn, arg) {
   const path = [];
   while (inst) {
     path.push(inst);

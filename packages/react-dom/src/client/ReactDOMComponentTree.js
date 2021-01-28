@@ -55,7 +55,7 @@ export function isContainerMarkedAsRoot(node) {
 // 同样的事情也适用于 Suspense boundaries 。
 
 /**
- * 给定 DOM 节点，返回 fiber 节点 实例。
+ * DOM 目标节点，返回最近的 fiber 节点 实例。
  */
 export function getClosestInstanceFromNode(targetNode) {
   // targetInst 的全称: target Instance

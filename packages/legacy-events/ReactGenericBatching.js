@@ -35,9 +35,11 @@ let batchedEventUpdatesImpl = batchedUpdatesImpl;
 let isInsideEventHandler = false;
 let isBatchingEventUpdates = false;
 
-function finishEventHandler() {
-  // Here we wait until all updates have propagated, which is important
-  // when using controlled components within layers:
+function /* ✨ The key logic of controlled component */finishEventHandler() {
+  // Here we wait until all updates have propagated,
+  // 在这里，我们等待所有更新都传播
+  // which is important when using controlled components within layers:
+  // 在图层中使用受控组件时，这一点很重要
   // https://github.com/facebook/react/issues/1698
   // Then we restore state of any controlled component.
   const controlledComponentsHavePendingUpdates = needsStateRestore();
@@ -47,7 +49,7 @@ function finishEventHandler() {
     // This is necessary when React bails out of the update without touching the DOM.
     // 当React退出更新而不接触DOM时，这是必需的。
     flushDiscreteUpdatesImpl();
-    /* ✨ 受控的关键 */restoreStateIfNeeded();
+    restoreStateIfNeeded();
   }
 }
 
@@ -132,6 +134,7 @@ export function flushDiscreteUpdatesIfNeeded(timeStamp: number) {
   }
 }
 
+// 注入批处理的实现
 export function setBatchingImplementation(
   _batchedUpdatesImpl,
   _discreteUpdatesImpl,

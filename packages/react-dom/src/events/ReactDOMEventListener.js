@@ -413,7 +413,7 @@ export function dispatchEvent(
 
 // Attempt dispatching an event. Returns a SuspenseInstance or Container if it's blocked.
 // 尝试触发事件。如果被阻止，则返回一个SuspenseInstance或容器。
-export function attemptToDispatchEvent(
+export function /* ✨ 事件处理关键函数 */attemptToDispatchEvent(
   topLevelType: DOMTopLevelEventType,
   eventSystemFlags: EventSystemFlags,
   nativeEvent: AnyNativeEvent,

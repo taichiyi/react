@@ -2880,7 +2880,7 @@ function beginWork(
     const newProps = workInProgress.pendingProps;
 
     if (
-      oldProps !== newProps ||
+      /* ✨ diff 算法 */oldProps !== newProps ||
       hasLegacyContextChanged() ||
       // Force a re-render if the implementation changed due to hot reload:
       // 如果实现因“热重新加载”而更改，则强制重新渲染

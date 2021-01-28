@@ -113,11 +113,13 @@ if (
   let isMessageLoopRunning = false;
   let scheduledHostCallback = null;
   let taskTimeoutID = -1;
-
-  // Scheduler periodically yields in case there is other work on the main
-  // thread, like user events. By default, it yields multiple times per frame.
-  // It does not attempt to align with frame boundaries, since most tasks don't
-  // need to be frame aligned; for those that do, use requestAnimationFrame.
+  // Scheduler periodically yields in case there is other work on the main thread, like user events.
+  // By default, it yields multiple times per frame. It does not attempt to align with frame boundaries, since most tasks don't need to be frame aligned;
+  // for those that do, use requestAnimationFrame.
+  // 如果主线程上还有其他工作（例如用户事件），调度程序会定期产生。
+  // 默认情况下，它每帧产生多次。它不会尝试与框架边界对齐，因为大多数任务不需要与框架对齐。
+  // 如果要那样做，请使用requestAnimationFrame。
+  // React 在帧中单次中运行的最大时间 ms
   let yieldInterval = 5;
   let deadline = 0;
 
@@ -136,14 +138,11 @@ if (
     shouldYieldToHost = function() {
       const currentTime = getCurrentTime();
       if (currentTime >= deadline) {
-        // There's no time left. We may want to yield control of the main
-        // thread, so the browser can perform high priority tasks. The main ones
-        // are painting and user input. If there's a pending paint or a pending
-        // input, then we should yield. But if there's neither, then we can
-        // yield less often while remaining responsive. We'll eventually yield
-        // regardless, since there could be a pending paint that wasn't
-        // accompanied by a call to `requestPaint`, or other main thread tasks
-        // like network events.
+        // There's no time left.
+        // We may want to yield control of the main thread, so the browser can perform high priority tasks.
+        // The main ones are painting and user input. If there's a pending paint or a pending input, then we should yield.
+        // But if there's neither, then we can yield less often while remaining responsive.
+        // We'll eventually yield regardless, since there could be a pending paint that wasn't accompanied by a call to `requestPaint`, or other main thread tasks like network events.
         if (needsPaint || scheduling.isInputPending()) {
           // There is either a pending paint or a pending input.
           return true;

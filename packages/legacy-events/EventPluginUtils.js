@@ -67,6 +67,7 @@ if (__DEV__) {
 export function executeDispatch(event, listener, inst) {
   const type = event.type || 'unknown-event';
   event.currentTarget = getNodeFromInstance(inst);
+  /*                                            被调用函数  函数上下文  函数参数 */
   invokeGuardedCallbackAndCatchFirstError(type, listener, undefined, event);
   event.currentTarget = null;
 }
@@ -75,7 +76,7 @@ export function executeDispatch(event, listener, inst) {
  * Standard/simple iteration through an event's collected dispatches.
  * 通过事件的收集调度进行标准/简单迭代。
  */
-export function executeDispatchesInOrder(event) {
+export function /* ✨ 事件派发关键函数 */executeDispatchesInOrder(event) {
   const dispatchListeners = event._dispatchListeners;
   const dispatchInstances = event._dispatchInstances;
   if (__DEV__) {

@@ -186,7 +186,7 @@ export function updateWrapper(element: Element, props: Object) {
         node.value = toString(value);
       }
     } else if (node.value !== toString(value)) {
-      node.value = toString(value);
+      /* ✨ controlled, restore dom node value */node.value = toString(value);
     }
   } else if (type === 'submit' || type === 'reset') {
     // Submit/reset inputs need the attribute removed completely to avoid
@@ -387,8 +387,7 @@ function updateNamedCousins(rootNode, props) {
           'same `name` is not supported.',
       );
 
-      // We need update the tracked value on the named cousin since the value
-      // was changed but the input saw no event or value set
+      // We need update the tracked value on the named cousin since the value was changed but the input saw no event or value set
       updateValueIfChanged(otherNode);
 
       // If this is a controlled radio button group, forcing the input that

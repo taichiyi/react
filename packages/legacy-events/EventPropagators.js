@@ -43,11 +43,14 @@ function listenerAtPhase(inst, event, propagationPhase: PropagationPhases) {
  * here, allows us to not have to bind or create functions for each event.
  * Mutating the event's members allows us to not have to create a wrapping
  * "dispatch" object that pairs the event with the listener.
+ *
+ * 如果 fiber 有这个阶段的对应时间的监听器，则添加到合成对象上
  */
-function accumulateDirectionalDispatches(inst, phase, event) {
+function /* ✨ 合成对象，添加匹配的监听器 */accumulateDirectionalDispatches(inst, phase, event) {
   if (__DEV__) {
     warningWithoutStack(inst, 'Dispatching inst must not be null');
   }
+  // 根据 event 传播的阶段获得事件名称
   const listener = listenerAtPhase(inst, event, phase);
   if (listener) {
     event._dispatchListeners = accumulateInto(

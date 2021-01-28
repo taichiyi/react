@@ -662,6 +662,7 @@ export function resetWorkInProgress(
 }
 
 export function createHostRootFiber(tag: RootTag): Fiber {
+  /* ✨ 在这个设置 FiberRootNode.current 的 mode */
   let mode;
   if (tag === ConcurrentRoot) {
     mode = ConcurrentMode | BlockingMode | StrictMode;

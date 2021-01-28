@@ -257,8 +257,7 @@ function appendUpdateToQueue<State>(
   }
 }
 
-// enqueueUpdate 函数将 update 添加到 pendingQueue 队列中，典型如类组件在 setState 方法调用期间将 update 添加到 pendingQueue 中。
-// 将 update 对象加入到当前 Fiber 的更新队列当中
+// 将 update 添加到 pendingQueue 队列中，典型如类组件在 setState 方法调用期间将 update 添加到 pendingQueue 中。
 export function enqueueUpdate<State>(fiber: Fiber, update: Update<State>) {
   // Update queues are created lazily.
   const alternate = fiber.alternate;

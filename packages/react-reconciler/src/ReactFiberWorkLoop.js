@@ -333,6 +333,7 @@ export function computeExpirationForFiber(
 ): ExpirationTime {
   const mode = fiber.mode;
   if ((mode & BlockingMode) === NoMode) {
+    // 优先级最高
     return Sync;
   }
 
@@ -390,7 +391,7 @@ export function computeExpirationForFiber(
   return expirationTime;
 }
 
-// 安排更新 Fiber
+// 安排 Fiber 更新
 export function scheduleUpdateOnFiber(
   fiber: Fiber,
   expirationTime: ExpirationTime,
@@ -607,7 +608,7 @@ function getNextRootExpirationTimeToWorkOn(root: FiberRoot): ExpirationTime {
 // 如果已经安排了任务，我们将进行检查以确保现有任务的到期时间与根已处理的下一级别的到期时间相同。
 // 每次更新时都会在退出任务之前调用此函数。
 
-//taichiyi 确保 FiberRoot 节点已经被调度
+//taichiyi 确保 FiberRoot 节点(下一时刻)被调度
 function ensureRootIsScheduled(root: FiberRoot) {
   const lastExpiredTime = root.lastExpiredTime;
   if (lastExpiredTime !== NoWork) {
